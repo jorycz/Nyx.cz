@@ -16,6 +16,11 @@
     [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:appDomain];
 }
 
++ (void)dumpPreferences
+{
+    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), [[[NSUserDefaults standardUserDefaults] dictionaryRepresentation] description]);
+}
+
 + (NSString *)username:(NSString *)value
 {
     NSString *key = @"_USERNAME";

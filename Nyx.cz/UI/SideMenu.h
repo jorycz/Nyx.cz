@@ -1,5 +1,5 @@
 //
-//  TabBookmarksVC.h
+//  SideMenu.h
 //  Nyx.cz
 //
 //  Created by Josef Rysanek on 15/11/2017.
@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface TabBookmarksVC : UIViewController
+@interface SideMenu : UIView
 
 @end

@@ -36,21 +36,11 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
     _logoView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo"]];
     _logoView.userInteractionEnabled = NO;
     [_logoView setContentMode:(UIViewContentModeCenter)];
     [self.view addSubview:_logoView];
-}
-
-- (void)viewDidLayoutSubviews
-{
-    [super viewDidLayoutSubviews];
-    CGRect _mainFrame = self.view.frame;
-    NSInteger baseX = _mainFrame.size.width / 4;
-    NSInteger baseY = _mainFrame.size.height / 14;
-    NSInteger fWidth = _mainFrame.size.width / 2;
-    NSInteger fHeight = 190;
-    _logoView.frame = CGRectMake(baseX, baseY, fWidth, fHeight);
 }
 
 - (void)didReceiveMemoryWarning
@@ -58,10 +48,25 @@
     [super didReceiveMemoryWarning];
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    CGRect _mainFrame = self.view.frame;
+    _baseX = _mainFrame.size.width / 4;
+    _baseY = _mainFrame.size.height / 14;
+    _fWidth = _mainFrame.size.width / 2;
+    _fHeight = 190;
+    _logoView.frame = CGRectMake(_baseX, 258, _fWidth, _fHeight);
+}
+
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    [self tryToLogIn];
+    [UIView animateWithDuration:0.6 animations:^{
+        _logoView.frame = CGRectMake(_baseX, _baseY, _fWidth, _fHeight);
+    } completion:^(BOOL finished) {
+        [self tryToLogIn];
+    }];
 }
 
 - (void)tryToLogIn
@@ -69,6 +74,7 @@
     NSString *username = [Preferences username:nil];
     NSString *password = [Preferences password:nil];
     if ([username length] > 0 && [password length] > 0) {
+        [self showHideSpinner];
         [self loginWithUsername:username andPassword:password];
     } else {
         [self showLoginAlert];
@@ -162,9 +168,12 @@
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         [self showHideSpinner];
-//        NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), [[[NSUserDefaults standardUserDefaults] dictionaryRepresentation] description]);
-        self.tab = [[TabController alloc] init];
-        [self presentViewController:self.tab animated:YES completion:^{
+
+        self.mainScreen = [[MainVC alloc] init];
+        UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:self.mainScreen];
+        [self presentViewController:nc animated:YES completion:^{
+            SideMenu *menu = [[SideMenu alloc] initWithFrame:self.view.bounds];
+            [self.view insertSubview:menu belowSubview:self.mainScreen.view];
         }];
     });
 }

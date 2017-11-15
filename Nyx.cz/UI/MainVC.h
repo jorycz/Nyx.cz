@@ -1,5 +1,5 @@
 //
-//  TabHomeVC.h
+//  MainVC.h
 //  Nyx.cz
 //
 //  Created by Josef Rysanek on 15/11/2017.
@@ -8,6 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-@interface TabHomeVC : UIViewController
+@interface MainVC : UIViewController <UIGestureRecognizerDelegate>
+{
+    CGFloat _centerX;
+}
 
 @end

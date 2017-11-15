@@ -9,16 +9,19 @@
 
 #import <UIKit/UIKit.h>
 #import "ServerConnector.h"
-#import "TabController.h"
+#import "SideMenu.h"
+#import "MainVC.h"
 
 @interface LoginScreenVC : UIViewController <ServerConnectorDelegate>
 {
     UIImageView *_logoView;
+    NSInteger _baseX, _baseY, _fWidth, _fHeight;
 }
 
 @property (nonatomic, strong) UIActivityIndicatorView *spinner;
 
 @property (nonatomic, strong) ServerConnector *sc;
-@property (nonatomic, strong) TabController *tab;
+@property (nonatomic, strong) SideMenu *sideMenu;
+@property (nonatomic, strong) MainVC *mainScreen;
 
 @end
