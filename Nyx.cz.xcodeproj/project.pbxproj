@@ -15,6 +15,8 @@
 		2B0D5DA21FBC40F30052D63C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B0D5DA11FBC40F30052D63C /* main.m */; };
 		2B0D5DAC1FBC40F30052D63C /* Nyx_czTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B0D5DAB1FBC40F30052D63C /* Nyx_czTests.m */; };
 		2B0D5DB71FBC40F30052D63C /* Nyx_czUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B0D5DB61FBC40F30052D63C /* Nyx_czUITests.m */; };
+		2B23036F1FBC530600286062 /* TabController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B23036E1FBC530600286062 /* TabController.m */; };
+		2B2303721FBC59DC00286062 /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B2303711FBC59DC00286062 /* logo.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +53,9 @@
 		2B0D5DB21FBC40F30052D63C /* Nyx.czUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Nyx.czUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2B0D5DB61FBC40F30052D63C /* Nyx_czUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Nyx_czUITests.m; sourceTree = "<group>"; };
 		2B0D5DB81FBC40F30052D63C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2B23036D1FBC530600286062 /* TabController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TabController.h; sourceTree = "<group>"; };
+		2B23036E1FBC530600286062 /* TabController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TabController.m; sourceTree = "<group>"; };
+		2B2303711FBC59DC00286062 /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logo.png; path = Nyx.cz/Images/logo.png; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,8 +106,11 @@
 		2B0D5D8E1FBC40F20052D63C /* Nyx.cz */ = {
 			isa = PBXGroup;
 			children = (
+				2B2303701FBC59C400286062 /* Images */,
 				2B0D5D8F1FBC40F20052D63C /* AppDelegate.h */,
 				2B0D5D901FBC40F20052D63C /* AppDelegate.m */,
+				2B23036D1FBC530600286062 /* TabController.h */,
+				2B23036E1FBC530600286062 /* TabController.m */,
 				2B0D5D921FBC40F30052D63C /* ViewController.h */,
 				2B0D5D931FBC40F30052D63C /* ViewController.m */,
 				2B0D5D9B1FBC40F30052D63C /* Assets.xcassets */,
@@ -130,6 +138,15 @@
 				2B0D5DB81FBC40F30052D63C /* Info.plist */,
 			);
 			path = Nyx.czUITests;
+			sourceTree = "<group>";
+		};
+		2B2303701FBC59C400286062 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				2B2303711FBC59DC00286062 /* logo.png */,
+			);
+			name = Images;
+			path = "New Group";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -240,6 +257,7 @@
 			files = (
 				2B0D5D9F1FBC40F30052D63C /* LaunchScreen.storyboard in Resources */,
 				2B0D5D9C1FBC40F30052D63C /* Assets.xcassets in Resources */,
+				2B2303721FBC59DC00286062 /* logo.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -266,6 +284,7 @@
 			files = (
 				2B0D5D941FBC40F30052D63C /* ViewController.m in Sources */,
 				2B0D5D911FBC40F20052D63C /* AppDelegate.m in Sources */,
+				2B23036F1FBC530600286062 /* TabController.m in Sources */,
 				2B0D5DA21FBC40F30052D63C /* main.m in Sources */,
 				2B0D5D9A1FBC40F30052D63C /* Nyx_cz.xcdatamodeld in Sources */,
 			);

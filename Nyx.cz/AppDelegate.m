@@ -17,11 +17,10 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    self.mainTab = [[TabController alloc] init];
+    
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    self.mainScreen = [[ViewController alloc] init];
-    self.navigationController = [[UINavigationController alloc] initWithRootViewController:self.mainScreen];
-    self.window.rootViewController = self.navigationController;
-    self.window.backgroundColor = [UIColor whiteColor];
+    self.window.rootViewController = self.mainTab;
     [self.window makeKeyAndVisible];
     return YES;
 }
