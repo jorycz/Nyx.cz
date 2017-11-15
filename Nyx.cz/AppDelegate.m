@@ -17,10 +17,16 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    self.mainTab = [[TabController alloc] init];
+    self.loginScreen = [[LoginScreenVC alloc] init];
+    
+    [self initNotificationTopBar];
+    
+    // DEBUG - PATH
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), [paths objectAtIndex:0]);
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    self.window.rootViewController = self.mainTab;
+    self.window.rootViewController = self.loginScreen;
     [self.window makeKeyAndVisible];
     return YES;
 }
@@ -99,5 +105,14 @@
         abort();
     }
 }
+
+#pragma mark - NOTIFICATION TOP BAR INIT
+
+- (void)initNotificationTopBar
+{
+    UserNotification *un = [[UserNotification alloc] init];
+    self.userNotification = un;
+}
+
 
 @end

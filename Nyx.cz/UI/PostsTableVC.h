@@ -1,5 +1,5 @@
 //
-//  TabController.h
+//  PostsTableVC.h
 //  Nyx.cz
 //
 //  Created by Josef Rysanek on 15/11/2017.
@@ -8,10 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-#import "TabHomeVC.h"
-#import "TabBookmarksVC.h"
-#import "TabSettingsVC.h"
-
-@interface TabController : UITabBarController
+@interface PostsTableVC : UITableViewController
 
 @end

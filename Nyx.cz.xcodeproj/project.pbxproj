@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		2B0D5D911FBC40F20052D63C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B0D5D901FBC40F20052D63C /* AppDelegate.m */; };
-		2B0D5D941FBC40F30052D63C /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B0D5D931FBC40F30052D63C /* ViewController.m */; };
 		2B0D5D9A1FBC40F30052D63C /* Nyx_cz.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2B0D5D981FBC40F30052D63C /* Nyx_cz.xcdatamodeld */; };
 		2B0D5D9C1FBC40F30052D63C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2B0D5D9B1FBC40F30052D63C /* Assets.xcassets */; };
 		2B0D5D9F1FBC40F30052D63C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2B0D5D9D1FBC40F30052D63C /* LaunchScreen.storyboard */; };
@@ -17,6 +16,21 @@
 		2B0D5DB71FBC40F30052D63C /* Nyx_czUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B0D5DB61FBC40F30052D63C /* Nyx_czUITests.m */; };
 		2B23036F1FBC530600286062 /* TabController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B23036E1FBC530600286062 /* TabController.m */; };
 		2B2303721FBC59DC00286062 /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B2303711FBC59DC00286062 /* logo.png */; };
+		2B2303761FBC5BC700286062 /* PostsTableVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B2303751FBC5BC700286062 /* PostsTableVC.m */; };
+		2B23037A1FBC5BE700286062 /* Post.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B2303791FBC5BE700286062 /* Post.m */; };
+		2B23037D1FBC5C7F00286062 /* ServerConnector.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B23037C1FBC5C7F00286062 /* ServerConnector.m */; };
+		2B2303801FBC5C9000286062 /* ApiBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B23037F1FBC5C9000286062 /* ApiBuilder.m */; };
+		2B2303831FBC5CE200286062 /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B2303821FBC5CE200286062 /* Constants.m */; };
+		2B2303871FBC60C300286062 /* StorageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B2303861FBC60C300286062 /* StorageManager.m */; };
+		2B23038A1FBC62F400286062 /* CoreData.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B2303891FBC62F400286062 /* CoreData.m */; };
+		2B23038D1FBC633900286062 /* Preferences.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B23038C1FBC633900286062 /* Preferences.m */; };
+		2B2303911FBC65CA00286062 /* LoginScreenVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B2303901FBC65CA00286062 /* LoginScreenVC.m */; };
+		2B2303941FBC73AF00286062 /* JSONParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B2303931FBC73AF00286062 /* JSONParser.m */; };
+		2B2303971FBC943400286062 /* UserNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B2303961FBC943400286062 /* UserNotification.m */; };
+		2B23039A1FBC945100286062 /* NotificationTopBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B2303991FBC945100286062 /* NotificationTopBar.m */; };
+		2B23039D1FBCAF5100286062 /* TabHomeVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B23039C1FBCAF5100286062 /* TabHomeVC.m */; };
+		2B2303A01FBCAF7200286062 /* TabBookmarksVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B23039F1FBCAF7200286062 /* TabBookmarksVC.m */; };
+		2B2303A31FBCAF8C00286062 /* TabSettingsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B2303A21FBCAF8C00286062 /* TabSettingsVC.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,8 +54,6 @@
 		2B0D5D8C1FBC40F20052D63C /* Nyx.cz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Nyx.cz.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2B0D5D8F1FBC40F20052D63C /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		2B0D5D901FBC40F20052D63C /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		2B0D5D921FBC40F30052D63C /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		2B0D5D931FBC40F30052D63C /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		2B0D5D991FBC40F30052D63C /* Nyx_cz.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Nyx_cz.xcdatamodel; sourceTree = "<group>"; };
 		2B0D5D9B1FBC40F30052D63C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2B0D5D9E1FBC40F30052D63C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -56,6 +68,36 @@
 		2B23036D1FBC530600286062 /* TabController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TabController.h; sourceTree = "<group>"; };
 		2B23036E1FBC530600286062 /* TabController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TabController.m; sourceTree = "<group>"; };
 		2B2303711FBC59DC00286062 /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logo.png; path = Nyx.cz/Images/logo.png; sourceTree = SOURCE_ROOT; };
+		2B2303741FBC5BC700286062 /* PostsTableVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PostsTableVC.h; sourceTree = "<group>"; };
+		2B2303751FBC5BC700286062 /* PostsTableVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PostsTableVC.m; sourceTree = "<group>"; };
+		2B2303781FBC5BE700286062 /* Post.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Post.h; sourceTree = "<group>"; };
+		2B2303791FBC5BE700286062 /* Post.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Post.m; sourceTree = "<group>"; };
+		2B23037B1FBC5C7F00286062 /* ServerConnector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ServerConnector.h; sourceTree = "<group>"; };
+		2B23037C1FBC5C7F00286062 /* ServerConnector.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ServerConnector.m; sourceTree = "<group>"; };
+		2B23037E1FBC5C9000286062 /* ApiBuilder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ApiBuilder.h; sourceTree = "<group>"; };
+		2B23037F1FBC5C9000286062 /* ApiBuilder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ApiBuilder.m; sourceTree = "<group>"; };
+		2B2303811FBC5CE200286062 /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		2B2303821FBC5CE200286062 /* Constants.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
+		2B2303851FBC60C300286062 /* StorageManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StorageManager.h; sourceTree = "<group>"; };
+		2B2303861FBC60C300286062 /* StorageManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StorageManager.m; sourceTree = "<group>"; };
+		2B2303881FBC62F400286062 /* CoreData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CoreData.h; sourceTree = "<group>"; };
+		2B2303891FBC62F400286062 /* CoreData.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CoreData.m; sourceTree = "<group>"; };
+		2B23038B1FBC633900286062 /* Preferences.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Preferences.h; sourceTree = "<group>"; };
+		2B23038C1FBC633900286062 /* Preferences.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Preferences.m; sourceTree = "<group>"; };
+		2B23038F1FBC65CA00286062 /* LoginScreenVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LoginScreenVC.h; sourceTree = "<group>"; };
+		2B2303901FBC65CA00286062 /* LoginScreenVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LoginScreenVC.m; sourceTree = "<group>"; };
+		2B2303921FBC73AF00286062 /* JSONParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JSONParser.h; sourceTree = "<group>"; };
+		2B2303931FBC73AF00286062 /* JSONParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JSONParser.m; sourceTree = "<group>"; };
+		2B2303951FBC943400286062 /* UserNotification.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserNotification.h; sourceTree = "<group>"; };
+		2B2303961FBC943400286062 /* UserNotification.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UserNotification.m; sourceTree = "<group>"; };
+		2B2303981FBC945100286062 /* NotificationTopBar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NotificationTopBar.h; sourceTree = "<group>"; };
+		2B2303991FBC945100286062 /* NotificationTopBar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NotificationTopBar.m; sourceTree = "<group>"; };
+		2B23039B1FBCAF5100286062 /* TabHomeVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TabHomeVC.h; sourceTree = "<group>"; };
+		2B23039C1FBCAF5100286062 /* TabHomeVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TabHomeVC.m; sourceTree = "<group>"; };
+		2B23039E1FBCAF7200286062 /* TabBookmarksVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TabBookmarksVC.h; sourceTree = "<group>"; };
+		2B23039F1FBCAF7200286062 /* TabBookmarksVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TabBookmarksVC.m; sourceTree = "<group>"; };
+		2B2303A11FBCAF8C00286062 /* TabSettingsVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TabSettingsVC.h; sourceTree = "<group>"; };
+		2B2303A21FBCAF8C00286062 /* TabSettingsVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TabSettingsVC.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,18 +148,21 @@
 		2B0D5D8E1FBC40F20052D63C /* Nyx.cz */ = {
 			isa = PBXGroup;
 			children = (
+				2B2303841FBC609600286062 /* Storage */,
+				2B2303771FBC5BCF00286062 /* Data */,
+				2B2303731FBC5A9C00286062 /* UI */,
 				2B2303701FBC59C400286062 /* Images */,
 				2B0D5D8F1FBC40F20052D63C /* AppDelegate.h */,
 				2B0D5D901FBC40F20052D63C /* AppDelegate.m */,
 				2B23036D1FBC530600286062 /* TabController.h */,
 				2B23036E1FBC530600286062 /* TabController.m */,
-				2B0D5D921FBC40F30052D63C /* ViewController.h */,
-				2B0D5D931FBC40F30052D63C /* ViewController.m */,
 				2B0D5D9B1FBC40F30052D63C /* Assets.xcassets */,
 				2B0D5D9D1FBC40F30052D63C /* LaunchScreen.storyboard */,
 				2B0D5DA01FBC40F30052D63C /* Info.plist */,
 				2B0D5DA11FBC40F30052D63C /* main.m */,
 				2B0D5D981FBC40F30052D63C /* Nyx_cz.xcdatamodeld */,
+				2B2303811FBC5CE200286062 /* Constants.h */,
+				2B2303821FBC5CE200286062 /* Constants.m */,
 			);
 			path = Nyx.cz;
 			sourceTree = "<group>";
@@ -147,6 +192,55 @@
 			);
 			name = Images;
 			path = "New Group";
+			sourceTree = "<group>";
+		};
+		2B2303731FBC5A9C00286062 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				2B23038F1FBC65CA00286062 /* LoginScreenVC.h */,
+				2B2303901FBC65CA00286062 /* LoginScreenVC.m */,
+				2B2303951FBC943400286062 /* UserNotification.h */,
+				2B2303961FBC943400286062 /* UserNotification.m */,
+				2B2303981FBC945100286062 /* NotificationTopBar.h */,
+				2B2303991FBC945100286062 /* NotificationTopBar.m */,
+				2B2303741FBC5BC700286062 /* PostsTableVC.h */,
+				2B2303751FBC5BC700286062 /* PostsTableVC.m */,
+				2B23039B1FBCAF5100286062 /* TabHomeVC.h */,
+				2B23039C1FBCAF5100286062 /* TabHomeVC.m */,
+				2B23039E1FBCAF7200286062 /* TabBookmarksVC.h */,
+				2B23039F1FBCAF7200286062 /* TabBookmarksVC.m */,
+				2B2303A11FBCAF8C00286062 /* TabSettingsVC.h */,
+				2B2303A21FBCAF8C00286062 /* TabSettingsVC.m */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		2B2303771FBC5BCF00286062 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				2B2303781FBC5BE700286062 /* Post.h */,
+				2B2303791FBC5BE700286062 /* Post.m */,
+				2B23037B1FBC5C7F00286062 /* ServerConnector.h */,
+				2B23037C1FBC5C7F00286062 /* ServerConnector.m */,
+				2B23037E1FBC5C9000286062 /* ApiBuilder.h */,
+				2B23037F1FBC5C9000286062 /* ApiBuilder.m */,
+				2B2303921FBC73AF00286062 /* JSONParser.h */,
+				2B2303931FBC73AF00286062 /* JSONParser.m */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		2B2303841FBC609600286062 /* Storage */ = {
+			isa = PBXGroup;
+			children = (
+				2B2303851FBC60C300286062 /* StorageManager.h */,
+				2B2303861FBC60C300286062 /* StorageManager.m */,
+				2B2303881FBC62F400286062 /* CoreData.h */,
+				2B2303891FBC62F400286062 /* CoreData.m */,
+				2B23038B1FBC633900286062 /* Preferences.h */,
+				2B23038C1FBC633900286062 /* Preferences.m */,
+			);
+			path = Storage;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -282,11 +376,25 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2B0D5D941FBC40F30052D63C /* ViewController.m in Sources */,
+				2B2303971FBC943400286062 /* UserNotification.m in Sources */,
+				2B2303941FBC73AF00286062 /* JSONParser.m in Sources */,
 				2B0D5D911FBC40F20052D63C /* AppDelegate.m in Sources */,
+				2B23039D1FBCAF5100286062 /* TabHomeVC.m in Sources */,
+				2B2303871FBC60C300286062 /* StorageManager.m in Sources */,
 				2B23036F1FBC530600286062 /* TabController.m in Sources */,
 				2B0D5DA21FBC40F30052D63C /* main.m in Sources */,
 				2B0D5D9A1FBC40F30052D63C /* Nyx_cz.xcdatamodeld in Sources */,
+				2B2303A01FBCAF7200286062 /* TabBookmarksVC.m in Sources */,
+				2B2303831FBC5CE200286062 /* Constants.m in Sources */,
+				2B2303761FBC5BC700286062 /* PostsTableVC.m in Sources */,
+				2B2303911FBC65CA00286062 /* LoginScreenVC.m in Sources */,
+				2B23038A1FBC62F400286062 /* CoreData.m in Sources */,
+				2B23037D1FBC5C7F00286062 /* ServerConnector.m in Sources */,
+				2B23037A1FBC5BE700286062 /* Post.m in Sources */,
+				2B23038D1FBC633900286062 /* Preferences.m in Sources */,
+				2B2303A31FBCAF8C00286062 /* TabSettingsVC.m in Sources */,
+				2B23039A1FBC945100286062 /* NotificationTopBar.m in Sources */,
+				2B2303801FBC5C9000286062 /* ApiBuilder.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

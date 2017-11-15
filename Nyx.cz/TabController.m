@@ -7,6 +7,9 @@
 //
 
 #import "TabController.h"
+#import "Preferences.h"
+#import "LoginScreenVC.h"
+
 
 @interface TabController ()
 
@@ -14,24 +17,55 @@
 
 @implementation TabController
 
-- (void)viewDidLoad {
+#pragma mark - INIT
+
+- (instancetype)init
+{
+    self = [super init];
+    if (self)
+    {
+        UITabBarItem *home = [[UITabBarItem alloc] initWithTitle:@"Home" image:nil tag:0];
+        UITabBarItem *bookmarks = [[UITabBarItem alloc] initWithTitle:@"Bookmarks" image:nil tag:1];
+        UITabBarItem *settings = [[UITabBarItem alloc] initWithTitle:@"Settings" image:nil tag:2];
+        
+        TabHomeVC *tabHome = [[TabHomeVC alloc] init];
+        tabHome.title = @"Home";
+        tabHome.tabBarItem = home;
+        
+        TabBookmarksVC *tabBookmarks = [[TabBookmarksVC alloc] init];
+        tabBookmarks.title = @"Bookmarks";
+        tabBookmarks.tabBarItem = bookmarks;
+        
+        TabSettingsVC *tabSettings = [[TabSettingsVC alloc] init];
+        tabSettings.title = @"Settings";
+        tabSettings.tabBarItem = settings;
+        
+        self.tabBar.itemPositioning = UITabBarItemPositioningFill;
+        self.tabBar.opaque = YES;
+        self.viewControllers = @[tabHome, tabBookmarks, tabSettings];
+    }
+    return self;
+}
+
+- (void)viewDidLoad
+{
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
 }
 
-- (void)didReceiveMemoryWarning {
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+}
+
+- (void)didReceiveMemoryWarning
+{
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

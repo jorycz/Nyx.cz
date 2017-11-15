@@ -1,5 +1,5 @@
 //
-//  ViewController.h
+//  TabBookmarksVC.h
 //  Nyx.cz
 //
 //  Created by Josef Rysanek on 15/11/2017.
@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ViewController : UIViewController
-
+@interface TabBookmarksVC : UIViewController
 
 @end
-
