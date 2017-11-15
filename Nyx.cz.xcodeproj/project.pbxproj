@@ -1,0 +1,568 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 48;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2B0D5D911FBC40F20052D63C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B0D5D901FBC40F20052D63C /* AppDelegate.m */; };
+		2B0D5D941FBC40F30052D63C /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B0D5D931FBC40F30052D63C /* ViewController.m */; };
+		2B0D5D971FBC40F30052D63C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2B0D5D951FBC40F30052D63C /* Main.storyboard */; };
+		2B0D5D9A1FBC40F30052D63C /* Nyx_cz.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2B0D5D981FBC40F30052D63C /* Nyx_cz.xcdatamodeld */; };
+		2B0D5D9C1FBC40F30052D63C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2B0D5D9B1FBC40F30052D63C /* Assets.xcassets */; };
+		2B0D5D9F1FBC40F30052D63C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2B0D5D9D1FBC40F30052D63C /* LaunchScreen.storyboard */; };
+		2B0D5DA21FBC40F30052D63C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B0D5DA11FBC40F30052D63C /* main.m */; };
+		2B0D5DAC1FBC40F30052D63C /* Nyx_czTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B0D5DAB1FBC40F30052D63C /* Nyx_czTests.m */; };
+		2B0D5DB71FBC40F30052D63C /* Nyx_czUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B0D5DB61FBC40F30052D63C /* Nyx_czUITests.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		2B0D5DA81FBC40F30052D63C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2B0D5D841FBC40F20052D63C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2B0D5D8B1FBC40F20052D63C;
+			remoteInfo = Nyx.cz;
+		};
+		2B0D5DB31FBC40F30052D63C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2B0D5D841FBC40F20052D63C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2B0D5D8B1FBC40F20052D63C;
+			remoteInfo = Nyx.cz;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		2B0D5D8C1FBC40F20052D63C /* Nyx.cz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Nyx.cz.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2B0D5D8F1FBC40F20052D63C /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		2B0D5D901FBC40F20052D63C /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		2B0D5D921FBC40F30052D63C /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		2B0D5D931FBC40F30052D63C /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		2B0D5D961FBC40F30052D63C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		2B0D5D991FBC40F30052D63C /* Nyx_cz.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Nyx_cz.xcdatamodel; sourceTree = "<group>"; };
+		2B0D5D9B1FBC40F30052D63C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		2B0D5D9E1FBC40F30052D63C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		2B0D5DA01FBC40F30052D63C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2B0D5DA11FBC40F30052D63C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		2B0D5DA71FBC40F30052D63C /* Nyx.czTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Nyx.czTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		2B0D5DAB1FBC40F30052D63C /* Nyx_czTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Nyx_czTests.m; sourceTree = "<group>"; };
+		2B0D5DAD1FBC40F30052D63C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2B0D5DB21FBC40F30052D63C /* Nyx.czUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Nyx.czUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		2B0D5DB61FBC40F30052D63C /* Nyx_czUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Nyx_czUITests.m; sourceTree = "<group>"; };
+		2B0D5DB81FBC40F30052D63C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		2B0D5D891FBC40F20052D63C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2B0D5DA41FBC40F30052D63C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2B0D5DAF1FBC40F30052D63C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2B0D5D831FBC40F20052D63C = {
+			isa = PBXGroup;
+			children = (
+				2B0D5D8E1FBC40F20052D63C /* Nyx.cz */,
+				2B0D5DAA1FBC40F30052D63C /* Nyx.czTests */,
+				2B0D5DB51FBC40F30052D63C /* Nyx.czUITests */,
+				2B0D5D8D1FBC40F20052D63C /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		2B0D5D8D1FBC40F20052D63C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2B0D5D8C1FBC40F20052D63C /* Nyx.cz.app */,
+				2B0D5DA71FBC40F30052D63C /* Nyx.czTests.xctest */,
+				2B0D5DB21FBC40F30052D63C /* Nyx.czUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2B0D5D8E1FBC40F20052D63C /* Nyx.cz */ = {
+			isa = PBXGroup;
+			children = (
+				2B0D5D8F1FBC40F20052D63C /* AppDelegate.h */,
+				2B0D5D901FBC40F20052D63C /* AppDelegate.m */,
+				2B0D5D921FBC40F30052D63C /* ViewController.h */,
+				2B0D5D931FBC40F30052D63C /* ViewController.m */,
+				2B0D5D951FBC40F30052D63C /* Main.storyboard */,
+				2B0D5D9B1FBC40F30052D63C /* Assets.xcassets */,
+				2B0D5D9D1FBC40F30052D63C /* LaunchScreen.storyboard */,
+				2B0D5DA01FBC40F30052D63C /* Info.plist */,
+				2B0D5DA11FBC40F30052D63C /* main.m */,
+				2B0D5D981FBC40F30052D63C /* Nyx_cz.xcdatamodeld */,
+			);
+			path = Nyx.cz;
+			sourceTree = "<group>";
+		};
+		2B0D5DAA1FBC40F30052D63C /* Nyx.czTests */ = {
+			isa = PBXGroup;
+			children = (
+				2B0D5DAB1FBC40F30052D63C /* Nyx_czTests.m */,
+				2B0D5DAD1FBC40F30052D63C /* Info.plist */,
+			);
+			path = Nyx.czTests;
+			sourceTree = "<group>";
+		};
+		2B0D5DB51FBC40F30052D63C /* Nyx.czUITests */ = {
+			isa = PBXGroup;
+			children = (
+				2B0D5DB61FBC40F30052D63C /* Nyx_czUITests.m */,
+				2B0D5DB81FBC40F30052D63C /* Info.plist */,
+			);
+			path = Nyx.czUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		2B0D5D8B1FBC40F20052D63C /* Nyx.cz */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2B0D5DBB1FBC40F30052D63C /* Build configuration list for PBXNativeTarget "Nyx.cz" */;
+			buildPhases = (
+				2B0D5D881FBC40F20052D63C /* Sources */,
+				2B0D5D891FBC40F20052D63C /* Frameworks */,
+				2B0D5D8A1FBC40F20052D63C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Nyx.cz;
+			productName = Nyx.cz;
+			productReference = 2B0D5D8C1FBC40F20052D63C /* Nyx.cz.app */;
+			productType = "com.apple.product-type.application";
+		};
+		2B0D5DA61FBC40F30052D63C /* Nyx.czTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2B0D5DBE1FBC40F30052D63C /* Build configuration list for PBXNativeTarget "Nyx.czTests" */;
+			buildPhases = (
+				2B0D5DA31FBC40F30052D63C /* Sources */,
+				2B0D5DA41FBC40F30052D63C /* Frameworks */,
+				2B0D5DA51FBC40F30052D63C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2B0D5DA91FBC40F30052D63C /* PBXTargetDependency */,
+			);
+			name = Nyx.czTests;
+			productName = Nyx.czTests;
+			productReference = 2B0D5DA71FBC40F30052D63C /* Nyx.czTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		2B0D5DB11FBC40F30052D63C /* Nyx.czUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2B0D5DC11FBC40F30052D63C /* Build configuration list for PBXNativeTarget "Nyx.czUITests" */;
+			buildPhases = (
+				2B0D5DAE1FBC40F30052D63C /* Sources */,
+				2B0D5DAF1FBC40F30052D63C /* Frameworks */,
+				2B0D5DB01FBC40F30052D63C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2B0D5DB41FBC40F30052D63C /* PBXTargetDependency */,
+			);
+			name = Nyx.czUITests;
+			productName = Nyx.czUITests;
+			productReference = 2B0D5DB21FBC40F30052D63C /* Nyx.czUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2B0D5D841FBC40F20052D63C /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0910;
+				ORGANIZATIONNAME = "Josef Rysanek";
+				TargetAttributes = {
+					2B0D5D8B1FBC40F20052D63C = {
+						CreatedOnToolsVersion = 9.1;
+						ProvisioningStyle = Automatic;
+					};
+					2B0D5DA61FBC40F30052D63C = {
+						CreatedOnToolsVersion = 9.1;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 2B0D5D8B1FBC40F20052D63C;
+					};
+					2B0D5DB11FBC40F30052D63C = {
+						CreatedOnToolsVersion = 9.1;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 2B0D5D8B1FBC40F20052D63C;
+					};
+				};
+			};
+			buildConfigurationList = 2B0D5D871FBC40F20052D63C /* Build configuration list for PBXProject "Nyx.cz" */;
+			compatibilityVersion = "Xcode 8.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 2B0D5D831FBC40F20052D63C;
+			productRefGroup = 2B0D5D8D1FBC40F20052D63C /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				2B0D5D8B1FBC40F20052D63C /* Nyx.cz */,
+				2B0D5DA61FBC40F30052D63C /* Nyx.czTests */,
+				2B0D5DB11FBC40F30052D63C /* Nyx.czUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		2B0D5D8A1FBC40F20052D63C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2B0D5D9F1FBC40F30052D63C /* LaunchScreen.storyboard in Resources */,
+				2B0D5D9C1FBC40F30052D63C /* Assets.xcassets in Resources */,
+				2B0D5D971FBC40F30052D63C /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2B0D5DA51FBC40F30052D63C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2B0D5DB01FBC40F30052D63C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2B0D5D881FBC40F20052D63C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2B0D5D941FBC40F30052D63C /* ViewController.m in Sources */,
+				2B0D5D911FBC40F20052D63C /* AppDelegate.m in Sources */,
+				2B0D5DA21FBC40F30052D63C /* main.m in Sources */,
+				2B0D5D9A1FBC40F30052D63C /* Nyx_cz.xcdatamodeld in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2B0D5DA31FBC40F30052D63C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2B0D5DAC1FBC40F30052D63C /* Nyx_czTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2B0D5DAE1FBC40F30052D63C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2B0D5DB71FBC40F30052D63C /* Nyx_czUITests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		2B0D5DA91FBC40F30052D63C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2B0D5D8B1FBC40F20052D63C /* Nyx.cz */;
+			targetProxy = 2B0D5DA81FBC40F30052D63C /* PBXContainerItemProxy */;
+		};
+		2B0D5DB41FBC40F30052D63C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2B0D5D8B1FBC40F20052D63C /* Nyx.cz */;
+			targetProxy = 2B0D5DB31FBC40F30052D63C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		2B0D5D951FBC40F30052D63C /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2B0D5D961FBC40F30052D63C /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		2B0D5D9D1FBC40F30052D63C /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2B0D5D9E1FBC40F30052D63C /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		2B0D5DB91FBC40F30052D63C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.1;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		2B0D5DBA1FBC40F30052D63C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		2B0D5DBC1FBC40F30052D63C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = Nyx.cz/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "cz.nyx.Nyx-cz";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		2B0D5DBD1FBC40F30052D63C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = Nyx.cz/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "cz.nyx.Nyx-cz";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		2B0D5DBF1FBC40F30052D63C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = Nyx.czTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "cz.nyx.Nyx-czTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Nyx.cz.app/Nyx.cz";
+			};
+			name = Debug;
+		};
+		2B0D5DC01FBC40F30052D63C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = Nyx.czTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "cz.nyx.Nyx-czTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Nyx.cz.app/Nyx.cz";
+			};
+			name = Release;
+		};
+		2B0D5DC21FBC40F30052D63C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = Nyx.czUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "cz.nyx.Nyx-czUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Nyx.cz;
+			};
+			name = Debug;
+		};
+		2B0D5DC31FBC40F30052D63C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = Nyx.czUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "cz.nyx.Nyx-czUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Nyx.cz;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2B0D5D871FBC40F20052D63C /* Build configuration list for PBXProject "Nyx.cz" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2B0D5DB91FBC40F30052D63C /* Debug */,
+				2B0D5DBA1FBC40F30052D63C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2B0D5DBB1FBC40F30052D63C /* Build configuration list for PBXNativeTarget "Nyx.cz" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2B0D5DBC1FBC40F30052D63C /* Debug */,
+				2B0D5DBD1FBC40F30052D63C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2B0D5DBE1FBC40F30052D63C /* Build configuration list for PBXNativeTarget "Nyx.czTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2B0D5DBF1FBC40F30052D63C /* Debug */,
+				2B0D5DC01FBC40F30052D63C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2B0D5DC11FBC40F30052D63C /* Build configuration list for PBXNativeTarget "Nyx.czUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2B0D5DC21FBC40F30052D63C /* Debug */,
+				2B0D5DC31FBC40F30052D63C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		2B0D5D981FBC40F30052D63C /* Nyx_cz.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				2B0D5D991FBC40F30052D63C /* Nyx_cz.xcdatamodel */,
+			);
+			currentVersion = 2B0D5D991FBC40F30052D63C /* Nyx_cz.xcdatamodel */;
+			path = Nyx_cz.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = 2B0D5D841FBC40F20052D63C /* Project object */;
+}
