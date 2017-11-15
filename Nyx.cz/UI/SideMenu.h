@@ -8,6 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SideMenu : UIView
+@interface SideMenu : UIView <UITableViewDataSource, UITableViewDelegate>
+
+
+@property (nonatomic, strong) UITableView *table;
+@property (nonatomic, strong) NSArray *menuEntries;
+
 
 @end

@@ -62,11 +62,11 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    [UIView animateWithDuration:0.6 animations:^{
+    [UIView animateWithDuration:0.5 animations:^{
         _logoView.frame = CGRectMake(_baseX, _baseY, _fWidth, _fHeight);
     } completion:^(BOOL finished) {
-        [self tryToLogIn];
     }];
+    [self tryToLogIn];
 }
 
 - (void)tryToLogIn
@@ -88,6 +88,7 @@
                                                             preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *login = [UIAlertAction actionWithTitle:@"Login" style:UIAlertActionStyleDefault
                                                handler:^(UIAlertAction * action) {
+                                                   [self showHideSpinner];
                                                    NSString *u = [[alert.textFields objectAtIndex:0] text];
                                                    NSString *p = [[alert.textFields objectAtIndex:1] text];
                                                    [self loginWithUsername:u andPassword:p];
@@ -103,7 +104,6 @@
     }];
     
     [self presentViewController:alert animated:YES completion:^{
-        [self showHideSpinner];
     }];
 }
 
@@ -169,11 +169,13 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [self showHideSpinner];
 
+        // Insert Side Menu at index 0 in view hiearchy.
+        SideMenu *menu = [[SideMenu alloc] initWithFrame:self.view.bounds];
+        [[UIApplication sharedApplication].keyWindow insertSubview:menu atIndex:0];
+        
         self.mainScreen = [[MainVC alloc] init];
         UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:self.mainScreen];
         [self presentViewController:nc animated:YES completion:^{
-            SideMenu *menu = [[SideMenu alloc] initWithFrame:self.view.bounds];
-            [self.view insertSubview:menu belowSubview:self.mainScreen.view];
         }];
     });
 }

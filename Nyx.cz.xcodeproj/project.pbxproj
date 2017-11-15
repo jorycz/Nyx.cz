@@ -29,6 +29,7 @@
 		2B23039A1FBC945100286062 /* NotificationTopBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B2303991FBC945100286062 /* NotificationTopBar.m */; };
 		2B6736061FBCE8F500DA728E /* SideMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B6736051FBCE8F500DA728E /* SideMenu.m */; };
 		2B6736091FBCED2100DA728E /* MainVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B6736081FBCED2100DA728E /* MainVC.m */; };
+		2B67360C1FBCFAEF00DA728E /* SideMenuCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B67360B1FBCFAEF00DA728E /* SideMenuCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -92,6 +93,8 @@
 		2B6736051FBCE8F500DA728E /* SideMenu.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SideMenu.m; sourceTree = "<group>"; };
 		2B6736071FBCED2100DA728E /* MainVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainVC.h; sourceTree = "<group>"; };
 		2B6736081FBCED2100DA728E /* MainVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainVC.m; sourceTree = "<group>"; };
+		2B67360A1FBCFAEF00DA728E /* SideMenuCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SideMenuCell.h; sourceTree = "<group>"; };
+		2B67360B1FBCFAEF00DA728E /* SideMenuCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SideMenuCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -199,6 +202,8 @@
 				2B2303751FBC5BC700286062 /* PostsTableVC.m */,
 				2B6736041FBCE8F500DA728E /* SideMenu.h */,
 				2B6736051FBCE8F500DA728E /* SideMenu.m */,
+				2B67360A1FBCFAEF00DA728E /* SideMenuCell.h */,
+				2B67360B1FBCFAEF00DA728E /* SideMenuCell.m */,
 				2B6736071FBCED2100DA728E /* MainVC.h */,
 				2B6736081FBCED2100DA728E /* MainVC.m */,
 			);
@@ -383,6 +388,7 @@
 				2B23038D1FBC633900286062 /* Preferences.m in Sources */,
 				2B23039A1FBC945100286062 /* NotificationTopBar.m in Sources */,
 				2B2303801FBC5C9000286062 /* ApiBuilder.m in Sources */,
+				2B67360C1FBCFAEF00DA728E /* SideMenuCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

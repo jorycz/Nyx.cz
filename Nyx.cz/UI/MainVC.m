@@ -33,11 +33,11 @@
 {
     [super viewDidLoad];
     
+    // Move left to access Side menu.
     // https://supereasyapps.com/blog/2014/3/21/screen-edge-swipe-gesture-on-iphone-using-the-uiscreenedgepangesturerecognizer-tutorial
     UIScreenEdgePanGestureRecognizer *leftEdgeGesture = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(handleLeftEdgeGesture:)];
     leftEdgeGesture.edges = UIRectEdgeLeft;
     leftEdgeGesture.delegate = self;
-    [leftEdgeGesture setMaximumNumberOfTouches:1];
     [self.view addGestureRecognizer:leftEdgeGesture];
 }
 
@@ -46,15 +46,10 @@
     UIView *view = [self.view hitTest:[gesture locationInView:gesture.view] withEvent:nil];
     if(UIGestureRecognizerStateBegan == gesture.state || UIGestureRecognizerStateChanged == gesture.state)
     {
-        NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"TAM");
         CGPoint translation = [gesture translationInView:gesture.view];
-        // Move the view's center using the gesture
         self.view.center = CGPointMake(_centerX + translation.x, view.center.y);
-    } else {// cancel, fail, or ended
-        NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"ZPET");
-        // Animate back to center x
+    } else { // cancel, fail, or ended
         [UIView animateWithDuration:.3 animations:^{
-            
             self.view.center = CGPointMake(_centerX, view.center.y);
         }];
     }
@@ -68,17 +63,6 @@
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end
