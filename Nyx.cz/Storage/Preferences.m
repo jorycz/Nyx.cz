@@ -45,4 +45,16 @@
     }
 }
 
++ (NSString *)lastUserPosition:(NSString *)value
+{
+    NSString *key = @"_LASTUSERPOSITION";
+    if (value) {
+        [[NSUserDefaults standardUserDefaults] setValue:value forKey:key];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        return nil;
+    } else {
+        return [[NSUserDefaults standardUserDefaults] stringForKey:key];
+    }
+}
+
 @end

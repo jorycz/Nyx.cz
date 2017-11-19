@@ -8,16 +8,16 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
-#import "LoginScreenVC.h"
+
 #import "UserNotification.h"
+#import "MainVC.h"
 
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
-@property (strong, nonatomic) UINavigationController *navigationController;
-@property (nonatomic, strong) LoginScreenVC *loginScreen;
 @property (nonatomic, strong) UserNotification *userNotification;
+@property (nonatomic, strong) MainVC *mainScreen;
 
 @property (readonly, strong) NSPersistentContainer *persistentContainer;
 

@@ -39,5 +39,14 @@ extern NSString* const kApiMarket;
 extern NSString* const kApiPeople;
 extern NSString* const kApiPeopleStatus;
 
+// Menu constants
+extern NSString* const kMenuHome;
+extern NSString* const kMenuMail;
+extern NSString* const kMenuBookmarks;
+extern NSString* const kMenuHistory;
+extern NSString* const kMenuPeople;
+extern NSString* const kMenuNotifications;
+extern NSString* const kMenuSearchPosts;
+
 
 @end

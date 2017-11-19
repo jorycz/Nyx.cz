@@ -29,6 +29,7 @@
 {
     self = [super init];
     if (self) {
+        self.userIsLoggedIn = NO;
     }
     return self;
 }
@@ -48,25 +49,22 @@
     [super didReceiveMemoryWarning];
 }
 
-- (void)viewWillAppear:(BOOL)animated
+- (void)viewDidAppear:(BOOL)animated
 {
-    [super viewWillAppear:animated];
+    [super viewDidAppear:animated];
+    
     CGRect _mainFrame = self.view.frame;
     _baseX = _mainFrame.size.width / 4;
     _baseY = _mainFrame.size.height / 14;
     _fWidth = _mainFrame.size.width / 2;
     _fHeight = 190;
-    _logoView.frame = CGRectMake(_baseX, 258, _fWidth, _fHeight);
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
+    _logoView.frame = CGRectMake(_baseX, 248, _fWidth, _fHeight);
+    
     [UIView animateWithDuration:0.5 animations:^{
         _logoView.frame = CGRectMake(_baseX, _baseY, _fWidth, _fHeight);
     } completion:^(BOOL finished) {
+        [self tryToLogIn];
     }];
-    [self tryToLogIn];
 }
 
 - (void)tryToLogIn
@@ -167,16 +165,14 @@
 - (void)presentNyxScreen
 {
     dispatch_async(dispatch_get_main_queue(), ^{
+        self.userIsLoggedIn = YES;
         [self showHideSpinner];
-
-        // Insert Side Menu at index 0 in view hiearchy.
-        SideMenu *menu = [[SideMenu alloc] initWithFrame:self.view.bounds];
-        [[UIApplication sharedApplication].keyWindow insertSubview:menu atIndex:0];
-        
-        self.mainScreen = [[MainVC alloc] init];
-        UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:self.mainScreen];
-        [self presentViewController:nc animated:YES completion:^{
+        [self dismissViewControllerAnimated:YES completion:^{
         }];
+//        self.mainScreen = [[MainVC alloc] init];
+//        UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:self.mainScreen];
+//        [self presentViewController:nc animated:YES completion:^{
+//        }];
     });
 }
 

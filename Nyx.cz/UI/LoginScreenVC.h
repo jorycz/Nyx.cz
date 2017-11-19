@@ -9,8 +9,6 @@
 
 #import <UIKit/UIKit.h>
 #import "ServerConnector.h"
-#import "SideMenu.h"
-#import "MainVC.h"
 
 @interface LoginScreenVC : UIViewController <ServerConnectorDelegate>
 {
@@ -19,9 +17,8 @@
 }
 
 @property (nonatomic, strong) UIActivityIndicatorView *spinner;
-
 @property (nonatomic, strong) ServerConnector *sc;
-@property (nonatomic, strong) SideMenu *sideMenu;
-@property (nonatomic, strong) MainVC *mainScreen;
+@property (nonatomic, assign) BOOL userIsLoggedIn;
+
 
 @end

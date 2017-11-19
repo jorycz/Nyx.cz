@@ -7,10 +7,25 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SideMenu.h"
+#import "LoginScreenVC.h"
+#import "CloseCoverView.h"
+#import "MainContentVC.h"
 
-@interface MainVC : UIViewController <UIGestureRecognizerDelegate>
+
+@interface MainVC : UIViewController <UIGestureRecognizerDelegate, CloseCoverViewDelegate, SideMenuDelegate>
 {
-    CGFloat _centerX;
+    CGPoint _viewCenter;
+    CGFloat _sideMenuMaxShift, _sideMenuBreakingPoint;
 }
+
+@property (nonatomic, strong) LoginScreenVC *loginScreen;
+@property (nonatomic, strong) MainContentVC *contentVc;
+@property (nonatomic, strong) SideMenu *sideMenu;
+@property (nonatomic, strong) CloseCoverView *closeCoverView;
+
+
+- (void)sideMenuClose;
+
 
 @end

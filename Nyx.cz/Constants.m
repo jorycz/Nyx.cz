@@ -35,5 +35,14 @@ NSString* const kApiMarket = @"market";
 NSString* const kApiPeople = @"people";
 NSString* const kApiPeopleStatus = @"status";
 
+// Menu constants
+NSString* const kMenuHome = @"Přehled";
+NSString* const kMenuMail = @"Pošta";
+NSString* const kMenuBookmarks = @"Sledované";
+NSString* const kMenuHistory = @"Historie";
+NSString* const kMenuPeople = @"Lidé";
+NSString* const kMenuNotifications = @"Upozornění";
+NSString* const kMenuSearchPosts = @"Hledání příspěvků";
+
 
 @end

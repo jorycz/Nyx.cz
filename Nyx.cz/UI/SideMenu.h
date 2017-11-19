@@ -7,12 +7,25 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Constants.h"
+#import "SideMenuTopSection.h"
+#import "SideMenuBottomSection.h"
+
+
+@protocol SideMenuDelegate
+- (void)sideMenuSelectedItem:(NSString *)kMenuKey;
+@end
+
 
 @interface SideMenu : UIView <UITableViewDataSource, UITableViewDelegate>
 
 
 @property (nonatomic, strong) UITableView *table;
 @property (nonatomic, strong) NSArray *menuEntries;
+@property (nonatomic, assign) CGFloat sideMenuMaxShift;
+@property (nonatomic, weak) id delegate;
 
+@property (nonatomic, strong) SideMenuTopSection *topSection;
+@property (nonatomic, strong) SideMenuBottomSection *bottomSection;
 
 @end

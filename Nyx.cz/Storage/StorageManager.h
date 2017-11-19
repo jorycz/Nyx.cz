@@ -10,4 +10,15 @@
 
 @interface StorageManager : NSObject
 
+
+@property (nonatomic, strong) NSFileManager *fileManager;
+
+@property (nonatomic, retain) NSString *cacheRoot;
+@property (nonatomic, retain) NSString *imageCacheRoot;
+
+
+- (BOOL)storeImage:(NSData *)image withName:(NSString *)name;
+- (NSData *)readImage:(NSString *)name;
+
+
 @end

@@ -15,7 +15,7 @@
 
 + (NSString *)username:(NSString *)value;
 + (NSString *)password:(NSString *)value;
-
++ (NSString *)lastUserPosition:(NSString *)value;
 
 
 @end

@@ -7,6 +7,7 @@
 //
 
 #import "MainVC.h"
+#import "Preferences.h"
 
 @interface MainVC ()
 
@@ -18,6 +19,7 @@
 {
     self = [super init];
     if (self) {
+        self.title = @"Nyx";
     }
     return self;
 }
@@ -33,36 +35,131 @@
 {
     [super viewDidLoad];
     
-    // Move left to access Side menu.
-    // https://supereasyapps.com/blog/2014/3/21/screen-edge-swipe-gesture-on-iphone-using-the-uiscreenedgepangesturerecognizer-tutorial
+    self.loginScreen = [[LoginScreenVC alloc] init];
+    
     UIScreenEdgePanGestureRecognizer *leftEdgeGesture = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(handleLeftEdgeGesture:)];
     leftEdgeGesture.edges = UIRectEdgeLeft;
     leftEdgeGesture.delegate = self;
     [self.view addGestureRecognizer:leftEdgeGesture];
+    
+    _sideMenuMaxShift = (long)[UIApplication sharedApplication].delegate.window.frame.size.width * 0.8;
+    _sideMenuBreakingPoint = (long)[UIApplication sharedApplication].delegate.window.frame.size.width * 0.2;
+    
+    self.contentVc = [[MainContentVC alloc] init];
+    [self addChildViewController:self.contentVc];
+    [self.view addSubview:self.contentVc.view];
+    [self.contentVc didMoveToParentViewController:self];
+    
+    self.sideMenu = [[SideMenu alloc] init];
+    self.sideMenu.delegate = self;
+    self.sideMenu.sideMenuMaxShift = _sideMenuMaxShift;
+    [self.view addSubview:self.sideMenu];
+    [self.view sendSubviewToBack:self.sideMenu];
 }
 
-- (void)handleLeftEdgeGesture:(UIScreenEdgePanGestureRecognizer *)gesture
+- (void)viewWillAppear:(BOOL)animated
 {
-    UIView *view = [self.view hitTest:[gesture locationInView:gesture.view] withEvent:nil];
-    if(UIGestureRecognizerStateBegan == gesture.state || UIGestureRecognizerStateChanged == gesture.state)
+    [super viewWillAppear:animated];
+    if (!self.loginScreen.userIsLoggedIn)
     {
-        CGPoint translation = [gesture translationInView:gesture.view];
-        self.view.center = CGPointMake(_centerX + translation.x, view.center.y);
-    } else { // cancel, fail, or ended
-        [UIView animateWithDuration:.3 animations:^{
-            self.view.center = CGPointMake(_centerX, view.center.y);
-        }];
+        [self presentViewController:self.loginScreen animated:NO completion:^{}];
     }
+}
+
+- (void)viewDidLayoutSubviews
+{
+    [super viewDidLayoutSubviews];
+    self.sideMenu.frame = self.view.bounds;
+    self.contentVc.view.frame = self.view.bounds;
+    _viewCenter = self.view.center;
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    _centerX = self.view.bounds.size.width / 2;
+    if (self.loginScreen.userIsLoggedIn) {
+        NSString *lastMenuKey = [Preferences lastUserPosition:nil];
+        if (!lastMenuKey) {
+            [self sideMenuOpen];
+        } else {
+            [self loadContentForMenuKey:lastMenuKey];
+        }
+    }
 }
 
-- (void)didReceiveMemoryWarning {
+- (void)didReceiveMemoryWarning
+{
     [super didReceiveMemoryWarning];
 }
+
+#pragma mark - SIDE MENU
+
+- (void)coverViewWouldLikeToCloseMenu
+{
+    [self sideMenuClose];
+}
+
+- (void)sideMenuOpen
+{
+    [UIView animateWithDuration:.3 animations:^{
+        self.contentVc.view.center = CGPointMake(_viewCenter.x + _sideMenuMaxShift, _viewCenter.y);
+    } completion:^(BOOL finished) {
+        self.closeCoverView = [[CloseCoverView alloc] init];
+        self.closeCoverView.delegate = self;
+        self.closeCoverView.frame = self.view.bounds;
+        [self.contentVc.view addSubview:self.closeCoverView];
+    }];
+}
+
+- (void)sideMenuClose
+{
+    [UIView animateWithDuration:.3 animations:^{
+        self.contentVc.view.center = CGPointMake(_viewCenter.x, _viewCenter.y);
+    } completion:^(BOOL finished) {
+        [self.closeCoverView removeFromSuperview];
+        self.closeCoverView = nil;
+    }];
+}
+
+- (void)handleLeftEdgeGesture:(UIScreenEdgePanGestureRecognizer *)gesture
+{
+    if (self.contentVc.view.center.x != (_viewCenter.x + _sideMenuMaxShift))
+    {
+        //    UIView *view = [self.view hitTest:[gesture locationInView:gesture.view] withEvent:nil];
+        CGPoint translation = [gesture translationInView:gesture.view];
+        if(UIGestureRecognizerStateBegan == gesture.state || UIGestureRecognizerStateChanged == gesture.state)
+        {
+            self.contentVc.view.center = CGPointMake(_viewCenter.x + translation.x, _viewCenter.y);
+        }
+        else
+        {   // cancel, fail, or ended
+            if (self.contentVc.view.center.x < (_viewCenter.x + _sideMenuBreakingPoint)) {
+                [self sideMenuClose];
+            } else {
+                [self sideMenuOpen];
+            }
+        }
+    }
+}
+
+#pragma mark - SIDE MENU DELEGATE
+
+- (void)sideMenuSelectedItem:(NSString *)kMenuKey
+{
+    [Preferences lastUserPosition:kMenuKey];
+    [self loadContentForMenuKey:kMenuKey];
+    // Fake cover view tapped - to have closing animation.
+    [self.closeCoverView viewTapped];
+}
+
+#pragma mark - MAIN CONTENT
+
+- (void)loadContentForMenuKey:(NSString *)menuKey
+{
+    self.title = menuKey;
+    [self.contentVc.menuKey setString:menuKey];
+    [self.contentVc loadContent];
+}
+
 
 @end

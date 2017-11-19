@@ -19,6 +19,7 @@
 @property (nonatomic, weak) id delegate;
 
 - (void)downloadDataForApiRequest:(NSString *)apiRequest;
+- (void)downloadDataFromURL:(NSString *)urlStr;
 
 
 @end

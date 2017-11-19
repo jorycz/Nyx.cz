@@ -19,6 +19,10 @@
     return self;
 }
 
+- (void)dealloc
+{
+}
+
 - (void)downloadDataForApiRequest:(NSString *)apiRequest
 {
     NSMutableURLRequest *mutableRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:kServerAPIURL]
@@ -27,6 +31,35 @@
     [mutableRequest setHTTPMethod:@"POST"];
     [mutableRequest setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
     [mutableRequest setHTTPBody:[apiRequest dataUsingEncoding:NSUTF8StringEncoding]];
+    NSURLSession *session = [NSURLSession sharedSession];
+    NSURLSessionDataTask *sessionDataTask = [session dataTaskWithRequest:mutableRequest
+                                                       completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error)
+                                             {
+                                                 if (error)
+                                                 {
+                                                     NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), [error localizedDescription]);
+                                                     [self downloadDidEndWithData:nil];
+                                                 }
+                                                 else
+                                                 {
+                                                     // **** DEBUG ****
+                                                     //            NSLog(@"= DEBUG: %@: Response length %lu", [self class], (unsigned long)[data length]);
+                                                     //            NSString *dataString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                                                     //            NSLog(@"= DEBUG: DATA [%@]", dataString);
+                                                     // **** DEBUG ****
+                                                     [self downloadDidEndWithData:data];
+                                                 }
+                                             }];
+    [sessionDataTask resume];
+}
+
+- (void)downloadDataFromURL:(NSString *)urlStr
+{
+    NSURL *url = [NSURL URLWithString:[urlStr stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
+    NSMutableURLRequest *mutableRequest = [NSMutableURLRequest requestWithURL:url
+                                                                  cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
+                                                              timeoutInterval:10];
+    [mutableRequest setHTTPMethod:@"GET"];
     NSURLSession *session = [NSURLSession sharedSession];
     NSURLSessionDataTask *sessionDataTask = [session dataTaskWithRequest:mutableRequest
                                                        completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error)

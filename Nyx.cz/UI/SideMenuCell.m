@@ -20,6 +20,7 @@
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])
     {
         self.backgroundColor = [UIColor grayColor];
+        self.textLabel.font = [UIFont boldSystemFontOfSize:18];
     }
     return self;
 }
