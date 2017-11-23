@@ -11,6 +11,7 @@
 
 #import "UserNotification.h"
 #import "MainVC.h"
+#import "MemCache.h"
 
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
@@ -18,10 +19,14 @@
 @property (strong, nonatomic) UIWindow *window;
 @property (nonatomic, strong) UserNotification *userNotification;
 @property (nonatomic, strong) MainVC *mainScreen;
+@property (nonatomic, strong) MemCache *memoryCache;
 
 @property (readonly, strong) NSPersistentContainer *persistentContainer;
 
+
 - (void)saveContext;
+
+- (MemCache *)getMemCache;
 
 
 @end

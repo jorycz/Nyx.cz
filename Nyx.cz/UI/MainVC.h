@@ -17,6 +17,8 @@
 {
     CGPoint _viewCenter;
     CGFloat _sideMenuMaxShift, _sideMenuBreakingPoint;
+    CGFloat _alphaMenuIncrement;
+    BOOL _firstShow;
 }
 
 @property (nonatomic, strong) LoginScreenVC *loginScreen;

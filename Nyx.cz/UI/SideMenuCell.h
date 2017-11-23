@@ -9,5 +9,16 @@
 #import <UIKit/UIKit.h>
 
 @interface SideMenuCell : UITableViewCell
+{
+    UILabel *_news;
+}
+
+
+@property (nonatomic, assign) NSInteger newPosts;
+
+
+- (void)updateMenuLabel:(NSString *)l;
+- (void)updateLabelColor;
+
 
 @end

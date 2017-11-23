@@ -18,6 +18,9 @@
 
 
 @interface SideMenu : UIView <UITableViewDataSource, UITableViewDelegate>
+{
+    UIView *_topBorder, *_bottomBorder;
+}
 
 
 @property (nonatomic, strong) UITableView *table;
@@ -27,5 +30,6 @@
 
 @property (nonatomic, strong) SideMenuTopSection *topSection;
 @property (nonatomic, strong) SideMenuBottomSection *bottomSection;
+
 
 @end

@@ -36,7 +36,7 @@
     [super viewDidLoad];
     
     _info = [[UITextField alloc] init];
-    _info.text = @"Není vybrána\nžádná sekce.";
+    _info.text = @"Není vybrána žádná sekce.";
     _info.userInteractionEnabled = NO;
     _info.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:_info];
@@ -58,9 +58,58 @@
     _info.frame = self.view.bounds;
 }
 
-- (void)loadContent
+- (void)loadContentWithNavigationController:(UINavigationController *)navController
 {
-    NSLog(@"%@ - %@ : selected [%@]", self, NSStringFromSelector(_cmd), self.menuKey);
+    [self.cFriendFeeds removeFromSuperview];
+    self.cFriendFeeds = nil;
+    [self.cMailBox removeFromSuperview];
+    self.cMailBox = nil;
+    [self.cBookmarks removeFromSuperview];
+    self.cBookmarks = nil;
+    [self.cHistory removeFromSuperview];
+    self.cHistory = nil;
+    [self.cPeople removeFromSuperview];
+    self.cPeople = nil;
+    [self.cNotifications removeFromSuperview];
+    self.cNotifications = nil;
+    [self.cSearch removeFromSuperview];
+    self.cSearch = nil;
+    
+    if ([self.menuKey isEqualToString:kMenuOverview]) {
+        self.cFriendFeeds = [[ContentFriendsFeed alloc] initWithFrame:self.view.bounds];
+        self.cFriendFeeds.nController = navController;
+        [self.view addSubview:self.cFriendFeeds];
+    }
+    if ([self.menuKey isEqualToString:kMenuMail]) {
+        self.cMailBox = [[ContentMailbox alloc] initWithFrame:self.view.bounds];
+        self.cMailBox.nController = navController;
+        [self.view addSubview:self.cMailBox];
+    }
+    if ([self.menuKey isEqualToString:kMenuBookmarks]) {
+        self.cBookmarks = [[ContentBookmarks alloc] initWithFrame:self.view.bounds];
+        self.cBookmarks.nController = navController;
+        [self.view addSubview:self.cBookmarks];
+    }
+    if ([self.menuKey isEqualToString:kMenuHistory]) {
+        self.cHistory = [[ContentHistory alloc] initWithFrame:self.view.bounds];
+        self.cHistory.nController = navController;
+        [self.view addSubview:self.cHistory];
+    }
+    if ([self.menuKey isEqualToString:kMenuPeople]) {
+        self.cPeople = [[ContentPeople alloc] initWithFrame:self.view.bounds];
+        self.cPeople.nController = navController;
+        [self.view addSubview:self.cPeople];
+    }
+    if ([self.menuKey isEqualToString:kMenuNotifications]) {
+        self.cNotifications = [[ContentNotification alloc] initWithFrame:self.view.bounds];
+        self.cNotifications.nController = navController;
+        [self.view addSubview:self.cNotifications];
+    }
+    if ([self.menuKey isEqualToString:kMenuSearchPosts]) {
+        self.cSearch = [[ContentSearch alloc] initWithFrame:self.view.bounds];
+        self.cSearch.nController = navController;
+        [self.view addSubview:self.cSearch];
+    }
 }
 
 @end

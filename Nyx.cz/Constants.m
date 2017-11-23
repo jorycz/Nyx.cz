@@ -14,12 +14,26 @@
 // CONSTANTS
 NSString *const kServerAPIURL = @"https://www.nyx.cz/api.php";
 NSInteger const kCacheMaxDays = 31;
+NSInteger const kLoadingCoverViewTag = 666;
+NSString* const kDisableTableSections = @"kDisableTableSections";
+NSInteger const kWidthForTableCellBodyTextViewSubstract = 65;
+
 NSString* const kNotificationShowError = @"kNotificationShowError";
+NSString* const kNotificationFriendsFeedChanged = @"kNotificationFriendsFeedChanged";
+NSString* const kNotificationMailboxChanged = @"kNotificationMailboxChanged";
+NSString* const kNotificationMailboxLoadFrom = @"kNotificationMailboxLoadFrom";
+NSString* const kNotificationMailboxNewMessageFor = @"kNotificationMailboxNewMessageFor";
+
+NSString* const kPeopleTableModeFeed = @"kPeopleTableModeFeed";
+NSString* const kPeopleTableModeFeedDetail = @"kPeopleTableModeFeedDetail";
+NSString* const kPeopleTableModeMailbox = @"kPeopleTableModeMailbox";
+NSString* const kPeopleTableModeMailboxDetail = @"kPeopleTableModeMailboxDetail";
 
 // API
 NSString* const kApiLoguser = @"loguser";
 NSString* const kApiLogpass = @"logpass";
 
+// API - first row is always l and all below are l2
 NSString* const kApiBookmarks = @"bookmarks";
 
 NSString* const kApiDiscussion = @"discussion";
@@ -27,22 +41,40 @@ NSString* const kApiDiscussion = @"discussion";
 NSString* const kApiEvents = @"events";
 
 NSString* const kApiFeed = @"feed";
+NSString* const kApiFeedFriends = @"friends";
+NSString* const kApiFeedEntry = @"entry";
+NSString* const kApiFeedSendComment = @"send_comment";
+NSString* const kApiFeedDeleteComment = @"delete_comment";
+NSString* const kApiFeedDeleteEntry = @"delete_entry";
+NSString* const kApiFeedSendPost = @"send";
 
 NSString* const kApiMail = @"mail";
+NSString* const kApiMailMessages = @"messages";
+NSString* const kApiMailMessageSend = @"send";
+NSString* const kApiMailDeleteMessage = @"delete";
+NSString* const kApiMailMessageSendWithAttachment = @"kApiMailMessageSendWithAttachment";
 
 NSString* const kApiMarket = @"market";
 
 NSString* const kApiPeople = @"people";
 NSString* const kApiPeopleStatus = @"status";
+NSString* const kApiPeopleAutocomplete = @"autocomplete";
 
 // Menu constants
-NSString* const kMenuHome = @"Přehled";
+NSString* const kMenuOverview = @"Přehled";
 NSString* const kMenuMail = @"Pošta";
 NSString* const kMenuBookmarks = @"Sledované";
 NSString* const kMenuHistory = @"Historie";
 NSString* const kMenuPeople = @"Lidé";
 NSString* const kMenuNotifications = @"Upozornění";
 NSString* const kMenuSearchPosts = @"Hledání příspěvků";
+
+// Main buttons - logout, contact, settings
+NSString* const kMainButtonNotification = @"kMainButtonNotification";
+NSString* const kMainButtonLogout = @"kMainButtonLogout";
+NSString* const kMainButtonContact = @"kMainButtonContact";
+NSString* const kMainButtonSettings = @"kMainButtonSettings";
+
 
 
 @end

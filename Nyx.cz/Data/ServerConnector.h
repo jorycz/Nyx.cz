@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @protocol ServerConnectorDelegate <NSObject>
-- (void)downloadFinishedWithData:(NSData *)data;
+- (void)downloadFinishedWithData:(NSData *)data withIdentification:(NSString *)identification;
 @end
 
 
@@ -17,8 +17,12 @@
 
 
 @property (nonatomic, weak) id delegate;
+@property (nonatomic, strong) NSString *identifitaion;
+
 
 - (void)downloadDataForApiRequest:(NSString *)apiRequest;
+- (void)downloadDataForApiRequestWithParameters:(NSDictionary *)params andAttachmentName:(NSString *)attachmentName;
+
 - (void)downloadDataFromURL:(NSString *)urlStr;
 
 

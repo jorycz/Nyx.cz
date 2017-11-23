@@ -8,6 +8,10 @@
 
 #import "ServerConnector.h"
 #import "Constants.h"
+#import "StorageManager.h"
+
+// mime
+#import <MobileCoreServices/MobileCoreServices.h>
 
 @implementation ServerConnector
 
@@ -25,6 +29,7 @@
 
 - (void)downloadDataForApiRequest:(NSString *)apiRequest
 {
+//    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), apiRequest);
     NSMutableURLRequest *mutableRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:kServerAPIURL]
                                                                   cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
                                                               timeoutInterval:10];
@@ -38,7 +43,7 @@
                                                  if (error)
                                                  {
                                                      NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), [error localizedDescription]);
-                                                     [self downloadDidEndWithData:nil];
+                                                     [self downloadDidEndWithData:nil forIdentification:self.identifitaion];
                                                  }
                                                  else
                                                  {
@@ -47,7 +52,106 @@
                                                      //            NSString *dataString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
                                                      //            NSLog(@"= DEBUG: DATA [%@]", dataString);
                                                      // **** DEBUG ****
-                                                     [self downloadDidEndWithData:data];
+                                                     [self downloadDidEndWithData:data forIdentification:self.identifitaion];
+                                                 }
+                                             }];
+    [sessionDataTask resume];
+}
+
+// POST DATA & BINARY https://stackoverflow.com/questions/24250475/post-multipart-form-data-with-objective-c
+
+- (NSString *)generateBoundaryString
+{
+    return [NSString stringWithFormat:@"Boundary-%@", [[NSUUID UUID] UUIDString]];
+}
+
+- (NSString *)mimeTypeForPath:(NSString *)path
+{
+    // get a mime type for an extension using MobileCoreServices.framework
+    
+    CFStringRef extension = (__bridge CFStringRef)[path pathExtension];
+    CFStringRef UTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, extension, NULL);
+    assert(UTI != NULL);
+    
+    NSString *mimetype = CFBridgingRelease(UTTypeCopyPreferredTagWithClass(UTI, kUTTagClassMIMEType));
+    assert(mimetype != NULL);
+    
+    CFRelease(UTI);
+    
+    return mimetype;
+}
+
+- (NSData *)createBodyWithBoundary:(NSString *)boundary
+                        parameters:(NSDictionary *)parameters
+                             paths:(NSArray *)paths
+                         fieldName:(NSString *)fieldName {
+    NSMutableData *httpBody = [NSMutableData data];
+    
+    // add params (all params are strings)
+    
+    [parameters enumerateKeysAndObjectsUsingBlock:^(NSString *parameterKey, NSString *parameterValue, BOOL *stop) {
+        [httpBody appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        [httpBody appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"\r\n\r\n", parameterKey] dataUsingEncoding:NSUTF8StringEncoding]];
+        [httpBody appendData:[[NSString stringWithFormat:@"%@\r\n", parameterValue] dataUsingEncoding:NSUTF8StringEncoding]];
+    }];
+    
+    // add image data
+    
+    for (NSString *path in paths) {
+        NSString *filename  = [path lastPathComponent];
+        NSData   *data      = [NSData dataWithContentsOfFile:path];
+        NSString *mimetype  = [self mimeTypeForPath:path];
+        
+//        NSLog(@"PATH %@", path);
+//        NSLog(@"FILENAME %@", filename);
+//        NSLog(@"MIMETYPE %@", mimetype);
+        
+        [httpBody appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        [httpBody appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\n", fieldName, filename] dataUsingEncoding:NSUTF8StringEncoding]];
+        [httpBody appendData:[[NSString stringWithFormat:@"Content-Type: %@\r\n\r\n", mimetype] dataUsingEncoding:NSUTF8StringEncoding]];
+        [httpBody appendData:data];
+        [httpBody appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+    }
+    
+    [httpBody appendData:[[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+    
+    return httpBody;
+}
+
+- (void)downloadDataForApiRequestWithParameters:(NSDictionary *)params andAttachmentName:(NSString *)attachmentName
+{
+    NSMutableURLRequest *mutableRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:kServerAPIURL]
+                                                                  cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
+                                                              timeoutInterval:10];
+    [mutableRequest setHTTPMethod:@"POST"];
+ 
+    NSString *boundary = [self generateBoundaryString];
+    NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary];
+    [mutableRequest setValue:contentType forHTTPHeaderField: @"Content-Type"];
+    
+    StorageManager *sm = [[StorageManager alloc] init];
+//    NSString *path = [[NSBundle mainBundle] pathForResource:@"logo" ofType:@"png"];
+    NSString *path = [NSString stringWithFormat:@"%@/%@", sm.imageCacheRoot, attachmentName];
+    NSData *httpBody = [self createBodyWithBoundary:boundary parameters:params paths:@[path] fieldName:@"attachment"];
+    [mutableRequest setHTTPBody:httpBody];
+    
+    NSURLSession *session = [NSURLSession sharedSession];
+    NSURLSessionDataTask *sessionDataTask = [session dataTaskWithRequest:mutableRequest
+                                                       completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error)
+                                             {
+                                                 if (error)
+                                                 {
+                                                     NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), [error localizedDescription]);
+                                                     [self downloadDidEndWithData:nil forIdentification:self.identifitaion];
+                                                 }
+                                                 else
+                                                 {
+                                                     // **** DEBUG ****
+                                                     //            NSLog(@"= DEBUG: %@: Response length %lu", [self class], (unsigned long)[data length]);
+                                                     //            NSString *dataString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                                                     //            NSLog(@"= DEBUG: DATA [%@]", dataString);
+                                                     // **** DEBUG ****
+                                                     [self downloadDidEndWithData:data forIdentification:self.identifitaion];
                                                  }
                                              }];
     [sessionDataTask resume];
@@ -67,7 +171,7 @@
                                                  if (error)
                                                  {
                                                      NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), [error localizedDescription]);
-                                                     [self downloadDidEndWithData:nil];
+                                                     [self downloadDidEndWithData:nil forIdentification:self.identifitaion];
                                                  }
                                                  else
                                                  {
@@ -76,17 +180,17 @@
                                                      //            NSString *dataString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
                                                      //            NSLog(@"= DEBUG: DATA [%@]", dataString);
                                                      // **** DEBUG ****
-                                                     [self downloadDidEndWithData:data];
+                                                     [self downloadDidEndWithData:data forIdentification:self.identifitaion];
                                                  }
                                              }];
     [sessionDataTask resume];
 }
 
-- (void)downloadDidEndWithData:(NSData *)data
+- (void)downloadDidEndWithData:(NSData *)data forIdentification:(NSString *)identification
 {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(downloadFinishedWithData:)])
+    if (self.delegate && [self.delegate respondsToSelector:@selector(downloadFinishedWithData:withIdentification:)])
     {
-        [self.delegate performSelector:@selector(downloadFinishedWithData:) withObject:data];
+        [self.delegate performSelector:@selector(downloadFinishedWithData:withIdentification:) withObject:data withObject:self.identifitaion];
     }
 }
 

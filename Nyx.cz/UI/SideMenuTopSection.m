@@ -57,14 +57,15 @@
 {
     [super didMoveToWindow];
     !_userAvatarView.image ? [self getAvatar] : NULL ;
-    [_userName.text length] < 1 ? _userName.text = [[Preferences username:nil] uppercaseString] : NULL ;
+    [_userName.text length] < 1 ? _userName.text = [[Preferences auth_nick:nil] uppercaseString] : NULL ;
 }
 
 - (void)getAvatar
 {
+    NSString *avName = [[Preferences auth_nick:nil] uppercaseString];
     self.cache = [[CacheManager alloc] init];
     self.cache.delegate = self;
-    [self.cache getAvatar];
+    [self.cache getAvatarForNick:avName];
 }
 
 - (void)cacheComplete:(NSData *)cache

@@ -14,6 +14,9 @@
 {
     UIImageView *_logoView;
     NSInteger _baseX, _baseY, _fWidth, _fHeight;
+    BOOL _firstShow;
+    
+    NSMutableString *_auth_code;
 }
 
 @property (nonatomic, strong) UIActivityIndicatorView *spinner;

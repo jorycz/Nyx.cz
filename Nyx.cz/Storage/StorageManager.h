@@ -20,5 +20,7 @@
 - (BOOL)storeImage:(NSData *)image withName:(NSString *)name;
 - (NSData *)readImage:(NSString *)name;
 
+- (void)copyFileFromUrl:(NSURL *)from toCacheName:(NSString *)cacheName;
+
 
 @end

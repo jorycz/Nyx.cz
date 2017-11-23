@@ -8,6 +8,7 @@
 
 #import "SideMenuBottomSection.h"
 #import "Preferences.h"
+#import "Constants.h"
 
 
 @implementation SideMenuBottomSection
@@ -59,18 +60,17 @@
 
 - (void)openSettings
 {
-    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"");
+    NOTIFICATION_MAIN_BUTTON_PRESSED(kMainButtonSettings)
 }
 
 - (void)openContact
 {
-    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"");
+    NOTIFICATION_MAIN_BUTTON_PRESSED(kMainButtonContact)
 }
 
 - (void)openLogout
 {
-    [Preferences resetPreferences];
-    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"!!!! PREFERENCES RESET !!!!");
+    NOTIFICATION_MAIN_BUTTON_PRESSED(kMainButtonLogout)
 }
 
 @end

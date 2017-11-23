@@ -30,6 +30,8 @@
     self = [super init];
     if (self) {
         self.userIsLoggedIn = NO;
+        _firstShow = YES;
+        _auth_code = [[NSMutableString alloc] initWithCapacity:128];
     }
     return self;
 }
@@ -49,17 +51,24 @@
     [super didReceiveMemoryWarning];
 }
 
+- (void)viewWillLayoutSubviews
+{
+    [super viewWillLayoutSubviews];
+    // Logout & relogin mess logo position.
+    if (_firstShow) {
+        _firstShow = NO;
+        CGRect _mainFrame = self.view.frame;
+        _baseX = _mainFrame.size.width / 4;
+        _baseY = _mainFrame.size.height / 14;
+        _fWidth = _mainFrame.size.width / 2;
+        _fHeight = 190;
+        _logoView.frame = CGRectMake(_baseX, 248, _fWidth, _fHeight);
+    }
+}
+
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    
-    CGRect _mainFrame = self.view.frame;
-    _baseX = _mainFrame.size.width / 4;
-    _baseY = _mainFrame.size.height / 14;
-    _fWidth = _mainFrame.size.width / 2;
-    _fHeight = 190;
-    _logoView.frame = CGRectMake(_baseX, 248, _fWidth, _fHeight);
-    
     [UIView animateWithDuration:0.5 animations:^{
         _logoView.frame = CGRectMake(_baseX, _baseY, _fWidth, _fHeight);
     } completion:^(BOOL finished) {
@@ -67,65 +76,56 @@
     }];
 }
 
+#pragma mark - LOGIN & AUTHORIZATION
+
 - (void)tryToLogIn
 {
-    NSString *username = [Preferences username:nil];
-    NSString *password = [Preferences password:nil];
-    if ([username length] > 0 && [password length] > 0) {
+    NSString *user = [Preferences auth_nick:nil];
+    NSString *token = [Preferences auth_token:nil];
+    if ([user length] > 0 && [token length] > 0) {
         [self showHideSpinner];
-        [self loginWithUsername:username andPassword:password];
+        [self authorizeWithLoginName:user];
     } else {
-        [self showLoginAlert];
+        [self askForUsername];
     }
 }
 
-- (void)showLoginAlert
+- (void)askForUsername
 {
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Login"
-                                                                   message:@"Zadej uživatelské jméno a heslo."
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Autorizace"
+                                                                   message:@"Zadej uživatelské jméno."
                                                             preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *login = [UIAlertAction actionWithTitle:@"Login" style:UIAlertActionStyleDefault
+    UIAlertAction *login = [UIAlertAction actionWithTitle:@"Získat autorizační kód" style:UIAlertActionStyleDefault
                                                handler:^(UIAlertAction * action) {
                                                    [self showHideSpinner];
-                                                   NSString *u = [[alert.textFields objectAtIndex:0] text];
-                                                   NSString *p = [[alert.textFields objectAtIndex:1] text];
-                                                   [self loginWithUsername:u andPassword:p];
+                                                   NSString *user = [[alert.textFields objectAtIndex:0] text];
+                                                   [Preferences auth_nick:user];
+                                                   [self authorizeWithLoginName:user];
                                                }];
     [alert addAction:login];
-    
     [alert addTextFieldWithConfigurationHandler:^(UITextField *textField) {
         textField.placeholder = @"Jméno";
     }];
-    [alert addTextFieldWithConfigurationHandler:^(UITextField *textField) {
-        textField.placeholder = @"Heslo";
-        textField.secureTextEntry = YES;
-    }];
-    
-    [self presentViewController:alert animated:YES completion:^{
-    }];
+    [self presentViewController:alert animated:YES completion:^{}];
 }
 
-- (void)loginWithUsername:(NSString *)u andPassword:(NSString *)p
+- (void)authorizeWithLoginName:(NSString *)auth_user
 {
-    if ([u length] < 1 || [p length] < 1) {
-        [self presentErrorWithTitle:@"Špatné přihlašovací údaje" andMessage:@"Uživatelské jméno ani heslo nesmí být prázdné."];
+    if ([auth_user length] < 1) {
+        [self presentErrorWithTitle:@"Chyba" andMessage:@"Uživatelské jméno nesmí být prázdné."];
         return;
     }
-    NSString *apiRequest = [ApiBuilder apiLoginTestForUser:u andPassword:p];
-    [Preferences username:u];
-    [Preferences password:p];
-//    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), apiRequest);
     self.sc = [[ServerConnector alloc] init];
     self.sc.delegate = self;
-    [self.sc downloadDataForApiRequest:apiRequest];
+    NSString *api = [ApiBuilder apiAuthorizeForUser:auth_user];
+    [self.sc downloadDataForApiRequest:api];
 }
 
-- (void)downloadFinishedWithData:(NSData *)data
+- (void)downloadFinishedWithData:(NSData *)data withIdentification:(NSString *)identification
 {
     if (!data)
     {
         [self presentErrorWithTitle:@"Žádná data" andMessage:@"Nelze se připojit na server."];
-        NSLog(@"%@ - %@ : ERROR [%@]", self, NSStringFromSelector(_cmd), @"data is nil!");
     }
     else
     {
@@ -141,14 +141,81 @@
 //            NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), jp.jsonDictionary);
             if ([[jp.jsonDictionary objectForKey:@"result"] isEqualToString:@"error"])
             {
-                [self presentErrorWithTitle:@"Špatné přihlašovací údaje" andMessage:[jp.jsonDictionary objectForKey:@"error"]];
+                if ([[jp.jsonDictionary objectForKey:@"code"] isEqualToString:@"401"]) {
+                    // App is not authorized.
+                    if ([[jp.jsonDictionary objectForKey:@"auth_state"] isEqualToString:@"AUTH_EXISTING"]) {
+                        // Tell user that they need to cancel authorization on web.
+                        [self authorizationExistCancelExistingFirst];
+                    } else {
+                        [Preferences auth_token:[jp.jsonDictionary objectForKey:@"auth_token"]];
+                        [_auth_code setString:[jp.jsonDictionary objectForKey:@"auth_code"]];
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self showActivationOrChangeNickAlert];
+                        });
+                    }
+                } else {
+                    [self presentErrorWithTitle:@"Chyba ze serveru:" andMessage:[jp.jsonDictionary objectForKey:@"error"]];
+                }
             }
             else
             {
+//                NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), jp.jsonDictionary);
                 [self presentNyxScreen];
             }
         }
     }
+}
+
+- (void)showActivationOrChangeNickAlert
+{
+    UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+    pasteboard.string = _auth_code;
+    NSURL *authUrl = [NSURL URLWithString:@"https://www.nyx.cz/index.php?l=user;l2=2;section=authorizations"];
+    NSString *message = [NSString stringWithFormat:@"Zadejte autorizační kód %@ do svého účtu na www.nyx.cz do sekce OSOBNÍ / NASTAVENÍ / AUTORIZACE.\n\nTento kód je nyní uložen ve schránce a stačí jej vložit do nastavení a následně uložit nastavení na webu po přihlášení na NYX do příslušné sekce, která se otevře v prohlížeči po kliknutí na tlačítko Přihlásit na Nyx.", _auth_code];
+    
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Autorizační kód"
+                                                                   message:message
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *login = [UIAlertAction actionWithTitle:@"Přihlásit na Nyx"
+                                                    style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                                                        [[UIApplication sharedApplication] openURL:authUrl options:@{} completionHandler:^(BOOL success) {
+                                                            [[NSNotificationCenter defaultCenter] addObserver:self
+                                                                                                     selector:@selector(returnOfTheJedi)
+                                                                                                         name:UIApplicationDidBecomeActiveNotification
+                                                                                                       object:nil];
+                                                        }];
+                                                    }];
+    UIAlertAction *startAgain = [UIAlertAction actionWithTitle:@"Smazat Nick a začít znova"
+                                                         style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+                                                             [Preferences auth_nick:@""];
+                                                             [Preferences auth_token:@""];
+                                                             [self tryToLogIn];
+                                                         }];
+    [alert addAction:login];
+    [alert addAction:startAgain];
+    [self presentViewController:alert animated:YES completion:^{}];
+}
+
+- (void)returnOfTheJedi
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [self tryToLogIn];
+}
+
+- (void)authorizationExistCancelExistingFirst
+{
+    NSString *message = @"Existující autorizace pro toto zařízení a aplikaci již existuje. Pro vytvoření nové autorizace je nejdříve potřeba starou smazat z webu www.nyx.cz sekce OSOBNÍ / NASTAVENÍ / AUTORIZACE.";
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Nalezena existující autorizace!"
+                                                                   message:message
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *startAgain = [UIAlertAction actionWithTitle:@"Začít znova"
+                                                         style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+                                                             [Preferences auth_nick:@""];
+                                                             [Preferences auth_token:@""];
+                                                             [self tryToLogIn];
+                                                         }];
+    [alert addAction:startAgain];
+    [self presentViewController:alert animated:YES completion:^{}];
 }
 
 #pragma mark - RESULT
@@ -158,7 +225,7 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [self showHideSpinner];
         PRESENT_ERROR(title, message)
-        [self showLoginAlert];
+        [self askForUsername];
     });
 }
 
@@ -169,10 +236,6 @@
         [self showHideSpinner];
         [self dismissViewControllerAnimated:YES completion:^{
         }];
-//        self.mainScreen = [[MainVC alloc] init];
-//        UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:self.mainScreen];
-//        [self presentViewController:nc animated:YES completion:^{
-//        }];
     });
 }
 

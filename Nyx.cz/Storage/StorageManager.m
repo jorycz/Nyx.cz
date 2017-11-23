@@ -19,7 +19,7 @@
         
         self.imageCacheRoot = [NSString stringWithFormat:@"%@/imageCacheRoot", self.cacheRoot];
         
-        NSLog(@"%@ - %@ CACHE : [%@]", self, NSStringFromSelector(_cmd), self.cacheRoot);
+//        NSLog(@"%@ - %@ CACHE : [%@]", self, NSStringFromSelector(_cmd), self.cacheRoot);
         
         self.fileManager = [NSFileManager defaultManager];
         
@@ -49,6 +49,7 @@
 - (BOOL)storeImage:(NSData *)image withName:(NSString *)name
 {
     NSString *documentPath = [NSString stringWithFormat:@"%@/%@", self.imageCacheRoot, name];
+    [self.fileManager removeItemAtPath:documentPath error:nil];
     NSError *error = nil;
     [image writeToFile:documentPath options:NSDataWritingAtomic error:&error];
     if (!error)
@@ -74,5 +75,15 @@
     }
 }
 
+- (void)copyFileFromUrl:(NSURL *)from toCacheName:(NSString *)cacheName
+{
+    NSError *error = nil;
+    NSURL *destination = [NSURL URLWithString:[NSString stringWithFormat:@"file://%@/%@", self.imageCacheRoot, cacheName]];
+    [self.fileManager removeItemAtURL:destination error:nil];
+    [self.fileManager copyItemAtURL:from toURL:destination error:&error];
+    if (error) {
+        NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), error);
+    }
+}
 
 @end

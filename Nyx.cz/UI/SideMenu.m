@@ -9,6 +9,7 @@
 #import "SideMenu.h"
 #import "SideMenuCell.h"
 
+
 @implementation SideMenu
 
 - (instancetype)initWithFrame:(CGRect)frame
@@ -16,13 +17,13 @@
     self = [super initWithFrame:frame];
     if (self)
     {
-        self.backgroundColor = UIColorFromRGB(0xBAE0FF);
-        self.menuEntries = @[kMenuHome, kMenuMail, kMenuBookmarks, kMenuHistory, kMenuPeople, kMenuNotifications, kMenuSearchPosts];
+        self.backgroundColor = [UIColor whiteColor];
+        self.menuEntries = @[kMenuOverview, kMenuMail, kMenuBookmarks, kMenuHistory, kMenuPeople, kMenuNotifications, kMenuSearchPosts];
         
         self.table = [[UITableView alloc] init];
         [self.table setDelegate:self];
         [self.table setDataSource:self];
-        [self.table setBackgroundColor:[UIColor lightGrayColor]];
+        [self.table setBackgroundColor:[UIColor clearColor]];
         [self.table setSeparatorStyle:UITableViewCellSeparatorStyleNone];
         [self.table setRowHeight:40];
         [self addSubview:self.table];
@@ -32,6 +33,15 @@
         
         self.bottomSection = [[SideMenuBottomSection alloc] init];
         [self addSubview:self.bottomSection];
+        
+        _topBorder = [[UIView alloc] init];
+        _topBorder.backgroundColor = [UIColor lightGrayColor];
+        _topBorder.alpha = .3;
+        _bottomBorder = [[UIView alloc] init];
+        _bottomBorder.backgroundColor = [UIColor lightGrayColor];
+        _bottomBorder.alpha = .3;
+        [self addSubview:_topBorder];
+        [self addSubview:_bottomBorder];
     }
     return self;
 }
@@ -43,10 +53,14 @@
     CGRect f = self.frame;
     CGFloat yPosTable = f.size.height * 0.25;
     CGFloat heightTable = f.size.height * 0.58;
-    self.table.frame = CGRectMake(0, yPosTable, self.sideMenuMaxShift, heightTable);
+    NSInteger fuckingIos11UIKitBugConstantForIphone8Plus = 50;
+    self.table.frame = CGRectMake(0, yPosTable, self.sideMenuMaxShift + fuckingIos11UIKitBugConstantForIphone8Plus, heightTable);
     
     self.topSection.frame = CGRectMake(0, 66, self.sideMenuMaxShift, yPosTable - 67);
     self.bottomSection.frame = CGRectMake(0, yPosTable + heightTable + 1, self.sideMenuMaxShift, f.size.height - yPosTable - heightTable - 2);
+    
+    _topBorder.frame = CGRectMake(5, yPosTable - 2, self.sideMenuMaxShift - 10, 1);
+    _bottomBorder.frame = CGRectMake(5, yPosTable + heightTable + 2, self.sideMenuMaxShift - 10, 1);
 }
 
 #pragma mark - TABLE
@@ -70,7 +84,8 @@
         cell = [[SideMenuCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdForReuse];
     }
     cell.tag = (int)indexPath.row;
-    cell.textLabel.text = [self.menuEntries objectAtIndex:indexPath.row];
+    [cell updateMenuLabel:[self.menuEntries objectAtIndex:indexPath.row]];
+    cell.newPosts = (int)indexPath.row;
     return cell;
 }
 
@@ -78,18 +93,15 @@
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     [self.delegate sideMenuSelectedItem:[self.menuEntries objectAtIndex:indexPath.row]];
-    
-//    NSString *selectedBranch = [NSString stringWithFormat:@"%@", [[self.branches objectAtIndex:indexPath.row] objectForKey:@"id"]];
-//    [SBUserDefaults saveBranch:selectedBranch];
-//    NSString *selectedBranchName = [NSString stringWithFormat:@"%@", [[self.branches objectAtIndex:indexPath.row] objectForKey:@"name"]];
-//    [SBUserDefaults saveBranchName:selectedBranchName];
-//
-//    // Close detail text view for cells when some cell is selected - final state.
-//    _shouldExtend = NO;
-//    [self reloadRowsFromCellOnIndex:-1];
-//
-//    POST_NOTIFICATION_BRUNCH_MENU_DONE
+    [self reloadCellsConfiguration];
 }
 
+- (void)reloadCellsConfiguration
+{
+    NSArray *cells = [self.table visibleCells];
+    for (SideMenuCell *c in cells) {
+        [c updateLabelColor];
+    }
+}
 
 @end

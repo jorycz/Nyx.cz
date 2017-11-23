@@ -29,7 +29,7 @@
 @property (nonatomic, strong) id delegate;
 
 
-- (void)getAvatar;
+- (void)getAvatarForNick:(NSString *)nick;
 
 
 @end

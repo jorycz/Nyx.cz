@@ -20,6 +20,7 @@
 {
     self.mainScreen = [[MainVC alloc] init];
     UINavigationController *mainNavigationController = [[UINavigationController alloc] initWithRootViewController:self.mainScreen];
+    mainNavigationController.navigationBar.tintColor = COLOR_SYSTEM_TURQUOISE;
     
     [self initNotificationTopBar];
     
@@ -116,5 +117,16 @@
     self.userNotification = un;
 }
 
+#pragma mark - MEMORY CACHE
+
+- (MemCache *)getMemCache
+{
+    if (!self.memoryCache) {
+        self.memoryCache = [[MemCache alloc] init];
+    }
+    return self.memoryCache;
+}
 
 @end
+
+
