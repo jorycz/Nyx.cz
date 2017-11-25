@@ -20,10 +20,11 @@
     {
         NSData *textData = [text dataUsingEncoding:(NSUTF8StringEncoding)];
         
-        BOOL _useApple = YES;
+        BOOL _useAppleHTMLParsing = YES;
         
-        if (_useApple) {
-            PERFSTART
+        if (_useAppleHTMLParsing)
+        {
+//            PERFSTART
             // HACK !!!
             // that magical 10 si 2 * textView.textContainer.lineFragmentPadding
             // read more https://stackoverflow.com/questions/13621084/boundingrectwithsize-for-nsattributedstring-returning-wrong-size
@@ -37,26 +38,11 @@
             if (error) {
                 NSLog(@"%@ - %@ ERROR : [%@]", self, NSStringFromSelector(_cmd), [error localizedDescription]);
             }
-            PERFSTOP
+//            PERFSTOP
         }
         else
         {
-//            PERFSTART
-//            NSAttributedString *originalAttrStr = [[NSAttributedString alloc] initWithHTMLData:textData
-//                                                                               options:@{NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding)}
-//                                                                    documentAttributes:nil];
-//            self.attributedText = [[NSMutableAttributedString alloc] initWithAttributedString:originalAttrStr];
-//            [attrStr enumerateAttributesInRange:NSMakeRange(0, [attrStr length]) options:NSAttributedStringEnumerationReverse usingBlock:
-//             ^(NSDictionary *attributes, NSRange range, BOOL *stop) {
-//                 if ([attributes valueForKey:@"DTGUID"] != nil) {
-//                     // We need to remove this attribute or links are not colored right
-//                     //
-//                     // @see https://github.com/Cocoanetics/DTCoreText/issues/792
-//                     
-//                     [attrStr removeAttribute:@"CTForegroundColorFromContext" range:range];
-//                 }
-//             }];
-//            PERFSTOP
+            
         }
         
         // Count size

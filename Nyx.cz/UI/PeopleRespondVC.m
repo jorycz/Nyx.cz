@@ -164,7 +164,6 @@
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         LoadingView *lv = [[LoadingView alloc] initWithFrame:self.view.bounds];
-        lv.tag = kLoadingCoverViewTag;
         [self.view addSubview:lv];
     });
 }

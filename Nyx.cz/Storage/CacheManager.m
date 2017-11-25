@@ -68,7 +68,6 @@
     {
         NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"Can't read avatar because no Username stored yet!");
         NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), nick);
-        NSLog(@"%@", [NSThread callStackSymbols]);
         [self downloadFinishedWithData:nil withIdentification:nil];
     }
         

@@ -85,12 +85,16 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return [self.nyxSections count];
+    if (self.nyxSections)
+        return [self.nyxSections count];
+    return 0;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [[self.nyxRowsForSections objectAtIndex:section] count];
+    if (self.nyxRowsForSections && [self.nyxRowsForSections count] > 0)
+        return [[self.nyxRowsForSections objectAtIndex:section] count];
+    return 0;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath

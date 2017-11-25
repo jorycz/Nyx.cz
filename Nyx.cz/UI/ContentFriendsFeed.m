@@ -77,7 +77,6 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.nController.topViewController.navigationItem.rightBarButtonItem setEnabled:NO];
         LoadingView *lv = [[LoadingView alloc] initWithFrame:self.bounds];
-        lv.tag = kLoadingCoverViewTag;
         [self addSubview:lv];
     });
 }

@@ -10,6 +10,8 @@
 #import "Constants.h"
 #import "Preferences.h"
 
+#import "StorageManager.h"
+
 
 @interface SettingsVC ()
 
@@ -21,8 +23,8 @@
 {
     self = [super init];
     if (self) {
-        self.menuEntries = @[@"Spočítat velikost cache", @"Počáteční lokace", @"Smazat nastavení", @"Smazat nastavení včetně loginu!"];
-        self.menuSubtitles = @[@"Spočítá a případně umožní vymazat obsah mezipaměti.", @"", @"Smaže veškeré nastavení kromě loginu.", @"Smaže veškeré nastavení včetně loginu, cache, atd."];
+        self.menuEntries = @[@"Spočítat velikost cache", @"Počáteční lokace", @"Smazat nastavení"];
+        self.menuSubtitles = @[@"Spočítá a případně umožní vymazat obsah mezipaměti.", @"", @"Smaže veškeré nastavení kromě autorizace."];
     }
     return self;
 }
@@ -38,7 +40,7 @@
 {
     [super viewDidLoad];
     
-    UIBarButtonItem *dismissButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+    UIBarButtonItem *dismissButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop
                                                                                    target:self
                                                                                    action:@selector(dismissSettings)];
     self.navigationItem.rightBarButtonItem = dismissButton;
@@ -51,6 +53,7 @@
     [self.table setBackgroundColor:[UIColor clearColor]];
     [self.table setSeparatorStyle:UITableViewCellSeparatorStyleSingleLine];
     [self.table setRowHeight:80];
+    self.table.scrollEnabled = NO;
     [self.view addSubview:self.table];
 }
 
@@ -104,11 +107,11 @@
     
     NSString *subtitle = [self.menuSubtitles objectAtIndex:indexPath.row];
     [subtitle length] > 0 ? cell.detailTextLabel.text = subtitle : NULL ;
+    
     if (indexPath.row == 1) {
         NSString *startingLocation = [Preferences preferredStartingLocation:nil];
-        NSString *missingLocation = [NSString stringWithFormat:@"Zatím neurčena. Poslední navštívená: %@", [Preferences lastUserPosition:nil]];
-        startingLocation ? [cell.detailTextLabel setText:startingLocation] : [cell.detailTextLabel setText:missingLocation];
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        NSString *missingLocation = [NSString stringWithFormat:@"Neurčena. Poslední navštívená: %@", [Preferences lastUserPosition:nil]];
+        (startingLocation && [startingLocation length] > 0) ? [cell.detailTextLabel setText:startingLocation] : [cell.detailTextLabel setText:missingLocation];
     }
     
     return cell;
@@ -127,10 +130,6 @@
         case 2:
             [self deleteSettings];
             break;
-        case 3:
-            [self deleteAllData];
-            break;
-            
         default:
             break;
     }
@@ -150,24 +149,94 @@
 
 - (void)countCache
 {
-    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"");
+    StorageManager *sm = [[StorageManager alloc] init];
+    NSDictionary *d = [sm countCache];
+    NSUInteger files = [[d objectForKey:@"files"] integerValue];
+    NSUInteger size = [[d objectForKey:@"size"] integerValue];
+    NSString *m = [NSString stringWithFormat:@"Využito %li MB (Počet souborů %li).", (long)size, (long)files];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Velikost cache"
+                                                                   message:m
+                                                            preferredStyle:(UIAlertControllerStyleAlert)];
+    UIAlertAction *ok = [UIAlertAction actionWithTitle:@"OK"
+                                                 style:(UIAlertActionStyleDefault)
+                                               handler:^(UIAlertAction * _Nonnull action) {}];
+    UIAlertAction *delete = [UIAlertAction actionWithTitle:@"Empty Cache"
+                                                     style:(UIAlertActionStyleDestructive)
+                                                   handler:^(UIAlertAction * _Nonnull action) {
+        [sm emptyCache];
+    }];
+    [alert addAction:delete];
+    [alert addAction:ok];
+    [self presentViewController:alert animated:YES completion:^{}];
 }
 
 - (void)chooseStartingLocation
 {
-    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"");
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Vyber oblíbenou startovní lokaci"
+                                                                   message:@"Pokud aplikaci déle nepoužiješ a systém ji ukončí, tato lokace se při příštím spuštění načte jako první."
+                                                            preferredStyle:(UIAlertControllerStyleActionSheet)];
+    UIAlertAction *kMenuOverviewLoc = [UIAlertAction actionWithTitle:kMenuOverview style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+        [Preferences preferredStartingLocation:kMenuOverview];
+        [self.table reloadData];
+    }];
+    UIAlertAction *kMenuMailLoc = [UIAlertAction actionWithTitle:kMenuMail style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+        [Preferences preferredStartingLocation:kMenuMail];
+        [self.table reloadData];
+    }];
+    UIAlertAction *kMenuBookmarksLoc = [UIAlertAction actionWithTitle:kMenuBookmarks style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+        [Preferences preferredStartingLocation:kMenuBookmarks];
+        [self.table reloadData];
+    }];
+    UIAlertAction *kMenuHistoryLoc = [UIAlertAction actionWithTitle:kMenuHistory style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+        [Preferences preferredStartingLocation:kMenuHistory];
+        [self.table reloadData];
+    }];
+    UIAlertAction *kMenuPeopleLoc = [UIAlertAction actionWithTitle:kMenuPeople style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+        [Preferences preferredStartingLocation:kMenuPeople];
+        [self.table reloadData];
+    }];
+    UIAlertAction *kMenuNotificationsLoc = [UIAlertAction actionWithTitle:kMenuNotifications style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+        [Preferences preferredStartingLocation:kMenuNotifications];
+        [self.table reloadData];
+    }];
+    UIAlertAction *kMenuSearchPostsLoc = [UIAlertAction actionWithTitle:kMenuSearchPosts style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+        [Preferences preferredStartingLocation:kMenuSearchPosts];
+        [self.table reloadData];
+    }];
+    UIAlertAction *deletePreferredLocation = [UIAlertAction actionWithTitle:@"Smazat preferovanou lokaci" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+        [Preferences preferredStartingLocation:@""];
+        [self.table reloadData];
+    }];
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Zrušit" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+    }];
+    [alert addAction:kMenuOverviewLoc];
+    [alert addAction:kMenuMailLoc];
+    [alert addAction:kMenuBookmarksLoc];
+    [alert addAction:kMenuHistoryLoc];
+    [alert addAction:kMenuPeopleLoc];
+    [alert addAction:kMenuNotificationsLoc];
+    [alert addAction:kMenuSearchPostsLoc];
+    [alert addAction:deletePreferredLocation];
+    [alert addAction:cancel];
+    [self presentViewController:alert animated:YES completion:^{
+    }];
 }
 
 - (void)deleteSettings
 {
-    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"");
-}
-
-- (void)deleteAllData
-{
-    [self deleteSettings];
-    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"");
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Smazat veškeré nastavení?"
+                                                                   message:@"Opravdu chceš smazat veškeré nastavení?\nTuto operaci nelze vzít zpět!"
+                                                            preferredStyle:(UIAlertControllerStyleAlert)];
+    UIAlertAction *delete = [UIAlertAction actionWithTitle:@"Smazat!" style:(UIAlertActionStyleDestructive) handler:^(UIAlertAction * _Nonnull action) {
+        
+    }];
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Zrušit" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {}];
+    [alert addAction:delete];
+    [alert addAction:cancel];
+    [self presentViewController:alert animated:YES completion:^{}];
 }
 
 
 @end
+
+

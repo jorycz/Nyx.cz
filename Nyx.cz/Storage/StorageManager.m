@@ -86,4 +86,46 @@
     }
 }
 
+#pragma mark - COUNT CACHE
+
+- (NSDictionary *)countCache
+{
+    NSDirectoryEnumerator *dirEnum = [self.fileManager enumeratorAtPath:self.imageCacheRoot];
+    NSString *file;
+    NSUInteger filesSize = 0;
+    NSUInteger filesCount = 0;
+    while (file = [dirEnum nextObject])
+    {
+        NSDictionary *attrs = [dirEnum fileAttributes];
+        if ([attrs valueForKey:@"NSFileType"] == NSFileTypeRegular) {
+            // Keep file and count file size in. :-)
+            filesSize += [[attrs valueForKey:@"NSFileSize"] unsignedIntegerValue];
+            filesCount++;
+        }
+    }
+    NSUInteger mb = (filesSize / 1024 / 1024);
+//    NSLog(@"%@ - %@ : Cache size [%luMB]", self, NSStringFromSelector(_cmd), mb);
+    return @{@"files": [NSNumber numberWithInteger:filesCount], @"size": [NSNumber numberWithInteger:mb]};
+}
+
+- (void)emptyCache
+{
+    NSDirectoryEnumerator *dirEnum = [self.fileManager enumeratorAtPath:self.imageCacheRoot];
+    NSString *file;
+    while (file = [dirEnum nextObject])
+    {
+        NSDictionary *attrs = [dirEnum fileAttributes];
+        if ([attrs valueForKey:@"NSFileType"] == NSFileTypeRegular) {
+            NSError *error = nil;
+            [self.fileManager removeItemAtPath:[NSString stringWithFormat:@"%@/%@", self.imageCacheRoot, file] error:&error];
+            if (error) {
+                NSLog(@"%@ - %@ : ERROR [%@]", self, NSStringFromSelector(_cmd), [error localizedDescription]);
+            }
+        }
+    }
+}
+
+
 @end
+
+

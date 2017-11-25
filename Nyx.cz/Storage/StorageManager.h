@@ -22,5 +22,8 @@
 
 - (void)copyFileFromUrl:(NSURL *)from toCacheName:(NSString *)cacheName;
 
+- (NSDictionary *)countCache;
+- (void)emptyCache;
+
 
 @end

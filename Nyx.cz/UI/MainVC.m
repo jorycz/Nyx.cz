@@ -97,11 +97,16 @@
     
     if (self.loginScreen.userIsLoggedIn && _firstShow) {
         _firstShow = NO;
+        NSString *preferredMenyKey = [Preferences preferredStartingLocation:nil];
         NSString *lastMenuKey = [Preferences lastUserPosition:nil];
-        if (!lastMenuKey) {
+        if (!preferredMenyKey && !lastMenuKey) {
             [self sideMenuOpen];
         } else {
-            [self loadContentForMenuKey:lastMenuKey];
+            if (preferredMenyKey && [preferredMenyKey length] > 0) {
+                [self loadContentForMenuKey:preferredMenyKey];
+            } else {
+                [self loadContentForMenuKey:lastMenuKey];
+            }
         }
     }
 }
@@ -131,6 +136,7 @@
             self.closeCoverView.delegate = self;
             self.closeCoverView.frame = self.view.bounds;
             [self.contentVc.view addSubview:self.closeCoverView];
+            self.navigationItem.leftBarButtonItem.enabled = NO;
         }];
     }
 }
@@ -143,6 +149,7 @@
     } completion:^(BOOL finished) {
         [self.closeCoverView removeFromSuperview];
         self.closeCoverView = nil;
+        self.navigationItem.leftBarButtonItem.enabled = YES;
     }];
 }
 
@@ -205,8 +212,9 @@
 
 - (void)mainButtonPressedLogout
 {
+    NSString *m = @"Opravdu chceš zrušit autorizaci?\nPro novou autorizaci bude nutné smazat součastný kód z účtu na nyxu přes web a zadat nový jako při prvním spuštění aplikace.r";
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Zrušit autorizaci"
-                                                                   message:@"Opravdu chceš zrušit autorizaci?"
+                                                                   message:m
                                                             preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *ok = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * action) {
         [Preferences auth_nick:@""];

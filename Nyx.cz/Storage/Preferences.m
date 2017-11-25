@@ -10,6 +10,8 @@
 
 @implementation Preferences
 
+#pragma mark - !!! DELETE ALL PREFERENCES STORAGE !!!
+
 + (void)resetPreferences
 {
     NSString *appDomain = [[NSBundle mainBundle] bundleIdentifier];
@@ -21,7 +23,7 @@
     NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), [[[NSUserDefaults standardUserDefaults] dictionaryRepresentation] description]);
 }
 
-#pragma mark - LOGIN
+#pragma mark - AUTHORIZATION
 
 //+ (NSString *)username:(NSString *)value
 //{
@@ -71,7 +73,7 @@
     }
 }
 
-#pragma mark - OTHERS
+#pragma mark - PREFERENCES / SETTINGS
 
 + (NSString *)lastUserPosition:(NSString *)value
 {
@@ -97,4 +99,7 @@
     }
 }
 
+
 @end
+
+
