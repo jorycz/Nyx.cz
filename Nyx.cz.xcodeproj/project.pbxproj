@@ -15,6 +15,7 @@
 		2B0D5DAC1FBC40F30052D63C /* Nyx_czTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B0D5DAB1FBC40F30052D63C /* Nyx_czTests.m */; };
 		2B0D5DB71FBC40F30052D63C /* Nyx_czUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B0D5DB61FBC40F30052D63C /* Nyx_czUITests.m */; };
 		2B1D59491FCB06CF009E4A88 /* SettingsVCCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B1D59481FCB06CF009E4A88 /* SettingsVCCell.m */; };
+		2B1D594F1FCB4EAD009E4A88 /* ComputeRowHeightTextAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B1D594E1FCB4EAD009E4A88 /* ComputeRowHeightTextAttachment.m */; };
 		2B2303721FBC59DC00286062 /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B2303711FBC59DC00286062 /* logo.png */; };
 		2B23037A1FBC5BE700286062 /* Post.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B2303791FBC5BE700286062 /* Post.m */; };
 		2B23037D1FBC5C7F00286062 /* ServerConnector.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B23037C1FBC5C7F00286062 /* ServerConnector.m */; };
@@ -120,6 +121,8 @@
 		2B0D5DB81FBC40F30052D63C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2B1D59471FCB06CF009E4A88 /* SettingsVCCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SettingsVCCell.h; sourceTree = "<group>"; };
 		2B1D59481FCB06CF009E4A88 /* SettingsVCCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SettingsVCCell.m; sourceTree = "<group>"; };
+		2B1D594D1FCB4EAD009E4A88 /* ComputeRowHeightTextAttachment.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ComputeRowHeightTextAttachment.h; sourceTree = "<group>"; };
+		2B1D594E1FCB4EAD009E4A88 /* ComputeRowHeightTextAttachment.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ComputeRowHeightTextAttachment.m; sourceTree = "<group>"; };
 		2B2303711FBC59DC00286062 /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logo.png; path = Nyx.cz/Images/logo.png; sourceTree = SOURCE_ROOT; };
 		2B2303781FBC5BE700286062 /* Post.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Post.h; sourceTree = "<group>"; };
 		2B2303791FBC5BE700286062 /* Post.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Post.m; sourceTree = "<group>"; };
@@ -426,6 +429,8 @@
 				2B317FDA1FC21BB00063B9EE /* Timestamp.m */,
 				2B31800C1FC347DB0063B9EE /* ComputeRowHeight.h */,
 				2B31800D1FC347DB0063B9EE /* ComputeRowHeight.m */,
+				2B1D594D1FCB4EAD009E4A88 /* ComputeRowHeightTextAttachment.h */,
+				2B1D594E1FCB4EAD009E4A88 /* ComputeRowHeightTextAttachment.m */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -659,6 +664,7 @@
 				2B2303941FBC73AF00286062 /* JSONParser.m in Sources */,
 				2B31801C1FC4C6A20063B9EE /* NewFeedPostVC.m in Sources */,
 				2B42D44B1FCA2124009F751D /* ContentTableWithList.m in Sources */,
+				2B1D594F1FCB4EAD009E4A88 /* ComputeRowHeightTextAttachment.m in Sources */,
 				2B0D5D911FBC40F20052D63C /* AppDelegate.m in Sources */,
 				2B317FF31FC221200063B9EE /* ContentNotification.m in Sources */,
 				2B317FD71FC20AD90063B9EE /* ContactVC.m in Sources */,

@@ -378,7 +378,9 @@
     }
     NSMutableArray *detectedUrls = [[NSMutableArray alloc] init];
     // First - detect properly configured URLs. Like with <a ...> tags.
-    [attrText enumerateAttributesInRange:NSMakeRange(0, attrText.length) options:NSAttributedStringEnumerationReverse usingBlock:^(NSDictionary<NSAttributedStringKey,id> * _Nonnull attrs, NSRange range, BOOL * _Nonnull stop) {
+    [attrText enumerateAttributesInRange:NSMakeRange(0, attrText.length)
+                                 options:NSAttributedStringEnumerationReverse
+                              usingBlock:^(NSDictionary<NSAttributedStringKey,id> * _Nonnull attrs, NSRange range, BOOL * _Nonnull stop) {
         if ([attrs objectForKey:@"NSLink"]) {
             NSURL *url = [attrs objectForKey:@"NSLink"];
             NSLog(@"%@ - %@ Detected URL as NSLink : [%@]", self, NSStringFromSelector(_cmd), url);

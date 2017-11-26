@@ -8,12 +8,13 @@
 
 #import "ComputeRowHeight.h"
 #import "Constants.h"
-#import <UIKit/UIKit.h>
+#import "Preferences.h"
+#import "ComputeRowHeightTextAttachment.h"
 
 
 @implementation ComputeRowHeight
 
-- (instancetype)initWithText:(NSString *)text forWidth:(CGFloat)currentWidth andWithMinHeight:(CGFloat)minHeight
+- (instancetype)initWithText:(NSString *)text forWidth:(CGFloat)currentWidth minHeight:(CGFloat)minHeight inlineImages:(NSString *)inlineImages
 {
     self = [super init];
     if (self)
@@ -45,6 +46,10 @@
             
         }
         
+        if (inlineImages && [inlineImages length] > 0) {
+            [self replaceLinkWithAttachments];
+        }
+        
         // Count size
         // Replace FONT inside HTML string.
         UIFont *font = [UIFont systemFontOfSize:14];
@@ -72,4 +77,54 @@
     return self;
 }
 
+#pragma mark - ATTACHMENTS
+
+- (void)replaceLinkWithAttachments
+{
+//    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), self.attributedText);
+    
+    // Detect properly configured URLs. Like with <a ...> tags.
+    [self.attributedText enumerateAttributesInRange:NSMakeRange(0, self.attributedText.length)
+                                            options:NSAttributedStringEnumerationReverse
+                                         usingBlock:^(NSDictionary<NSAttributedStringKey,id> * _Nonnull attrs, NSRange range, BOOL * _Nonnull stop) {
+        if ([attrs objectForKey:@"NSLink"]) {
+            NSURL *url = [attrs objectForKey:@"NSLink"];
+            NSLog(@"%@ - %@ Detected URL as NSLink : [%@]", self, NSStringFromSelector(_cmd), url);
+            UIImage *inlineImage = [self getImageForUrl:url];
+            if (inlineImage)
+            {
+                ComputeRowHeightTextAttachment *textAttachment = [[ComputeRowHeightTextAttachment alloc] init];
+                textAttachment.image = inlineImage;
+                NSAttributedString *attrStringWithImage = [NSAttributedString attributedStringWithAttachment:textAttachment];
+                [self.attributedText replaceCharactersInRange:range withAttributedString:attrStringWithImage];
+            }
+        }
+    }];
+}
+
+- (UIImage *)getImageForUrl:(NSURL *)url
+{
+    NSData *data = [NSData dataWithContentsOfURL:url];
+    if (data && [data length] > 0) {
+        UIImage *i = [[UIImage alloc] initWithData:data];
+        if (i) {
+            return i;
+        }
+        NSLog(@"%@ - %@ : ERROR [%@]", self, NSStringFromSelector(_cmd), @"Some data arrived but can't create UIImage from that!");
+    }
+    NSLog(@"%@ - %@ : ERROR [%@]", self, NSStringFromSelector(_cmd), @"No data!");
+    return nil;
+}
+
+
 @end
+
+
+
+
+
+
+
+
+
+

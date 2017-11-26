@@ -17,7 +17,7 @@
 @property (nonatomic, strong) NSMutableAttributedString *attributedText;
 
 
-- (instancetype)initWithText:(NSString *)text forWidth:(CGFloat)currentWidth andWithMinHeight:(CGFloat)minHeight;
+- (instancetype)initWithText:(NSString *)text forWidth:(CGFloat)currentWidth minHeight:(CGFloat)minHeight inlineImages:(NSString *)inlineImages;
 
 
 @end

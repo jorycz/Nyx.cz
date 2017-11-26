@@ -148,10 +148,10 @@
             else
             {
                 if ([identification isEqualToString:_serverIdentificationMailbox]) {
-                    [self configureTableWithJson:jp.jsonDictionary];
+                    [self configureTableWithJson:jp.jsonDictionary addingOlderMails:NO];
                 }
                 if ([identification isEqualToString:_serverIdentificationMailboxOlderMessages]) {
-                    [self addDataToTableWithJson:jp.jsonDictionary];
+                    [self configureTableWithJson:jp.jsonDictionary addingOlderMails:YES];
                 }
             }
         }
@@ -164,9 +164,9 @@
     PRESENT_ERROR(title, message)
 }
 
-#pragma mark - TABLE
+#pragma mark - TABLE CONFIGURATION - DATA
 
-- (void)configureTableWithJson:(NSDictionary *)nyxDictionary
+- (void)configureTableWithJson:(NSDictionary *)nyxDictionary addingOlderMails:(BOOL)addingOlderMails
 {
 //    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), nyxDictionary);
     
@@ -188,66 +188,43 @@
             [tempArrayForRowSections addObject:d];
             // Calculate heights and create array with same structure just only for row height.
             // 60 is minimum height - table ROW height is initialized to 70 below ( 70 - nick name )
-            ComputeRowHeight *rowHeight = [[ComputeRowHeight alloc] initWithText:[d objectForKey:@"content"] forWidth:_widthForTableCellBodyTextView andWithMinHeight:40];
+            ComputeRowHeight *rowHeight = [[ComputeRowHeight alloc] initWithText:[d objectForKey:@"content"]
+                                                                        forWidth:_widthForTableCellBodyTextView
+                                                                       minHeight:40
+                                                                    inlineImages:[Preferences showImagesInlineInPost:nil]];
             [tempArrayForRowHeights addObject:[NSNumber numberWithFloat:rowHeight.heightForRow]];
             [tempArrayForRowBodyText addObject:rowHeight.attributedText];
         }
-        [self.table.nyxRowsForSections removeAllObjects];
-        [self.table.nyxRowsForSections addObjectsFromArray:@[tempArrayForRowSections]];
-        [self.table.nyxPostsRowHeights removeAllObjects];
-        [self.table.nyxPostsRowHeights addObjectsFromArray:@[tempArrayForRowHeights]];
-        [self.table.nyxPostsRowBodyTexts removeAllObjects];
-        [self.table.nyxPostsRowBodyTexts addObjectsFromArray:@[tempArrayForRowBodyText]];
         
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.table reloadTableData];
-        });
-    }
-    [self removeLoadingView];
-}
-
-- (void)addDataToTableWithJson:(NSDictionary *)nyxDictionary
-{
-    //    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), nyxDictionary);
-    
-    // PRESERVE ALREADY INSERTED ARRAYS and add to these arrays !
-    
-    NSMutableArray * postDictionaries = [[NSMutableArray alloc] init];
-    [postDictionaries addObjectsFromArray:[nyxDictionary objectForKey:@"data"]];
-    
-    if ([postDictionaries count] > 0)
-    {
-        [self.table.nyxSections removeAllObjects];
-        [self.table.nyxSections addObjectsFromArray:@[kDisableTableSections]];
-        
-        // Add FEED post as first cell here also.
-        NSMutableArray *tmpNyxRowsForSections = [[NSMutableArray alloc] initWithArray:[self.table.nyxRowsForSections objectAtIndex:0]];
-        [tmpNyxRowsForSections addObjectsFromArray:postDictionaries];
-        [self.table.nyxRowsForSections removeAllObjects];
-        [self.table.nyxRowsForSections addObjectsFromArray:@[tmpNyxRowsForSections]];
-
-        
-        NSMutableArray *tempArrayForRowHeights = [[NSMutableArray alloc] init];
-        NSMutableArray *tempArrayForRowBodyText = [[NSMutableArray alloc] init];
-        
-        for (NSDictionary *d in postDictionaries)
+        if (addingOlderMails)
         {
-            // Calculate heights and create array with same structure just only for row height.
-            // 60 is minimum height - table ROW height is initialized to 70 below ( 70 - nick name )
-            ComputeRowHeight *rowHeight = [[ComputeRowHeight alloc] initWithText:[d objectForKey:@"content"] forWidth:_widthForTableCellBodyTextView andWithMinHeight:40];
-            [tempArrayForRowHeights addObject:[NSNumber numberWithFloat:rowHeight.heightForRow]];
-            [tempArrayForRowBodyText addObject:rowHeight.attributedText];
+            // Add new posts complete data to previous complete posts data.
+            NSMutableArray *previousNyxRowsForSections = [[NSMutableArray alloc] initWithArray:[self.table.nyxRowsForSections objectAtIndex:0]];
+            [previousNyxRowsForSections addObjectsFromArray:tempArrayForRowSections];
+            [self.table.nyxRowsForSections removeAllObjects];
+            [self.table.nyxRowsForSections addObjectsFromArray:@[previousNyxRowsForSections]];
+            
+            NSMutableArray *previousNyxPostsRowHeights = [[NSMutableArray alloc] initWithArray:[self.table.nyxPostsRowHeights objectAtIndex:0]];
+            [previousNyxPostsRowHeights addObjectsFromArray:tempArrayForRowHeights];
+            [self.table.nyxPostsRowHeights removeAllObjects];
+            [self.table.nyxPostsRowHeights addObjectsFromArray:@[previousNyxPostsRowHeights]];
+            
+            NSMutableArray *previousNyxPostsRowBodyTexts = [[NSMutableArray alloc] initWithArray:[self.table.nyxPostsRowBodyTexts objectAtIndex:0]];
+            [previousNyxPostsRowBodyTexts addObjectsFromArray:tempArrayForRowBodyText];
+            [self.table.nyxPostsRowBodyTexts removeAllObjects];
+            [self.table.nyxPostsRowBodyTexts addObjectsFromArray:@[previousNyxPostsRowBodyTexts]];
         }
-        
-        NSMutableArray *tmpNyxPostsRowHeights = [[NSMutableArray alloc] initWithArray:[self.table.nyxPostsRowHeights objectAtIndex:0]];
-        [tmpNyxPostsRowHeights addObjectsFromArray:tempArrayForRowHeights];
-        [self.table.nyxPostsRowHeights removeAllObjects];
-        [self.table.nyxPostsRowHeights addObjectsFromArray:@[tmpNyxPostsRowHeights]];
-        
-        NSMutableArray *tmpNyxPostsRowBodyTexts = [[NSMutableArray alloc] initWithArray:[self.table.nyxPostsRowBodyTexts objectAtIndex:0]];
-        [tmpNyxPostsRowBodyTexts addObjectsFromArray:tempArrayForRowBodyText];
-        [self.table.nyxPostsRowBodyTexts removeAllObjects];
-        [self.table.nyxPostsRowBodyTexts addObjectsFromArray:@[tmpNyxPostsRowBodyTexts]];
+        else
+        {
+            [self.table.nyxRowsForSections removeAllObjects];
+            [self.table.nyxRowsForSections addObjectsFromArray:@[tempArrayForRowSections]];
+            
+            [self.table.nyxPostsRowHeights removeAllObjects];
+            [self.table.nyxPostsRowHeights addObjectsFromArray:@[tempArrayForRowHeights]];
+            
+            [self.table.nyxPostsRowBodyTexts removeAllObjects];
+            [self.table.nyxPostsRowBodyTexts addObjectsFromArray:@[tempArrayForRowBodyText]];
+        }
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.nController.topViewController.navigationItem.rightBarButtonItem setEnabled:YES];

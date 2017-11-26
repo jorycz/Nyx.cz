@@ -37,7 +37,7 @@
     
     if (self.settingsSwitch)
     {
-        self.settingsSwitch.tintColor = COLOR_SYSTEM_TURQUOISE;
+        self.settingsSwitch.tintColor = [UIColor lightGrayColor];
         self.settingsSwitch.onTintColor = COLOR_SYSTEM_TURQUOISE;
         CGRect f = self.frame;
         CGRect sf = self.settingsSwitch.frame;

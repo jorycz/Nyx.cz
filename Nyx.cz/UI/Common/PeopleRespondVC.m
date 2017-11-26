@@ -149,6 +149,8 @@
     }
 }
 
+#pragma mark - DATA
+
 - (void)getAvatar
 {
     CacheManager *cm = [[CacheManager alloc] init];
@@ -165,6 +167,8 @@
     sc.identifitaion = _postIdentificationTable;
     [sc downloadDataForApiRequest:apiRequest];
 }
+
+#pragma mark - LOADING VIEW
 
 - (void)placeLoadingView
 {
@@ -308,7 +312,7 @@
             {
                 // Calculate heights and create array with same structure just only for row height.
                 // 60 is minimum height - table ROW height is initialized to 70 below ( 70 - nick name )
-                ComputeRowHeight *rowHeight = [[ComputeRowHeight alloc] initWithText:[d objectForKey:@"text"] forWidth:_widthForTableCellBodyTextView andWithMinHeight:40];
+                ComputeRowHeight *rowHeight = [[ComputeRowHeight alloc] initWithText:[d objectForKey:@"text"] forWidth:_widthForTableCellBodyTextView minHeight:40 inlineImages:nil];
                 [tempArrayForRowHeights addObject:[NSNumber numberWithFloat:rowHeight.heightForRow]];
                 [tempArrayForRowBodyText addObject:rowHeight.attributedText];
             }
@@ -431,8 +435,18 @@
     [sc copyFileFromUrl:originalImage toCacheName:@"attachmentOriginal.jpg"];
     NSData *d = [sc readImage:@"attachmentOriginal.jpg"];
     UIImage *image = [UIImage imageWithData:d];
-    // Size * 2 in real.
-    CGSize newSize = CGSizeMake(400, 300);
+    
+    // Sizes are * 2 in real. RESIZE HERE
+    CGSize s = image.size;
+    CGFloat w = s.width;
+    CGFloat h = s.height;
+    CGFloat i = 0.0f;
+    if (w > h)
+        i = 400 / w;
+    if (h > w)
+        i = 400 / h;
+    CGSize newSize = CGSizeMake(w * i, h * i);
+    
     UIGraphicsBeginImageContextWithOptions(newSize, NO, 0.0);
     [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
     UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
