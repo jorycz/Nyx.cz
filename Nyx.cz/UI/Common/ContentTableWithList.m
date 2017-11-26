@@ -9,6 +9,10 @@
 #import "ContentTableWithList.h"
 #import "Constants.h"
 #import "JSONParser.h"
+#import "ApiBuilder.h"
+
+#import "LoadingView.h"
+#import "ComputeRowHeight.h"
 
 
 @interface ContentTableWithList ()
@@ -25,8 +29,17 @@
         _rh = rowHeight;
         self.nyxSections = [[NSMutableArray alloc] init];
         self.nyxRowsForSections = [[NSMutableArray alloc] init];
+        _firstInit = YES;
+        _currentDiscussionId = [[NSMutableString alloc] init];
+        _serverIdentificationDiscussion = @"discussion";
+        _serverIdentificationDiscussionFromId = @"discussionFromId";
     }
     return self;
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)loadView
@@ -39,6 +52,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadMorePostsFromId:) name:kNotificationDiscussionLoadFrom object:nil];
     
     // Uncomment the following line to preserve selection between presentations.
     self.clearsSelectionOnViewWillAppear = NO;
@@ -60,11 +75,37 @@
 {
     [super viewWillLayoutSubviews];
     [_table setFrame:self.view.bounds];
+    
+    if (_firstInit) {
+        _firstInit = NO;
+        [self discussionTableInit];
+    }
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
+}
+
+#pragma mark - LOADING VIEW
+
+- (void)placeLoadingView
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+        [self.nController.topViewController.navigationItem.rightBarButtonItem setEnabled:NO];
+        LoadingView *lv = [[LoadingView alloc] initWithFrame:self.view.bounds];
+        [self.view addSubview:lv];
+    });
+}
+
+- (void)removeLoadingView
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+        [self.nController.topViewController.navigationItem.rightBarButtonItem setEnabled:YES];
+        [[self.view viewWithTag:kLoadingCoverViewTag] removeFromSuperview];
+    });
 }
 
 #pragma mark - Table view data source
@@ -122,36 +163,11 @@
     NSDictionary *userPostData = [[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
     NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), userPostData);
     
-//    NSString *nick;
-//    NSString *postId;
-//    if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeed] || [self.peopleTableMode isEqualToString:kPeopleTableModeFeedDetail]) {
-//        nick = [userPostData objectForKey:@"nick"];
-//        postId = [userPostData objectForKey:@"id_update"];
-//    }
-//    if ([self.peopleTableMode isEqualToString:kPeopleTableModeMailbox] || [self.peopleTableMode isEqualToString:kPeopleTableModeMailboxDetail]) {
-//        nick = [userPostData objectForKey:@"other_nick"];
-//        postId = [userPostData objectForKey:@"id_mail"];
-//    }
-//    NSAttributedString *str = [[self.nyxPostsRowBodyTexts objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
-//    CGFloat f = [[[self.nyxPostsRowHeights objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] floatValue];
-//
-//    if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeed] || [self.peopleTableMode isEqualToString:kPeopleTableModeMailbox])
-//    {
-//        PeopleRespondVC *response = [[PeopleRespondVC alloc] init];
-//        response.nick = nick;
-//        response.bodyText = str;
-//        response.bodyHeight = f;
-//        response.postId = postId;
-//        response.postData = userPostData;
-//        response.nController = self.nController;
-//        response.peopleRespondMode = self.peopleTableMode;
-//        [self.nController pushViewController:response animated:YES];
-//    }
-//
-//    if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeedDetail]  || [self.peopleTableMode isEqualToString:kPeopleTableModeMailboxDetail]) {
-//        ContentTableWithPeopleCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-//        [self cellClickedWithAttributedText:cell.bodyText];
-//    }
+    self.discussionTable.title = [userPostData objectForKey:@"jmeno"];
+    
+    if ([userPostData objectForKey:@"id_klub"]) {
+        [self getDataForDiscussion:[userPostData objectForKey:@"id_klub"]];
+    }
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
@@ -168,16 +184,31 @@
     }
 }
 
-#pragma mark - TABLE ACTIONS
+#pragma mark - TABLE ACTIONS & DATA
 
-- (void)deletePostFor:(NSString *)nick withId:(NSString *)postId
+- (void)getDataForDiscussion:(NSString *)disId
 {
-//    NSString *api = [ApiBuilder apiFeedOfFriendsDeletePostAs:nick withId:postId];
-//    ServerConnector *sc = [[ServerConnector alloc] init];
-//    sc.identifitaion = nil;
-//    sc.delegate = self;
-//    [sc downloadDataForApiRequest:api];
+    [self placeLoadingView];
+    
+    [_currentDiscussionId setString:disId];
+    
+    NSString *api = [ApiBuilder apiMessagesForDiscussion:_currentDiscussionId];
+    ServerConnector *sc = [[ServerConnector alloc] init];
+    sc.identifitaion = _serverIdentificationDiscussion;
+    sc.delegate = self;
+    [sc downloadDataForApiRequest:api];
 }
+
+- (void)loadMorePostsFromId:(NSNotification *)sender
+{
+    NSString *fromID = [[sender userInfo] objectForKey:@"nKey"];
+    NSString *apiRequest = [ApiBuilder apiMessagesForDiscussion:_currentDiscussionId loadMoreFromId:fromID];
+    ServerConnector *sc = [[ServerConnector alloc] init];
+    sc.delegate = self;
+    sc.identifitaion = _serverIdentificationDiscussionFromId;
+    [sc downloadDataForApiRequest:apiRequest];
+}
+
 
 #pragma mark - SERVER DELEGATE
 
@@ -208,14 +239,13 @@
             }
             else
             {
-                //                NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), jp.jsonDictionary);
-                dispatch_async(dispatch_get_main_queue(), ^{
-//                    [[self.nyxRowsForSections objectAtIndex:_indexPathToDelete.section] removeObjectAtIndex:_indexPathToDelete.row];
-//                    [[self.nyxPostsRowHeights objectAtIndex:_indexPathToDelete.section] removeObjectAtIndex:_indexPathToDelete.row];
-//                    [[self.nyxPostsRowBodyTexts objectAtIndex:_indexPathToDelete.section] removeObjectAtIndex:_indexPathToDelete.row];
-//                    // TODO TO DO - smazat sekci, pokud k ni jiz nepatri zadne bunky !!! ?? nebo znovy vytvorit ? ...
-//                    [_table deleteRowsAtIndexPaths:@[_indexPathToDelete] withRowAnimation:UITableViewRowAnimationFade];
-                });
+//                NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), jp.jsonDictionary);
+                if ([identification isEqualToString:_serverIdentificationDiscussion]) {
+                    [self configureTableWithJson:jp.jsonDictionary addData:NO];
+                }
+                if ([identification isEqualToString:_serverIdentificationDiscussionFromId]) {
+                    [self configureTableWithJson:jp.jsonDictionary addData:YES];
+                }
             }
         }
     }
@@ -230,6 +260,98 @@
     });
 }
 
+#pragma mark - DISCUSSION TABLE CONFIGURATION - DATA
+
+- (void)configureTableWithJson:(NSDictionary *)nyxDictionary addData:(BOOL)addData
+{
+    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), nyxDictionary);
+    
+    NSMutableArray *postDictionaries = [[NSMutableArray alloc] init];
+    [postDictionaries addObjectsFromArray:[nyxDictionary objectForKey:@"data"]];
+    
+    if ([postDictionaries count] > 0)
+    {
+        // Add FEED post as first cell here also.
+        [self.discussionTable.nyxSections removeAllObjects];
+        [self.discussionTable.nyxSections addObjectsFromArray:@[kDisableTableSections]];
+        
+        NSMutableArray *tempArrayForRowSections = [[NSMutableArray alloc] init];
+        NSMutableArray *tempArrayForRowHeights = [[NSMutableArray alloc] init];
+        NSMutableArray *tempArrayForRowBodyText = [[NSMutableArray alloc] init];
+        
+        for (NSDictionary *d in postDictionaries)
+        {
+            [tempArrayForRowSections addObject:d];
+            // Calculate heights and create array with same structure just only for row height.
+            // 60 is minimum height - table ROW height is initialized to 70 below ( 70 - nick name )
+            ComputeRowHeight *rowHeight = [[ComputeRowHeight alloc] initWithText:[d objectForKey:@"content"]
+                                                                        forWidth:_widthForTableCellBodyTextView
+                                                                       minHeight:40
+                                                                    inlineImages:[Preferences showImagesInlineInPost:nil]];
+            [tempArrayForRowHeights addObject:[NSNumber numberWithFloat:rowHeight.heightForRow]];
+            [tempArrayForRowBodyText addObject:rowHeight.attributedText];
+        }
+        
+        if (addData)
+        {
+            // Add new posts complete data to previous complete posts data.
+            NSMutableArray *previousNyxRowsForSections = [[NSMutableArray alloc] initWithArray:[self.discussionTable.nyxRowsForSections objectAtIndex:0]];
+            [previousNyxRowsForSections addObjectsFromArray:tempArrayForRowSections];
+            [self.discussionTable.nyxRowsForSections removeAllObjects];
+            [self.discussionTable.nyxRowsForSections addObjectsFromArray:@[previousNyxRowsForSections]];
+            
+            NSMutableArray *previousNyxPostsRowHeights = [[NSMutableArray alloc] initWithArray:[self.discussionTable.nyxPostsRowHeights objectAtIndex:0]];
+            [previousNyxPostsRowHeights addObjectsFromArray:tempArrayForRowHeights];
+            [self.discussionTable.nyxPostsRowHeights removeAllObjects];
+            [self.discussionTable.nyxPostsRowHeights addObjectsFromArray:@[previousNyxPostsRowHeights]];
+            
+            NSMutableArray *previousNyxPostsRowBodyTexts = [[NSMutableArray alloc] initWithArray:[self.discussionTable.nyxPostsRowBodyTexts objectAtIndex:0]];
+            [previousNyxPostsRowBodyTexts addObjectsFromArray:tempArrayForRowBodyText];
+            [self.discussionTable.nyxPostsRowBodyTexts removeAllObjects];
+            [self.discussionTable.nyxPostsRowBodyTexts addObjectsFromArray:@[previousNyxPostsRowBodyTexts]];
+        }
+        else
+        {
+            [self.discussionTable.nyxRowsForSections removeAllObjects];
+            [self.discussionTable.nyxRowsForSections addObjectsFromArray:@[tempArrayForRowSections]];
+            
+            [self.discussionTable.nyxPostsRowHeights removeAllObjects];
+            [self.discussionTable.nyxPostsRowHeights addObjectsFromArray:@[tempArrayForRowHeights]];
+            
+            [self.discussionTable.nyxPostsRowBodyTexts removeAllObjects];
+            [self.discussionTable.nyxPostsRowBodyTexts addObjectsFromArray:@[tempArrayForRowBodyText]];
+        }
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.nController.topViewController.navigationItem.rightBarButtonItem setEnabled:YES];
+            if (!addData) {
+                [self.nController pushViewController:self.discussionTable animated:YES];
+                [self removeLoadingView];
+            } else {
+                [self.discussionTable reloadTableData];
+            }
+        });
+    }
+}
+
+#pragma mark - DISCUSSION TABLE INIT
+
+- (void)discussionTableInit
+{
+    // Is allocated and going to be present - one time only.
+    self.discussionTable = [[ContentTableWithPeople alloc] initWithRowHeight:70];
+    self.discussionTable.nController = self.nController;
+    self.discussionTable.allowsSelection = YES;
+    self.discussionTable.peopleTableMode = kPeopleTableModeDiscussion;
+    
+    // - 65 is there because there is big avatar left of table cell body text view.
+    _widthForTableCellBodyTextView = self.view.frame.size.width - kWidthForTableCellBodyTextViewSubstract;
+}
+
+
 
 
 @end
+
+
+

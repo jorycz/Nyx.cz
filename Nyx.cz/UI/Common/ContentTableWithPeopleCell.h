@@ -29,6 +29,7 @@
 @property (nonatomic, strong) NSString *mailboxDirection;
 @property (nonatomic, strong) NSString *mailboxMailStatus;
 @property (nonatomic, strong) NSString *activeFriendStatus;
+@property (nonatomic, strong) NSString *discussionPostStatus;
 
 
 - (void)configureCellForIndexPath:(NSIndexPath *)idxPath;

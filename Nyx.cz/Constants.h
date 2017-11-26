@@ -16,9 +16,12 @@
 #define NOTIFICATION_MAIN_BUTTON_PRESSED(s) [[NSNotificationCenter defaultCenter] postNotificationName:kMainButtonNotification object:nil userInfo:@{@"button" : (s)}];
 
 #define POST_NOTIFICATION_FRIENDS_FEED_CHANGED [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationFriendsFeedChanged object:nil userInfo:nil];
+
 #define POST_NOTIFICATION_MAILBOX_CHANGED [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMailboxChanged object:nil userInfo:nil];
 #define POST_NOTIFICATION_MAILBOX_LOAD_FROM(s) [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMailboxLoadFrom object:nil userInfo:@{@"nKey" : (s)}];
 #define POST_NOTIFICATION_MAILBOX_NEW_MESSAGE_FOR(s) [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMailboxNewMessageFor object:nil userInfo:@{@"nKey" : (s)}];
+
+#define POST_NOTIFICATION_DISCUSSION_LOAD_FROM(s) [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDiscussionLoadFrom object:nil userInfo:@{@"nKey" : (s)}];
 
 #define PERFSTART NSDate *now = [NSDate date];
 #define PERFSTOP NSLog(@"%@ / %@: TIME : %f", [self class], NSStringFromSelector(_cmd), [[NSDate date] timeIntervalSinceDate:now]);
@@ -43,6 +46,7 @@ extern NSString* const kNotificationFriendsFeedChanged;
 extern NSString* const kNotificationMailboxChanged;
 extern NSString* const kNotificationMailboxLoadFrom;
 extern NSString* const kNotificationMailboxNewMessageFor;
+extern NSString* const kNotificationDiscussionLoadFrom;
 
 extern NSString* const kPeopleTableModeFeed;
 extern NSString* const kPeopleTableModeFeedDetail;
@@ -50,6 +54,8 @@ extern NSString* const kPeopleTableModeMailbox;
 extern NSString* const kPeopleTableModeMailboxDetail;
 extern NSString* const kPeopleTableModeFriends;
 extern NSString* const kPeopleTableModeFriendsDetail;
+extern NSString* const kPeopleTableModeDiscussion;
+extern NSString* const kPeopleTableModeDiscussionDetail;
 
 // API
 extern NSString* const kApiLoguser;
@@ -61,6 +67,7 @@ extern NSString* const kApiBookmarksAll;
 extern NSString* const kApiBookmarksHistory;
 
 extern NSString* const kApiDiscussion;
+extern NSString* const kApiDiscussionMessages;
 
 extern NSString* const kApiEvents;
 

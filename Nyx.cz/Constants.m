@@ -23,6 +23,7 @@ NSString* const kNotificationFriendsFeedChanged = @"kNotificationFriendsFeedChan
 NSString* const kNotificationMailboxChanged = @"kNotificationMailboxChanged";
 NSString* const kNotificationMailboxLoadFrom = @"kNotificationMailboxLoadFrom";
 NSString* const kNotificationMailboxNewMessageFor = @"kNotificationMailboxNewMessageFor";
+NSString* const kNotificationDiscussionLoadFrom = @"kNotificationDiscussionLoadFrom";
 
 NSString* const kPeopleTableModeFeed = @"kPeopleTableModeFeed";
 NSString* const kPeopleTableModeFeedDetail = @"kPeopleTableModeFeedDetail";
@@ -30,6 +31,8 @@ NSString* const kPeopleTableModeMailbox = @"kPeopleTableModeMailbox";
 NSString* const kPeopleTableModeMailboxDetail = @"kPeopleTableModeMailboxDetail";
 NSString* const kPeopleTableModeFriends = @"kPeopleTableModeFriends";
 NSString* const kPeopleTableModeFriendsDetail = @"kPeopleTableModeFriendsDetail";
+NSString* const kPeopleTableModeDiscussion = @"kPeopleTableModeDiscussion";
+NSString* const kPeopleTableModeDiscussionDetail = @"kPeopleTableModeDiscussionDetail";
 
 // API
 NSString* const kApiLoguser = @"loguser";
@@ -41,6 +44,8 @@ NSString* const kApiBookmarksAll = @"all";
 NSString* const kApiBookmarksHistory = @"history";
 
 NSString* const kApiDiscussion = @"discussion";
+NSString* const kApiDiscussionMessages = @"messages";
+
 
 NSString* const kApiEvents = @"events";
 

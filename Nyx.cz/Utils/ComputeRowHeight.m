@@ -65,8 +65,10 @@
              UIFontDescriptorSymbolicTraits traits = font.fontDescriptor.symbolicTraits;
              UIFontDescriptor *descriptor = [baseDescriptor fontDescriptorWithSymbolicTraits:traits];
              UIFont *newFont = [UIFont fontWithDescriptor:descriptor size:bPreserveSize?baseDescriptor.pointSize:descriptor.pointSize];
-             [self.attributedText removeAttribute:NSFontAttributeName range:range];
-             [self.attributedText addAttribute:NSFontAttributeName value:newFont range:range];
+             if (newFont) {
+                 [self.attributedText removeAttribute:NSFontAttributeName range:range];
+                 [self.attributedText addAttribute:NSFontAttributeName value:newFont range:range];
+             }
          }];
         
         CGSize constraintSize = CGSizeMake(currentWidth, MAXFLOAT);

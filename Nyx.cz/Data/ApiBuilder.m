@@ -135,6 +135,18 @@
     return [NSString stringWithFormat:@"%@", [self defaultApiRequestWithL:kApiBookmarks andL2:kApiBookmarksHistory]];
 }
 
+#pragma mark - DISCUSSION
+
++ (NSString *)apiMessagesForDiscussion:(NSString *)discussionId
+{
+    return [NSString stringWithFormat:@"%@&id=%@", [self defaultApiRequestWithL:kApiDiscussion andL2:kApiDiscussionMessages], discussionId];
+}
+
++ (NSString *)apiMessagesForDiscussion:(NSString *)discussionId loadMoreFromId:(NSString *)fromId
+{
+    return [NSString stringWithFormat:@"%@&id=%@&direction=older&id_wu=%@", [self defaultApiRequestWithL:kApiDiscussion andL2:kApiDiscussionMessages], discussionId, fromId];
+}
+
 
 @end
 

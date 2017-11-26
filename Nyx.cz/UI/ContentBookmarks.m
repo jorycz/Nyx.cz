@@ -24,8 +24,6 @@
     {
         self.backgroundColor = [UIColor whiteColor];
         _firstInit = YES;
-        // Refresh unread pri navratu
-//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshDataForMainContent) name:kNotificationMailboxChanged object:nil];
     }
     return self;
 }

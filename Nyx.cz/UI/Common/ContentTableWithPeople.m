@@ -9,6 +9,7 @@
 #import "ContentTableWithPeople.h"
 #import "PeopleRespondVC.h"
 #import "ApiBuilder.h"
+#import "LoadingView.h"
 
 
 @interface ContentTableWithPeople ()
@@ -81,6 +82,8 @@
 - (void)reloadTableData
 {
     [_table reloadData];
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion])
+        [self removeLoadingView];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -134,6 +137,11 @@
             cell.mailboxDirection = [cellData objectForKey:@"direction"];
             cell.mailboxMailStatus = [cellData objectForKey:@"message_status"];
         }
+        if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion] || [self.peopleTableMode isEqualToString:kPeopleTableModeDiscussionDetail])
+        {
+            nick = [cellData objectForKey:@"nick"];
+            cell.discussionPostStatus = [cellData objectForKey:@"new"];
+        }
         cell.nick = nick;
         
         // Must be always set!
@@ -172,7 +180,7 @@
     
     NSString *nick;
     NSString *postId;
-    CGFloat f;
+    CGFloat f = 2.0f;
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeFriends] || [self.peopleTableMode isEqualToString:kPeopleTableModeFriendsDetail]) {
         nick = [userPostData objectForKey:@"nick"];
         postId = @"666";
@@ -287,7 +295,7 @@
     [sc downloadDataForApiRequest:api];
 }
 
-#pragma mark - TABLE ACTIONS - MAILBOX
+#pragma mark - TABLE ACTIONS when SCROLL REACH END (mailbox, discussion) - LOAD MORE
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -297,6 +305,15 @@
         {
             NSString *fromID = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"id_mail"];
             POST_NOTIFICATION_MAILBOX_LOAD_FROM(fromID)
+        }
+    }
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion]) {
+        // Load more posts when reach end.
+        if (indexPath.row + 1 == [[self.nyxRowsForSections objectAtIndex:0] count])
+        {
+            NSString *fromID = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"id_wu"];
+            [self placeLoadingView];
+            POST_NOTIFICATION_DISCUSSION_LOAD_FROM(fromID)
         }
     }
 }
@@ -428,6 +445,29 @@
         [self presentViewController:alert animated:YES completion:nil];
     }
 }
+
+#pragma mark - LOADING VIEW
+
+- (void)placeLoadingView
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+        [self.nController.topViewController.navigationItem.rightBarButtonItem setEnabled:NO];
+        LoadingView *lv = [[LoadingView alloc] initWithFrame:self.view.bounds];
+        [self.view addSubview:lv];
+    });
+}
+
+- (void)removeLoadingView
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+        [self.nController.topViewController.navigationItem.rightBarButtonItem setEnabled:YES];
+        [[self.view viewWithTag:kLoadingCoverViewTag] removeFromSuperview];
+    });
+}
+
+
 
 
 @end

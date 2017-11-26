@@ -92,6 +92,8 @@
     [sc downloadDataForApiRequest:apiRequest];
 }
 
+#pragma mark - LOADING VIEW
+
 - (void)placeLoadingView
 {
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -148,10 +150,10 @@
             else
             {
                 if ([identification isEqualToString:_serverIdentificationMailbox]) {
-                    [self configureTableWithJson:jp.jsonDictionary addingOlderMails:NO];
+                    [self configureTableWithJson:jp.jsonDictionary addData:NO];
                 }
                 if ([identification isEqualToString:_serverIdentificationMailboxOlderMessages]) {
-                    [self configureTableWithJson:jp.jsonDictionary addingOlderMails:YES];
+                    [self configureTableWithJson:jp.jsonDictionary addData:YES];
                 }
             }
         }
@@ -166,7 +168,7 @@
 
 #pragma mark - TABLE CONFIGURATION - DATA
 
-- (void)configureTableWithJson:(NSDictionary *)nyxDictionary addingOlderMails:(BOOL)addingOlderMails
+- (void)configureTableWithJson:(NSDictionary *)nyxDictionary addData:(BOOL)addData
 {
 //    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), nyxDictionary);
     
@@ -196,7 +198,7 @@
             [tempArrayForRowBodyText addObject:rowHeight.attributedText];
         }
         
-        if (addingOlderMails)
+        if (addData)
         {
             // Add new posts complete data to previous complete posts data.
             NSMutableArray *previousNyxRowsForSections = [[NSMutableArray alloc] initWithArray:[self.table.nyxRowsForSections objectAtIndex:0]];

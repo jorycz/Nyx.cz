@@ -10,11 +10,20 @@
 #import "ServerConnector.h"
 #import "ContentTableWithListCell.h"
 
+#import "ContentTableWithPeople.h"
+
 
 @interface ContentTableWithList : UITableViewController <ServerConnectorDelegate>
 {
     UITableView *_table;
     CGFloat _rh;
+    
+    // For next controller - discussion table
+    CGFloat _widthForTableCellBodyTextView;
+    BOOL _firstInit;
+    
+    NSMutableString *_currentDiscussionId;
+    NSString *_serverIdentificationDiscussion, *_serverIdentificationDiscussionFromId;
 }
 
 
@@ -22,6 +31,8 @@
 
 @property (nonatomic, strong) NSMutableArray *nyxSections;
 @property (nonatomic, strong) NSMutableArray *nyxRowsForSections;
+
+@property (nonatomic, strong) ContentTableWithPeople *discussionTable;
 
 
 - (id)initWithRowHeight:(CGFloat)rowHeight;

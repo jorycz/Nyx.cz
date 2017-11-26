@@ -38,5 +38,8 @@
 + (NSString *)apiBookmarks;
 + (NSString *)apiBookmarksHistory;
 
++ (NSString *)apiMessagesForDiscussion:(NSString *)discussionId;
++ (NSString *)apiMessagesForDiscussion:(NSString *)discussionId loadMoreFromId:(NSString *)fromId;
+
 
 @end
