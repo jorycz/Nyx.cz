@@ -48,6 +48,8 @@ extern NSString* const kPeopleTableModeFeed;
 extern NSString* const kPeopleTableModeFeedDetail;
 extern NSString* const kPeopleTableModeMailbox;
 extern NSString* const kPeopleTableModeMailboxDetail;
+extern NSString* const kPeopleTableModeFriends;
+extern NSString* const kPeopleTableModeFriendsDetail;
 
 // API
 extern NSString* const kApiLoguser;
@@ -55,6 +57,8 @@ extern NSString* const kApiLogpass;
 
 // API - first row is always l and all below are l2
 extern NSString* const kApiBookmarks;
+extern NSString* const kApiBookmarksAll;
+extern NSString* const kApiBookmarksHistory;
 
 extern NSString* const kApiDiscussion;
 
@@ -79,6 +83,9 @@ extern NSString* const kApiMarket;
 extern NSString* const kApiPeople;
 extern NSString* const kApiPeopleStatus;
 extern NSString* const kApiPeopleAutocomplete;
+extern NSString* const kApiPeopleFriends;
+//extern NSString* const kApiPeopleFriendsActive;
+
 
 // Menu constants
 extern NSString* const kMenuOverview;

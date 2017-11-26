@@ -47,6 +47,16 @@
     return [NSString stringWithFormat:@"%@&nick=%@", [self defaultApiRequestWithL:kApiPeople andL2:kApiPeopleAutocomplete], nick];
 }
 
++ (NSString *)apiPeopleFriends
+{
+    return [NSString stringWithFormat:@"%@", [self defaultApiRequestWithL:kApiPeople andL2:kApiPeopleFriends]];
+}
+
+//+ (NSString *)apiPeopleFriendsActive
+//{
+//    return [NSString stringWithFormat:@"%@", [self defaultApiRequestWithL:kApiPeople andL2:kApiPeopleFriendsActive]];
+//}
+
 
 #pragma mark - FRIENDS FEED
 
@@ -113,6 +123,17 @@
     return params;
 }
 
+#pragma mark - BOOKMARKS
+
++ (NSString *)apiBookmarks
+{
+    return [NSString stringWithFormat:@"%@", [self defaultApiRequestWithL:kApiBookmarks andL2:kApiBookmarksAll]];
+}
+
++ (NSString *)apiBookmarksHistory
+{
+    return [NSString stringWithFormat:@"%@", [self defaultApiRequestWithL:kApiBookmarks andL2:kApiBookmarksHistory]];
+}
 
 
 @end

@@ -212,7 +212,7 @@
 
 - (void)mainButtonPressedLogout
 {
-    NSString *m = @"Opravdu chceš zrušit autorizaci?\nPro novou autorizaci bude nutné smazat součastný kód z účtu na nyxu přes web a zadat nový jako při prvním spuštění aplikace.r";
+    NSString *m = @"Opravdu chceš zrušit autorizaci?\nPro novou autorizaci bude nutné smazat součastný kód z účtu na nyxu přes web a zadat nový jako při prvním spuštění aplikace.";
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Zrušit autorizaci"
                                                                    message:m
                                                             preferredStyle:UIAlertControllerStyleAlert];

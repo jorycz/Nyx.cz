@@ -19,10 +19,6 @@
 }
 
 
-- (id)initWithRowHeight:(CGFloat)rowHeight;
-- (void)reloadTableData;
-
-
 @property (nonatomic, weak) UINavigationController *nController;
 
 @property (nonatomic, strong) NSMutableArray *nyxSections;
@@ -34,6 +30,10 @@
 @property (nonatomic, assign) BOOL canEditFirstRow;
 
 @property (nonatomic, strong) NSString *peopleTableMode;
+
+
+- (id)initWithRowHeight:(CGFloat)rowHeight;
+- (void)reloadTableData;
 
 
 @end

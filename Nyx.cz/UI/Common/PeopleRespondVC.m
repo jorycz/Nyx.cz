@@ -58,11 +58,17 @@
     self.table.allowsSelection = YES;
     self.table.canEditFirstRow = NO;
     self.table.nController = self.nController;
+    
+    // Set content to "DETAIL" - ignore cell tap in nested table (otherwise it would be infinite loop)
     if ([self.peopleRespondMode isEqualToString:kPeopleTableModeFeed]) {
         self.table.peopleTableMode = kPeopleTableModeFeedDetail;
     }
     if ([self.peopleRespondMode isEqualToString:kPeopleTableModeMailbox]) {
         self.table.peopleTableMode = kPeopleTableModeMailboxDetail;
+    }
+    if ([self.peopleRespondMode isEqualToString:kPeopleTableModeFriends]) {
+        self.table.peopleTableMode = kPeopleTableModeFriendsDetail;
+        self.title = @"Napsat zprávu";
     }
     
     self.bottomView = [[UIView alloc] init];
@@ -79,7 +85,7 @@
     [self.sendButton setImage:[UIImage imageNamed:@"send"] forState:(UIControlStateNormal)];
     [self.sendButton addTarget:self action:@selector(sendResponse) forControlEvents:UIControlEventTouchUpInside];
     
-    if ([self.peopleRespondMode isEqualToString:kPeopleTableModeMailbox]) {
+    if ([self.peopleRespondMode isEqualToString:kPeopleTableModeMailbox] || [self.peopleRespondMode isEqualToString:kPeopleTableModeFriends]) {
         [self rightButtonIsAttachment:NO];
     }
 }
@@ -137,7 +143,7 @@
         [self getAvatar];
         [self getFeedDetailPostData];
     }
-    if ([self.peopleRespondMode isEqualToString:kPeopleTableModeMailbox]) {
+    if ([self.peopleRespondMode isEqualToString:kPeopleTableModeMailbox] || [self.peopleRespondMode isEqualToString:kPeopleTableModeFriends]) {
         // All data required is already in properties. No loading needed to respond someone to mail.
         [self configureTableWithJson:nil];
     }
@@ -201,7 +207,7 @@
             NSString *apiRequest = [ApiBuilder apiFeedOfFriendsPostCommentAs:self.nick withId:self.postId sendMessage:self.responseView.text];
             [sc downloadDataForApiRequest:apiRequest];
         }
-        if ([self.peopleRespondMode isEqualToString:kPeopleTableModeMailbox])
+        if ([self.peopleRespondMode isEqualToString:kPeopleTableModeMailbox] || [self.peopleRespondMode isEqualToString:kPeopleTableModeFriends])
         {
             sc.identifitaion = _postIdentificationPostMailboxMessage;
             if (!self.attachmentName) {
@@ -313,7 +319,7 @@
         }
     }
     // Response VC for Mailbox response.
-    if ([self.peopleRespondMode isEqualToString:kPeopleTableModeMailbox])
+    if ([self.peopleRespondMode isEqualToString:kPeopleTableModeMailbox] || [self.peopleRespondMode isEqualToString:kPeopleTableModeFriends])
     {
         [self.table.nyxSections addObjectsFromArray:@[kDisableTableSections]];
         [self.table.nyxRowsForSections addObjectsFromArray:@[@[self.postData]]];

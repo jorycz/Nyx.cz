@@ -19,6 +19,8 @@
 // API URLs
 + (NSString *)apiPeopleStatusForNick:(NSString *)value;
 + (NSString *)apiPeopleAutocompleteForNick:(NSString *)nick;
++ (NSString *)apiPeopleFriends;
+//+ (NSString *)apiPeopleFriendsActive;
 
 + (NSString *)apiFeedOfFriends;
 + (NSString *)apiFeedOfFriendsPostsFor:(NSString *)nick withId:(NSString *)postId;
@@ -32,6 +34,9 @@
 + (NSString *)apiMailboxSendTo:(NSString *)recipient message:(NSString *)message;
 + (NSString *)apiMailboxDeleteMessage:(NSString *)messageId;
 + (NSDictionary *)apiMailboxSendWithAttachmentTo:(NSString *)recipient message:(NSString *)message;
+
++ (NSString *)apiBookmarks;
++ (NSString *)apiBookmarksHistory;
 
 
 @end

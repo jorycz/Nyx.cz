@@ -55,6 +55,13 @@
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
 {
     [super setSelected:selected animated:animated];
+    _separator.backgroundColor = [UIColor colorWithWhite:.5 alpha:.5];
+}
+
+- (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated
+{
+    [super setHighlighted:highlighted animated:animated];
+    _separator.backgroundColor = [UIColor colorWithWhite:.5 alpha:.5];
 }
 
 - (void)layoutSubviews
@@ -73,6 +80,7 @@
     _nickLabel.text = self.nick;
     _bodyView.attributedText = self.bodyText;
     self.backgroundColor = [UIColor whiteColor];
+    
     if (self.mailboxDirection && [self.mailboxDirection isEqualToString:@"to"]) {
         _avatarView.alpha = .4;
     } else {
@@ -84,6 +92,9 @@
         self.backgroundColor = [UIColor whiteColor];
     }
     if (self.commentsCount && [self.commentsCount intValue] > 0) {
+        self.backgroundColor = COLOR_SYSTEM_TURQUOISE_LIGHT;
+    }
+    if (self.activeFriendStatus) {
         self.backgroundColor = COLOR_SYSTEM_TURQUOISE_LIGHT;
     }
     [self getAvatar];

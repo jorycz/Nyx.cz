@@ -8,10 +8,19 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ContentPeople : UIView
+#import "ContentTableWithPeople.h"
+#import "ServerConnector.h"
 
 
-@property (nonatomic , strong) UINavigationController *nController;
+@interface ContentPeople : UIView <ServerConnectorDelegate>
+{
+    CGFloat _widthForTableCellBodyTextView;
+    BOOL _firstInit;
+}
+
+
+@property (nonatomic, strong) UINavigationController *nController;
+@property (nonatomic, strong) ContentTableWithPeople *table;
 
 
 @end

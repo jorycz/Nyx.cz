@@ -28,6 +28,8 @@ NSString* const kPeopleTableModeFeed = @"kPeopleTableModeFeed";
 NSString* const kPeopleTableModeFeedDetail = @"kPeopleTableModeFeedDetail";
 NSString* const kPeopleTableModeMailbox = @"kPeopleTableModeMailbox";
 NSString* const kPeopleTableModeMailboxDetail = @"kPeopleTableModeMailboxDetail";
+NSString* const kPeopleTableModeFriends = @"kPeopleTableModeFriends";
+NSString* const kPeopleTableModeFriendsDetail = @"kPeopleTableModeFriendsDetail";
 
 // API
 NSString* const kApiLoguser = @"loguser";
@@ -35,6 +37,8 @@ NSString* const kApiLogpass = @"logpass";
 
 // API - first row is always l and all below are l2
 NSString* const kApiBookmarks = @"bookmarks";
+NSString* const kApiBookmarksAll = @"all";
+NSString* const kApiBookmarksHistory = @"history";
 
 NSString* const kApiDiscussion = @"discussion";
 
@@ -59,6 +63,8 @@ NSString* const kApiMarket = @"market";
 NSString* const kApiPeople = @"people";
 NSString* const kApiPeopleStatus = @"status";
 NSString* const kApiPeopleAutocomplete = @"autocomplete";
+NSString* const kApiPeopleFriends = @"friends";
+//NSString* const kApiPeopleFriendsActive = @"active_friends";
 
 // Menu constants
 NSString* const kMenuOverview = @"Přehled";

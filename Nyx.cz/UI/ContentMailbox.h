@@ -21,7 +21,7 @@
 }
 
 
-@property (nonatomic , strong) UINavigationController *nController;
+@property (nonatomic, strong) UINavigationController *nController;
 @property (nonatomic, strong) ContentTableWithPeople *table;
 
 

@@ -8,10 +8,18 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ContentBookmarks : UIView
+#import "ContentTableWithList.h"
+#import "ServerConnector.h"
+
+
+@interface ContentBookmarks : UIView <ServerConnectorDelegate>
+{
+    BOOL _firstInit;
+}
 
 
 @property (nonatomic , strong) UINavigationController *nController;
+@property (nonatomic, strong) ContentTableWithList *table;
 
 
 @end

@@ -111,20 +111,33 @@
     NSDictionary *cellData = [[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
     if (cellData)
     {
-        NSAttributedString *str = [[self.nyxPostsRowBodyTexts objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
-        cell.bodyText = str;
+        // remove all custom params
+        cell.activeFriendStatus = nil;
+        cell.commentsCount = nil;
+        cell.mailboxDirection = nil;
+        cell.mailboxMailStatus = nil;
         
         NSString *nick;
-        if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeed] || [self.peopleTableMode isEqualToString:kPeopleTableModeFeedDetail]) {
+        if ([self.peopleTableMode isEqualToString:kPeopleTableModeFriends] || [self.peopleTableMode isEqualToString:kPeopleTableModeFriendsDetail])
+        {
+            nick = [cellData objectForKey:@"nick"];
+            [cellData objectForKey:@"active"] ? cell.activeFriendStatus = @"yes" : NULL ;
+        }
+        if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeed] || [self.peopleTableMode isEqualToString:kPeopleTableModeFeedDetail])
+        {
             nick = [cellData objectForKey:@"nick"];
             cell.commentsCount = [cellData objectForKey:@"comments_count"];
         }
-        if ([self.peopleTableMode isEqualToString:kPeopleTableModeMailbox] || [self.peopleTableMode isEqualToString:kPeopleTableModeMailboxDetail]) {
+        if ([self.peopleTableMode isEqualToString:kPeopleTableModeMailbox] || [self.peopleTableMode isEqualToString:kPeopleTableModeMailboxDetail])
+        {
             nick = [cellData objectForKey:@"other_nick"];
             cell.mailboxDirection = [cellData objectForKey:@"direction"];
             cell.mailboxMailStatus = [cellData objectForKey:@"message_status"];
         }
         cell.nick = nick;
+        
+        // Must be always set!
+        cell.bodyText = [[self.nyxPostsRowBodyTexts objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
         
         [cell configureCellForIndexPath:indexPath];
     }
@@ -133,9 +146,13 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    CGFloat f = [[[self.nyxPostsRowHeights objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] floatValue];
-    // + 30 = Nick name at the top of the Cell.
-    return f + 30;
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeFriends] || [self.peopleTableMode isEqualToString:kPeopleTableModeFriendsDetail]) {
+        return 70;
+    } else {
+        CGFloat f = [[[self.nyxPostsRowHeights objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] floatValue];
+        // + 30 = Nick name at the top of the Cell.
+        return f + 30;
+    }
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
@@ -155,18 +172,25 @@
     
     NSString *nick;
     NSString *postId;
+    CGFloat f;
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeFriends] || [self.peopleTableMode isEqualToString:kPeopleTableModeFriendsDetail]) {
+        nick = [userPostData objectForKey:@"nick"];
+        postId = @"666";
+        f = 70;
+    }
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeed] || [self.peopleTableMode isEqualToString:kPeopleTableModeFeedDetail]) {
         nick = [userPostData objectForKey:@"nick"];
         postId = [userPostData objectForKey:@"id_update"];
+        f = [[[self.nyxPostsRowHeights objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] floatValue];
     }
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeMailbox] || [self.peopleTableMode isEqualToString:kPeopleTableModeMailboxDetail]) {
         nick = [userPostData objectForKey:@"other_nick"];
         postId = [userPostData objectForKey:@"id_mail"];
+        f = [[[self.nyxPostsRowHeights objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] floatValue];
     }
     NSAttributedString *str = [[self.nyxPostsRowBodyTexts objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
-    CGFloat f = [[[self.nyxPostsRowHeights objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] floatValue];
     
-    if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeed] || [self.peopleTableMode isEqualToString:kPeopleTableModeMailbox])
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeed] || [self.peopleTableMode isEqualToString:kPeopleTableModeMailbox] || [self.peopleTableMode isEqualToString:kPeopleTableModeFriends])
     {
         PeopleRespondVC *response = [[PeopleRespondVC alloc] init];
         response.nick = nick;
@@ -208,7 +232,8 @@
     return NO;
 }
 
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
     if (editingStyle == UITableViewCellEditingStyleDelete)
     {
         _indexPathToDelete = indexPath;
