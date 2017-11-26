@@ -140,7 +140,7 @@
         if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion] || [self.peopleTableMode isEqualToString:kPeopleTableModeDiscussionDetail])
         {
             nick = [cellData objectForKey:@"nick"];
-            cell.discussionPostStatus = [cellData objectForKey:@"new"];
+            cell.discussionNewPost = [cellData objectForKey:@"new"];
         }
         cell.nick = nick;
         

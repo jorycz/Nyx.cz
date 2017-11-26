@@ -97,7 +97,7 @@
     if (self.activeFriendStatus) {
         self.backgroundColor = COLOR_SYSTEM_TURQUOISE_LIGHT;
     }
-    if (self.discussionPostStatus && [self.discussionPostStatus isEqualToString:@"new"]) {
+    if (self.discussionNewPost && [self.discussionNewPost isEqualToString:@"yes"]) {
         self.backgroundColor = COLOR_SYSTEM_TURQUOISE_LIGHT;
     }
     [self getAvatar];
