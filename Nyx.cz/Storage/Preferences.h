@@ -21,6 +21,7 @@
 
 + (NSString *)lastUserPosition:(NSString *)value;
 + (NSString *)preferredStartingLocation:(NSString *)value;
++ (NSString *)showImagesInlineInPost:(NSString *)value;
 
 
 @end

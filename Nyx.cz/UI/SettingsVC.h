@@ -7,6 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SettingsVCCell.h"
+
 
 @interface SettingsVC : UIViewController <UITableViewDataSource, UITableViewDelegate>
 

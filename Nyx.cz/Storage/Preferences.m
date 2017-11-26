@@ -99,6 +99,18 @@
     }
 }
 
++ (NSString *)showImagesInlineInPost:(NSString *)value
+{
+    NSString *key = @"_INLINEIMAGES";
+    if (value) {
+        [[NSUserDefaults standardUserDefaults] setValue:value forKey:key];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        return nil;
+    } else {
+        return [[NSUserDefaults standardUserDefaults] stringForKey:key];
+    }
+}
+
 
 @end
 

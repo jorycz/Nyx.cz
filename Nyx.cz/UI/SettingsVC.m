@@ -23,8 +23,14 @@
 {
     self = [super init];
     if (self) {
-        self.menuEntries = @[@"Spočítat velikost cache", @"Počáteční lokace", @"Smazat nastavení"];
-        self.menuSubtitles = @[@"Spočítá a případně umožní vymazat obsah mezipaměti.", @"", @"Smaže veškeré nastavení kromě autorizace."];
+        self.menuEntries = @[@"Spočítat velikost cache",
+                             @"Počáteční lokace",
+                             @"Smazat nastavení",
+                             @"Zobrazovat obrázky v textu"];
+        self.menuSubtitles = @[@"Spočítá a případně umožní vymazat obsah mezipaměti.",
+                               @"",
+                               @"Smaže veškeré nastavení kromě autorizace.",
+                               @"Zobrazovat v postech obrázky nebo URL."];
     }
     return self;
 }
@@ -93,10 +99,10 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *cellIdForReuse = @"uniqCell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdForReuse];
+    SettingsVCCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdForReuse];
     if (cell == nil)
     {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdForReuse];
+        cell = [[SettingsVCCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdForReuse];
         cell.backgroundColor = [UIColor clearColor];
         cell.textLabel.font = [UIFont boldSystemFontOfSize:22];
     }
@@ -104,6 +110,9 @@
     cell.tag = (int)indexPath.row;
     cell.textLabel.text = [self.menuEntries objectAtIndex:indexPath.row];
     cell.accessoryType = UITableViewCellAccessoryNone;
+    cell.selectionStyle = UITableViewCellSelectionStyleDefault;
+    [cell.settingsSwitch removeFromSuperview];
+    cell.settingsSwitch = nil;
     
     NSString *subtitle = [self.menuSubtitles objectAtIndex:indexPath.row];
     [subtitle length] > 0 ? cell.detailTextLabel.text = subtitle : NULL ;
@@ -112,6 +121,11 @@
         NSString *startingLocation = [Preferences preferredStartingLocation:nil];
         NSString *missingLocation = [NSString stringWithFormat:@"Neurčena. Poslední navštívená: %@", [Preferences lastUserPosition:nil]];
         (startingLocation && [startingLocation length] > 0) ? [cell.detailTextLabel setText:startingLocation] : [cell.detailTextLabel setText:missingLocation];
+    }
+    
+    if (indexPath.row == 3) {
+        cell.settingsSwitch = [self placeSwitchWithTag:3];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     
     return cell;
@@ -130,6 +144,8 @@
         case 2:
             [self deleteSettings];
             break;
+        case 3:
+            break;
         default:
             break;
     }
@@ -143,6 +159,29 @@
 - (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section
 {
     view.tintColor = [UIColor colorWithRed:1 green:0 blue:0 alpha:.9];
+}
+
+#pragma mark - SWITCH
+
+- (UISwitch *)placeSwitchWithTag:(NSInteger)tag
+{
+    UISwitch *s = [[UISwitch alloc] init];
+    [s addTarget:self action:@selector(switchChanged:) forControlEvents:(UIControlEventValueChanged)];
+    s.tag = tag;
+    
+    // INITIAL STATE
+    if (tag == 3)
+        [[Preferences showImagesInlineInPost:nil] length] > 0 ? [s setOn:YES] : [s setOn:NO] ;
+    
+    return s;
+}
+
+- (void)switchChanged:(id)sender
+{
+    UISwitch *s = (UISwitch *)sender;
+    
+    if (s.tag == 3)
+        s.isOn ? [Preferences showImagesInlineInPost:@"yes"] : [Preferences showImagesInlineInPost:@""] ;
 }
 
 #pragma mark - ACTIONS
