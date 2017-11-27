@@ -21,7 +21,8 @@
 #define POST_NOTIFICATION_MAILBOX_LOAD_FROM(s) [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMailboxLoadFrom object:nil userInfo:@{@"nKey" : (s)}];
 #define POST_NOTIFICATION_MAILBOX_NEW_MESSAGE_FOR(s) [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMailboxNewMessageFor object:nil userInfo:@{@"nKey" : (s)}];
 
-#define POST_NOTIFICATION_DISCUSSION_LOAD_FROM(s) [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDiscussionLoadFrom object:nil userInfo:@{@"nKey" : (s)}];
+#define POST_NOTIFICATION_DISCUSSION_LOAD_OLDER_FROM(s) [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDiscussionLoadOlderFrom object:nil userInfo:@{@"nKey" : (s)}];
+#define POST_NOTIFICATION_DISCUSSION_LOAD_NEWER_FROM(s) [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDiscussionLoadNewerFrom object:nil userInfo:@{@"nKey" : (s)}];
 
 #define PERFSTART NSDate *now = [NSDate date];
 #define PERFSTOP NSLog(@"%@ / %@: TIME : %f", [self class], NSStringFromSelector(_cmd), [[NSDate date] timeIntervalSinceDate:now]);
@@ -46,7 +47,8 @@ extern NSString* const kNotificationFriendsFeedChanged;
 extern NSString* const kNotificationMailboxChanged;
 extern NSString* const kNotificationMailboxLoadFrom;
 extern NSString* const kNotificationMailboxNewMessageFor;
-extern NSString* const kNotificationDiscussionLoadFrom;
+extern NSString* const kNotificationDiscussionLoadOlderFrom;
+extern NSString* const kNotificationDiscussionLoadNewerFrom;
 
 extern NSString* const kPeopleTableModeFeed;
 extern NSString* const kPeopleTableModeFeedDetail;
@@ -68,6 +70,8 @@ extern NSString* const kApiBookmarksHistory;
 
 extern NSString* const kApiDiscussion;
 extern NSString* const kApiDiscussionMessages;
+extern NSString* const kApiDiscussionSend;
+extern NSString* const kApiDiscussionDelete;
 
 extern NSString* const kApiEvents;
 
@@ -91,7 +95,6 @@ extern NSString* const kApiPeople;
 extern NSString* const kApiPeopleStatus;
 extern NSString* const kApiPeopleAutocomplete;
 extern NSString* const kApiPeopleFriends;
-//extern NSString* const kApiPeopleFriendsActive;
 
 
 // Menu constants

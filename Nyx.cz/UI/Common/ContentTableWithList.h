@@ -23,7 +23,8 @@
     BOOL _firstInit;
     
     NSMutableString *_currentDiscussionId;
-    NSString *_serverIdentificationDiscussion, *_serverIdentificationDiscussionFromId;
+    
+    NSString *_serverIdentificationDiscussion, *_serverIdentificationDiscussionFromId, *_serverIdentificationDiscussionRefreshAfterNewPost;
 }
 
 

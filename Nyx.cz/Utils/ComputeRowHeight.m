@@ -46,7 +46,8 @@
             
         }
         
-        if (inlineImages && [inlineImages length] > 0) {
+        if (inlineImages && [inlineImages length] > 0)
+        {
             [self replaceLinkWithAttachments];
         }
         

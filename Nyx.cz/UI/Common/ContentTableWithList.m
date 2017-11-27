@@ -33,6 +33,7 @@
         _currentDiscussionId = [[NSMutableString alloc] init];
         _serverIdentificationDiscussion = @"discussion";
         _serverIdentificationDiscussionFromId = @"discussionFromId";
+        _serverIdentificationDiscussionRefreshAfterNewPost = @"refreshAfterNewPost";
     }
     return self;
 }
@@ -53,7 +54,8 @@
 {
     [super viewDidLoad];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadMorePostsFromId:) name:kNotificationDiscussionLoadFrom object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadMorePostsFromId:) name:kNotificationDiscussionLoadOlderFrom object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadNewerPostsFromId:) name:kNotificationDiscussionLoadNewerFrom object:nil];
     
     // Uncomment the following line to preserve selection between presentations.
     self.clearsSelectionOnViewWillAppear = NO;
@@ -161,7 +163,7 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     NSDictionary *userPostData = [[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
-    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), userPostData);
+//    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), userPostData);
     
     self.discussionTable.title = [userPostData objectForKey:@"jmeno"];
     
@@ -186,10 +188,19 @@
 
 #pragma mark - TABLE ACTIONS & DATA
 
+- (void)loadNewerPostsFromId:(NSNotification *)sender
+{
+    NSString *fromID = [[sender userInfo] objectForKey:@"nKey"];
+    NSString *api = [ApiBuilder apiMessagesForDiscussion:_currentDiscussionId loadPreviousFromId:fromID];
+    ServerConnector *sc = [[ServerConnector alloc] init];
+    sc.identifitaion = _serverIdentificationDiscussionRefreshAfterNewPost;
+    sc.delegate = self;
+    [sc downloadDataForApiRequest:api];
+}
+
 - (void)getDataForDiscussion:(NSString *)disId
 {
     [self placeLoadingView];
-    
     [_currentDiscussionId setString:disId];
     
     NSString *api = [ApiBuilder apiMessagesForDiscussion:_currentDiscussionId];
@@ -240,12 +251,7 @@
             else
             {
 //                NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), jp.jsonDictionary);
-                if ([identification isEqualToString:_serverIdentificationDiscussion]) {
-                    [self configureTableWithJson:jp.jsonDictionary addData:NO];
-                }
-                if ([identification isEqualToString:_serverIdentificationDiscussionFromId]) {
-                    [self configureTableWithJson:jp.jsonDictionary addData:YES];
-                }
+                [self configureTableWithJson:jp.jsonDictionary withIdentification:identification];
             }
         }
     }
@@ -262,9 +268,12 @@
 
 #pragma mark - DISCUSSION TABLE CONFIGURATION - DATA
 
-- (void)configureTableWithJson:(NSDictionary *)nyxDictionary addData:(BOOL)addData
+- (void)configureTableWithJson:(NSDictionary *)nyxDictionary withIdentification:(NSString *)identification
 {
-    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), nyxDictionary);
+//    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), nyxDictionary);
+    
+    // To forward all information about current discussion club. NEEDED ONLY FOR DISCUSSION CLUB TABLES.
+    self.discussionTable.disscussionClubData = [nyxDictionary objectForKey:@"discussion"];
     
     NSMutableArray *postDictionaries = [[NSMutableArray alloc] init];
     [postDictionaries addObjectsFromArray:[nyxDictionary objectForKey:@"data"]];
@@ -292,9 +301,9 @@
             [tempArrayForRowBodyText addObject:rowHeight.attributedText];
         }
         
-        if (addData)
+        if ([identification isEqualToString:_serverIdentificationDiscussionFromId])
         {
-            // Add new posts complete data to previous complete posts data.
+            // Add new posts data at the END of previous posts data.
             NSMutableArray *previousNyxRowsForSections = [[NSMutableArray alloc] initWithArray:[self.discussionTable.nyxRowsForSections objectAtIndex:0]];
             [previousNyxRowsForSections addObjectsFromArray:tempArrayForRowSections];
             [self.discussionTable.nyxRowsForSections removeAllObjects];
@@ -310,8 +319,9 @@
             [self.discussionTable.nyxPostsRowBodyTexts removeAllObjects];
             [self.discussionTable.nyxPostsRowBodyTexts addObjectsFromArray:@[previousNyxPostsRowBodyTexts]];
         }
-        else
+        if ([identification isEqualToString:_serverIdentificationDiscussion])
         {
+            // First discussion load - remove all data and start again
             [self.discussionTable.nyxRowsForSections removeAllObjects];
             [self.discussionTable.nyxRowsForSections addObjectsFromArray:@[tempArrayForRowSections]];
             
@@ -321,20 +331,38 @@
             [self.discussionTable.nyxPostsRowBodyTexts removeAllObjects];
             [self.discussionTable.nyxPostsRowBodyTexts addObjectsFromArray:@[tempArrayForRowBodyText]];
         }
+        if ([identification isEqualToString:_serverIdentificationDiscussionRefreshAfterNewPost])
+        {
+            // Add new posts data at the BEGINNING of previous posts data.
+            [tempArrayForRowSections addObjectsFromArray:[self.discussionTable.nyxRowsForSections objectAtIndex:0]];
+            [self.discussionTable.nyxRowsForSections removeAllObjects];
+            [self.discussionTable.nyxRowsForSections addObjectsFromArray:@[tempArrayForRowSections]];
+            
+            [tempArrayForRowHeights addObjectsFromArray:[self.discussionTable.nyxPostsRowHeights objectAtIndex:0]];
+            [self.discussionTable.nyxPostsRowHeights removeAllObjects];
+            [self.discussionTable.nyxPostsRowHeights addObjectsFromArray:@[tempArrayForRowHeights]];
+            
+            [tempArrayForRowBodyText addObjectsFromArray:[self.discussionTable.nyxPostsRowBodyTexts objectAtIndex:0]];
+            [self.discussionTable.nyxPostsRowBodyTexts removeAllObjects];
+            [self.discussionTable.nyxPostsRowBodyTexts addObjectsFromArray:@[tempArrayForRowBodyText]];
+        }
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.nController.topViewController.navigationItem.rightBarButtonItem setEnabled:YES];
-            if (!addData) {
+            if ([identification isEqualToString:_serverIdentificationDiscussion]) {
+                [self.discussionTable reloadTableData];
                 [self.nController pushViewController:self.discussionTable animated:YES];
                 [self removeLoadingView];
             } else {
                 [self.discussionTable reloadTableData];
             }
         });
+    } else {
+        PRESENT_ERROR(@"Error", @"No data from server.")
     }
 }
 
-#pragma mark - DISCUSSION TABLE INIT
+#pragma mark - TABLE INIT - DISCUSSION
 
 - (void)discussionTableInit
 {
@@ -342,6 +370,7 @@
     self.discussionTable = [[ContentTableWithPeople alloc] initWithRowHeight:70];
     self.discussionTable.nController = self.nController;
     self.discussionTable.allowsSelection = YES;
+    self.discussionTable.canEditFirstRow = YES;
     self.discussionTable.peopleTableMode = kPeopleTableModeDiscussion;
     
     // - 65 is there because there is big avatar left of table cell body text view.

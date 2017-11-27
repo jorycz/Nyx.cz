@@ -186,6 +186,8 @@
     [sessionDataTask resume];
 }
 
+#pragma mark - DELEGATE
+
 - (void)downloadDidEndWithData:(NSData *)data forIdentification:(NSString *)identification
 {
     if (self.delegate && [self.delegate respondsToSelector:@selector(downloadFinishedWithData:withIdentification:)])

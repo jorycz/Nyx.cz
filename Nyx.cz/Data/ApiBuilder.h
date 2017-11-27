@@ -20,7 +20,6 @@
 + (NSString *)apiPeopleStatusForNick:(NSString *)value;
 + (NSString *)apiPeopleAutocompleteForNick:(NSString *)nick;
 + (NSString *)apiPeopleFriends;
-//+ (NSString *)apiPeopleFriendsActive;
 
 + (NSString *)apiFeedOfFriends;
 + (NSString *)apiFeedOfFriendsPostsFor:(NSString *)nick withId:(NSString *)postId;
@@ -40,6 +39,10 @@
 
 + (NSString *)apiMessagesForDiscussion:(NSString *)discussionId;
 + (NSString *)apiMessagesForDiscussion:(NSString *)discussionId loadMoreFromId:(NSString *)fromId;
++ (NSString *)apiMessagesForDiscussion:(NSString *)discussionId loadPreviousFromId:(NSString *)fromId;
++ (NSString *)apiDiscussionSendMessage:(NSString *)discussionId message:(NSString *)message;
++ (NSDictionary *)apiDiscussionSendWithAttachment:(NSString *)discussionId message:(NSString *)message;
++ (NSString *)apiDiscussionDeleteMessage:(NSString *)discussionId postId:(NSString *)postId;
 
 
 @end

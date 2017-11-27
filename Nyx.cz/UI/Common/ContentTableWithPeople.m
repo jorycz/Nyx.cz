@@ -59,6 +59,12 @@
     [_table setDelegate:self];
     [_table setRowHeight:_rh];
     _table.allowsSelection = self.allowsSelection;
+    
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion]) {
+        self.nController.topViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
+                                                                                                                             target:self
+                                                                                                                             action:@selector(createNewPostToDiscussion)];
+    }
 }
 
 - (void)viewWillLayoutSubviews
@@ -181,11 +187,7 @@
     NSString *nick;
     NSString *postId;
     CGFloat f = 2.0f;
-    if ([self.peopleTableMode isEqualToString:kPeopleTableModeFriends] || [self.peopleTableMode isEqualToString:kPeopleTableModeFriendsDetail]) {
-        nick = [userPostData objectForKey:@"nick"];
-        postId = @"666";
-        f = 70;
-    }
+    
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeed] || [self.peopleTableMode isEqualToString:kPeopleTableModeFeedDetail]) {
         nick = [userPostData objectForKey:@"nick"];
         postId = [userPostData objectForKey:@"id_update"];
@@ -196,20 +198,31 @@
         postId = [userPostData objectForKey:@"id_mail"];
         f = [[[self.nyxPostsRowHeights objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] floatValue];
     }
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeFriends] || [self.peopleTableMode isEqualToString:kPeopleTableModeFriendsDetail]) {
+        nick = [userPostData objectForKey:@"nick"];
+        postId = @"666";
+        f = 70;
+    }
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion] || [self.peopleTableMode isEqualToString:kPeopleTableModeDiscussionDetail]) {
+        nick = [userPostData objectForKey:@"nick"];
+        postId = [userPostData objectForKey:@"id_wu"];
+        f = [[[self.nyxPostsRowHeights objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] floatValue];
+    }
     NSAttributedString *str = [[self.nyxPostsRowBodyTexts objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
     
-    if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeed] || [self.peopleTableMode isEqualToString:kPeopleTableModeMailbox] || [self.peopleTableMode isEqualToString:kPeopleTableModeFriends])
+    // RESPOND VIEW --------
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeed] ||
+        [self.peopleTableMode isEqualToString:kPeopleTableModeMailbox] ||
+        [self.peopleTableMode isEqualToString:kPeopleTableModeFriends] ||
+        [self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion])
     {
-        PeopleRespondVC *response = [[PeopleRespondVC alloc] init];
-        response.nick = nick;
-        response.bodyText = str;
-        response.bodyHeight = f;
-        response.postId = postId;
-        response.postData = userPostData;
-        response.nController = self.nController;
-        response.peopleRespondMode = self.peopleTableMode;
-        [self.nController pushViewController:response animated:YES];
+        [self showRespondViewWithNick:nick
+                             bodyText:str
+                           bodyHeight:f
+                               postId:postId
+                         userPostData:userPostData];
     }
+    // ---------------------
     
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeedDetail]  || [self.peopleTableMode isEqualToString:kPeopleTableModeMailboxDetail]) {
         ContentTableWithPeopleCell *cell = [tableView cellForRowAtIndexPath:indexPath];
@@ -219,8 +232,11 @@
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Delete FEED or just COMMENTS in FEED
-    if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeed] || [self.peopleTableMode isEqualToString:kPeopleTableModeFeedDetail]) {
+    // Delete (own posts!) from Friends FEED, COMMENTS in FEED, DISCUSSION
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeed] ||
+        [self.peopleTableMode isEqualToString:kPeopleTableModeFeedDetail] ||
+        [self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion])
+    {
         NSString *nickForPost = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"nick"];
         if ([[[Preferences auth_nick:nil] uppercaseString] isEqualToString:nickForPost]) {
             if (indexPath.section == 0 && indexPath.row == 0 && !self.canEditFirstRow) {
@@ -256,18 +272,21 @@
             NSDictionary *cellData = [[self.nyxRowsForSections objectAtIndex:0] objectAtIndex:0];
             NSString *id_update = [cellData objectForKey:@"id_update"];
             // Deleting by key id_comment
-            [self deleteCommentFor:[Preferences auth_nick:nil] withId:id_update commentId:postToDelete];
+            [self deleteCommentOnFriendFeedFor:[Preferences auth_nick:nil] withId:id_update commentId:postToDelete];
         }
-        
         if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeed]) {
             // Deleting MAIN POST by key id_update
             NSString *postToDelete = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"id_update"];
-            [self deletePostFor:[Preferences auth_nick:nil] withId:postToDelete];
+            [self deleteFriendFeedPostFor:[Preferences auth_nick:nil] withId:postToDelete];
         }
-        
         if ([self.peopleTableMode isEqualToString:kPeopleTableModeMailbox]) {
             NSString *postToDelete = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"id_mail"];
             [self deleteMailMessageWithId:postToDelete];
+        }
+        if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion]) {
+            NSString *discussionId = [self.disscussionClubData objectForKey:@"id_klub"];
+            NSString *postToDelete = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"id_wu"];
+            [self deleteDiscussionPostFrom:discussionId withId:postToDelete];
         }
         
     } else if (editingStyle == UITableViewCellEditingStyleInsert) {
@@ -275,9 +294,45 @@
     }
 }
 
+#pragma mark - NEW POST TO DISCUSSION
+
+- (void)createNewPostToDiscussion
+{
+    NSString *firstPostId = [[[self.nyxRowsForSections objectAtIndex:0] objectAtIndex:0] objectForKey:@"id_wu"];
+    NSString *clubDescription = [NSString stringWithFormat:@"%@\n%@",
+                                 [self.disscussionClubData objectForKey:@"name_main"],
+                                 [self.disscussionClubData objectForKey:@"name_sub"]];
+    NSAttributedString *club = [[NSAttributedString alloc] initWithString:clubDescription];
+    [self showRespondViewWithNick:@""
+                         bodyText:club
+                       bodyHeight:45
+                           postId:firstPostId
+                     userPostData:@{}];
+}
+
 #pragma mark - TABLE ACTIONS - FEED
 
-- (void)deleteCommentFor:(NSString *)nick withId:(NSString *)postId commentId:(NSString *)commentId
+- (void)showRespondViewWithNick:(NSString *)nick
+                       bodyText:(NSAttributedString *)bodyText
+                     bodyHeight:(CGFloat)f
+                         postId:(NSString *)postId
+                   userPostData:(NSDictionary *)userPostData
+{
+    PeopleRespondVC *response = [[PeopleRespondVC alloc] init];
+    response.nick = nick;
+    response.bodyText = bodyText;
+    response.bodyHeight = f;
+    response.postId = postId;
+    // --- Needed only for discussion club -------
+    response.discussionId = [self.disscussionClubData objectForKey:@"id_klub"];
+    // -------------------------------------------
+    response.postData = userPostData;
+    response.nController = self.nController;
+    response.peopleRespondMode = self.peopleTableMode;
+    [self.nController pushViewController:response animated:YES];
+}
+
+- (void)deleteCommentOnFriendFeedFor:(NSString *)nick withId:(NSString *)postId commentId:(NSString *)commentId
 {
     NSString *api = [ApiBuilder apiFeedOfFriendsDeleteCommentAs:nick withId:postId commentId:commentId];
     ServerConnector *sc = [[ServerConnector alloc] init];
@@ -286,7 +341,7 @@
     [sc downloadDataForApiRequest:api];
 }
 
-- (void)deletePostFor:(NSString *)nick withId:(NSString *)postId
+- (void)deleteFriendFeedPostFor:(NSString *)nick withId:(NSString *)postId
 {
     NSString *api = [ApiBuilder apiFeedOfFriendsDeletePostAs:nick withId:postId];
     ServerConnector *sc = [[ServerConnector alloc] init];
@@ -294,6 +349,25 @@
     sc.delegate = self;
     [sc downloadDataForApiRequest:api];
 }
+
+- (void)deleteMailMessageWithId:(NSString *)messageId
+{
+    NSString *api = [ApiBuilder apiMailboxDeleteMessage:messageId];
+    ServerConnector *sc = [[ServerConnector alloc] init];
+    sc.identifitaion = nil;
+    sc.delegate = self;
+    [sc downloadDataForApiRequest:api];
+}
+
+- (void)deleteDiscussionPostFrom:(NSString *)discussionId withId:(NSString *)postId
+{
+    NSString *api = [ApiBuilder apiDiscussionDeleteMessage:discussionId postId:postId];
+    ServerConnector *sc = [[ServerConnector alloc] init];
+    sc.identifitaion = nil;
+    sc.delegate = self;
+    [sc downloadDataForApiRequest:api];
+}
+
 
 #pragma mark - TABLE ACTIONS when SCROLL REACH END (mailbox, discussion) - LOAD MORE
 
@@ -313,18 +387,9 @@
         {
             NSString *fromID = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"id_wu"];
             [self placeLoadingView];
-            POST_NOTIFICATION_DISCUSSION_LOAD_FROM(fromID)
+            POST_NOTIFICATION_DISCUSSION_LOAD_OLDER_FROM(fromID)
         }
     }
-}
-
-- (void)deleteMailMessageWithId:(NSString *)messageId
-{
-    NSString *api = [ApiBuilder apiMailboxDeleteMessage:messageId];
-    ServerConnector *sc = [[ServerConnector alloc] init];
-    sc.identifitaion = nil;
-    sc.delegate = self;
-    [sc downloadDataForApiRequest:api];
 }
 
 #pragma mark - SERVER DELEGATE
@@ -361,7 +426,8 @@
                     [[self.nyxRowsForSections objectAtIndex:_indexPathToDelete.section] removeObjectAtIndex:_indexPathToDelete.row];
                     [[self.nyxPostsRowHeights objectAtIndex:_indexPathToDelete.section] removeObjectAtIndex:_indexPathToDelete.row];
                     [[self.nyxPostsRowBodyTexts objectAtIndex:_indexPathToDelete.section] removeObjectAtIndex:_indexPathToDelete.row];
-                    // TODO TO DO - smazat sekci, pokud k ni jiz nepatri zadne bunky !!! ?? nebo znovy vytvorit ? ...
+                    // !!! TODO TO DO - smazat sekci, pokud k ni jiz nepatri zadne bunky !!! ?? nebo znovy vytvorit ? ...
+                    // !!! TOFIX TO FIX - pokud postnu neco na Friend feed tesne po pulnoci a pak to smazu, apka zatim asi jebne. !!!
                     [_table deleteRowsAtIndexPaths:@[_indexPathToDelete] withRowAnimation:UITableViewRowAnimationFade];
                 });
             }

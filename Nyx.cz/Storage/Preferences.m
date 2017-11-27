@@ -25,29 +25,29 @@
 
 #pragma mark - AUTHORIZATION
 
-//+ (NSString *)username:(NSString *)value
-//{
-//    NSString *key = @"_USERNAME";
-//    if (value) {
-//        [[NSUserDefaults standardUserDefaults] setValue:value forKey:key];
-//        [[NSUserDefaults standardUserDefaults] synchronize];
-//        return nil;
-//    } else {
-//        return [[NSUserDefaults standardUserDefaults] stringForKey:key];
-//    }
-//}
-//
-//+ (NSString *)password:(NSString *)value
-//{
-//    NSString *key = @"_PASSWORD";
-//    if (value) {
-//        [[NSUserDefaults standardUserDefaults] setValue:value forKey:key];
-//        [[NSUserDefaults standardUserDefaults] synchronize];
-//        return nil;
-//    } else {
-//        return [[NSUserDefaults standardUserDefaults] stringForKey:key];
-//    }
-//}
++ (NSString *)username:(NSString *)value
+{
+    NSString *key = @"_USERNAME";
+    if (value) {
+        [[NSUserDefaults standardUserDefaults] setValue:value forKey:key];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        return nil;
+    } else {
+        return [[NSUserDefaults standardUserDefaults] stringForKey:key];
+    }
+}
+
++ (NSString *)password:(NSString *)value
+{
+    NSString *key = @"_PASSWORD";
+    if (value) {
+        [[NSUserDefaults standardUserDefaults] setValue:value forKey:key];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        return nil;
+    } else {
+        return [[NSUserDefaults standardUserDefaults] stringForKey:key];
+    }
+}
 
 + (NSString *)auth_nick:(NSString *)value
 {

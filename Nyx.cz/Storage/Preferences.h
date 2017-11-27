@@ -13,8 +13,11 @@
 
 + (void)resetPreferences;
 
-//+ (NSString *)username:(NSString *)value;
-//+ (NSString *)password:(NSString *)value;
+// SIMULATOR ONLY -----------------------
++ (NSString *)username:(NSString *)value;
++ (NSString *)password:(NSString *)value;
+// --------------------------------------
+
 + (NSString *)auth_nick:(NSString *)value;
 + (NSString *)auth_token:(NSString *)value;
 

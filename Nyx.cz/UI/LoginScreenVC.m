@@ -80,6 +80,14 @@
 
 - (void)tryToLogIn
 {
+#if TARGET_OS_SIMULATOR
+    NSString *pass = [Preferences password:nil];
+    if (pass && [pass length] > 0) {
+        [self presentNyxScreen];
+    } else {
+        [self askForUsername];
+    }
+#else
     NSString *user = [Preferences auth_nick:nil];
     NSString *token = [Preferences auth_token:nil];
     if ([user length] > 0 && [token length] > 0) {
@@ -88,6 +96,7 @@
     } else {
         [self askForUsername];
     }
+#endif
 }
 
 - (void)askForUsername
@@ -98,14 +107,29 @@
     UIAlertAction *login = [UIAlertAction actionWithTitle:@"Získat autorizační kód" style:UIAlertActionStyleDefault
                                                handler:^(UIAlertAction * action) {
                                                    [self showHideSpinner];
+#if TARGET_OS_SIMULATOR
+                                                   // SKIP Authorization on SIMULATOR - take care to fill login and password here OK!
+                                                   NSString *simulatorUser = [[alert.textFields objectAtIndex:0] text];
+                                                   NSString *simulatorPassword = [[alert.textFields objectAtIndex:1] text];
+                                                   [Preferences username:simulatorUser];
+                                                   [Preferences auth_nick:simulatorUser];
+                                                   [Preferences password:simulatorPassword];
+                                                   [self presentNyxScreen];
+#else
                                                    NSString *user = [[alert.textFields objectAtIndex:0] text];
                                                    [Preferences auth_nick:user];
                                                    [self authorizeWithLoginName:user];
+#endif
                                                }];
     [alert addAction:login];
     [alert addTextFieldWithConfigurationHandler:^(UITextField *textField) {
         textField.placeholder = @"Jméno";
     }];
+#if TARGET_OS_SIMULATOR
+    [alert addTextFieldWithConfigurationHandler:^(UITextField *textField) {
+        textField.placeholder = @"Heslo";
+    }];
+#endif
     [self presentViewController:alert animated:YES completion:^{}];
 }
 

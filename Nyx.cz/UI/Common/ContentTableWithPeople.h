@@ -31,6 +31,8 @@
 
 @property (nonatomic, strong) NSString *peopleTableMode;
 
+@property (nonatomic, strong) NSDictionary *disscussionClubData;
+
 
 - (id)initWithRowHeight:(CGFloat)rowHeight;
 - (void)reloadTableData;

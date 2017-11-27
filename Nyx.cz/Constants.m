@@ -23,7 +23,8 @@ NSString* const kNotificationFriendsFeedChanged = @"kNotificationFriendsFeedChan
 NSString* const kNotificationMailboxChanged = @"kNotificationMailboxChanged";
 NSString* const kNotificationMailboxLoadFrom = @"kNotificationMailboxLoadFrom";
 NSString* const kNotificationMailboxNewMessageFor = @"kNotificationMailboxNewMessageFor";
-NSString* const kNotificationDiscussionLoadFrom = @"kNotificationDiscussionLoadFrom";
+NSString* const kNotificationDiscussionLoadOlderFrom = @"kNotificationDiscussionLoadOlderFrom";
+NSString* const kNotificationDiscussionLoadNewerFrom = @"kNotificationDiscussionLoadNewerFrom";
 
 NSString* const kPeopleTableModeFeed = @"kPeopleTableModeFeed";
 NSString* const kPeopleTableModeFeedDetail = @"kPeopleTableModeFeedDetail";
@@ -45,7 +46,8 @@ NSString* const kApiBookmarksHistory = @"history";
 
 NSString* const kApiDiscussion = @"discussion";
 NSString* const kApiDiscussionMessages = @"messages";
-
+NSString* const kApiDiscussionSend = @"send";
+NSString* const kApiDiscussionDelete = @"delete";
 
 NSString* const kApiEvents = @"events";
 
@@ -69,7 +71,7 @@ NSString* const kApiPeople = @"people";
 NSString* const kApiPeopleStatus = @"status";
 NSString* const kApiPeopleAutocomplete = @"autocomplete";
 NSString* const kApiPeopleFriends = @"friends";
-//NSString* const kApiPeopleFriendsActive = @"active_friends";
+
 
 // Menu constants
 NSString* const kMenuOverview = @"Přehled";

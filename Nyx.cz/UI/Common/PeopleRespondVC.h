@@ -24,7 +24,7 @@
     CGRect _bottomFrame;
     CGRect _tableFrame;
     
-    NSString *_postIdentificationTable, *_postIdentificationPostFeedMessage, *_postIdentificationPostMailboxMessage;
+    NSString *_postIdentificationTable, *_postIdentificationPostFeedMessage, *_postIdentificationPostMailboxMessage, *_postIdentificationPostDiscussionMessage;
 }
 
 
@@ -35,6 +35,7 @@
 @property (nonatomic, strong) NSAttributedString *bodyText;
 @property (nonatomic, assign) CGFloat bodyHeight;
 @property (nonatomic, strong) NSString *postId;
+@property (nonatomic, strong) NSString *discussionId;
 @property (nonatomic, strong) ContentTableWithPeople *table;
 
 @property (nonatomic, strong) NSDictionary *postData;

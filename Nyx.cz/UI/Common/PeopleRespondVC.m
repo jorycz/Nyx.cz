@@ -34,6 +34,7 @@
         _postIdentificationTable = @"table";
         _postIdentificationPostFeedMessage = @"message";
         _postIdentificationPostMailboxMessage = @"mailMessage";
+        _postIdentificationPostDiscussionMessage = @"discussionMessage";
     }
     return self;
 }
@@ -70,6 +71,9 @@
         self.table.peopleTableMode = kPeopleTableModeFriendsDetail;
         self.title = @"Napsat zprávu";
     }
+    if ([self.peopleRespondMode isEqualToString:kPeopleTableModeDiscussion]) {
+        self.table.peopleTableMode = kPeopleTableModeDiscussionDetail;
+    }
     
     self.bottomView = [[UIView alloc] init];
     self.bottomView.backgroundColor = [UIColor colorWithWhite:.95 alpha:1];
@@ -85,9 +89,13 @@
     [self.sendButton setImage:[UIImage imageNamed:@"send"] forState:(UIControlStateNormal)];
     [self.sendButton addTarget:self action:@selector(sendResponse) forControlEvents:UIControlEventTouchUpInside];
     
-    if ([self.peopleRespondMode isEqualToString:kPeopleTableModeMailbox] || [self.peopleRespondMode isEqualToString:kPeopleTableModeFriends]) {
+    if ([self.peopleRespondMode isEqualToString:kPeopleTableModeMailbox] ||
+        [self.peopleRespondMode isEqualToString:kPeopleTableModeFriends] ||
+        [self.peopleRespondMode isEqualToString:kPeopleTableModeDiscussion]) {
         [self rightButtonIsAttachment:NO];
     }
+    
+    
 }
 
 - (void)rightButtonIsAttachment:(BOOL)attachmentButton
@@ -143,7 +151,9 @@
         [self getAvatar];
         [self getFeedDetailPostData];
     }
-    if ([self.peopleRespondMode isEqualToString:kPeopleTableModeMailbox] || [self.peopleRespondMode isEqualToString:kPeopleTableModeFriends]) {
+    if ([self.peopleRespondMode isEqualToString:kPeopleTableModeMailbox] ||
+        [self.peopleRespondMode isEqualToString:kPeopleTableModeFriends] ||
+        [self.peopleRespondMode isEqualToString:kPeopleTableModeDiscussion]) {
         // All data required is already in properties. No loading needed to respond someone to mail.
         [self configureTableWithJson:nil];
     }
@@ -190,39 +200,9 @@
 - (void)cacheComplete:(NSData *)cache
 {
     dispatch_async(dispatch_get_main_queue(), ^{
+        // TODO ?
 //        _avatarView.image = [UIImage imageWithData:cache];
     });
-}
-
-#pragma mark - BUTTON
-
-- (void)sendResponse
-{
-    if ([self.responseView.text length] > 0)
-    {
-        [self placeLoadingView];
-        
-        ServerConnector *sc = [[ServerConnector alloc] init];
-        sc.delegate = self;
-        
-        if ([self.peopleRespondMode isEqualToString:kPeopleTableModeFeed])
-        {
-            sc.identifitaion = _postIdentificationPostFeedMessage;
-            NSString *apiRequest = [ApiBuilder apiFeedOfFriendsPostCommentAs:self.nick withId:self.postId sendMessage:self.responseView.text];
-            [sc downloadDataForApiRequest:apiRequest];
-        }
-        if ([self.peopleRespondMode isEqualToString:kPeopleTableModeMailbox] || [self.peopleRespondMode isEqualToString:kPeopleTableModeFriends])
-        {
-            sc.identifitaion = _postIdentificationPostMailboxMessage;
-            if (!self.attachmentName) {
-                NSString *apiRequest = [ApiBuilder apiMailboxSendTo:self.nick message:self.responseView.text];
-                [sc downloadDataForApiRequest:apiRequest];
-            } else {
-                NSDictionary *apiRequest = [ApiBuilder apiMailboxSendWithAttachmentTo:self.nick message:self.responseView.text];
-                [sc downloadDataForApiRequestWithParameters:apiRequest andAttachmentName:self.attachmentName];
-            }
-        }
-    }
 }
 
 #pragma mark - SERVER API DELEGATE
@@ -274,6 +254,13 @@
                         POST_NOTIFICATION_MAILBOX_CHANGED
                     });
                 }
+                if ([identification isEqualToString:_postIdentificationPostDiscussionMessage]) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self closeKeyboard];
+                        [self.nController popViewControllerAnimated:YES];
+                        POST_NOTIFICATION_DISCUSSION_LOAD_NEWER_FROM(self.postId)
+                    });
+                }
             }
         }
     }
@@ -323,7 +310,9 @@
         }
     }
     // Response VC for Mailbox response.
-    if ([self.peopleRespondMode isEqualToString:kPeopleTableModeMailbox] || [self.peopleRespondMode isEqualToString:kPeopleTableModeFriends])
+    if ([self.peopleRespondMode isEqualToString:kPeopleTableModeMailbox] ||
+        [self.peopleRespondMode isEqualToString:kPeopleTableModeFriends] ||
+        [self.peopleRespondMode isEqualToString:kPeopleTableModeDiscussion])
     {
         [self.table.nyxSections addObjectsFromArray:@[kDisableTableSections]];
         [self.table.nyxRowsForSections addObjectsFromArray:@[@[self.postData]]];
@@ -340,6 +329,49 @@
         [self.view addSubview:self.bottomView];
         [self.bottomView addSubview:self.responseView];
         [self.bottomView addSubview:self.sendButton];
+    }
+}
+
+#pragma mark - BUTTON
+
+- (void)sendResponse
+{
+    if ([self.responseView.text length] > 0)
+    {
+        [self placeLoadingView];
+        
+        ServerConnector *sc = [[ServerConnector alloc] init];
+        sc.delegate = self;
+        
+        if ([self.peopleRespondMode isEqualToString:kPeopleTableModeFeed])
+        {
+            sc.identifitaion = _postIdentificationPostFeedMessage;
+            NSString *apiRequest = [ApiBuilder apiFeedOfFriendsPostCommentAs:self.nick withId:self.postId sendMessage:self.responseView.text];
+            [sc downloadDataForApiRequest:apiRequest];
+        }
+        if ([self.peopleRespondMode isEqualToString:kPeopleTableModeMailbox] ||
+            [self.peopleRespondMode isEqualToString:kPeopleTableModeFriends])
+        {
+            sc.identifitaion = _postIdentificationPostMailboxMessage;
+            if (!self.attachmentName) {
+                NSString *apiRequest = [ApiBuilder apiMailboxSendTo:self.nick message:self.responseView.text];
+                [sc downloadDataForApiRequest:apiRequest];
+            } else {
+                NSDictionary *apiRequest = [ApiBuilder apiMailboxSendWithAttachmentTo:self.nick message:self.responseView.text];
+                [sc downloadDataForApiRequestWithParameters:apiRequest andAttachmentName:self.attachmentName];
+            }
+        }
+        if ([self.peopleRespondMode isEqualToString:kPeopleTableModeDiscussion])
+        {
+            sc.identifitaion = _postIdentificationPostDiscussionMessage;
+            if (!self.attachmentName) {
+                NSString *apiRequest = [ApiBuilder apiDiscussionSendMessage:self.discussionId message:self.responseView.text];
+                [sc downloadDataForApiRequest:apiRequest];
+            } else {
+                NSDictionary *apiRequest = [ApiBuilder apiDiscussionSendWithAttachment:self.discussionId message:self.responseView.text];
+                [sc downloadDataForApiRequestWithParameters:apiRequest andAttachmentName:self.attachmentName];
+            }
+        }
     }
 }
 

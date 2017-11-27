@@ -30,9 +30,13 @@
 
 + (NSString *)defaultApiRequestWithL:(NSString *)l andL2:(NSString *)l2
 {
+#if TARGET_OS_SIMULATOR
+    return [NSString stringWithFormat:@"logpass=%@&loguser=%@&l=%@&l2=%@", [Preferences password:nil], [Preferences username:nil], l, l2];
+#else
     NSString *user = [Preferences auth_nick:nil];
     NSString *pass = [Preferences auth_token:nil];
     return [NSString stringWithFormat:@"auth_nick=%@&auth_token=%@&l=%@&l2=%@", user, pass, l, l2];
+#endif
 }
 
 #pragma mark - PEOPLE
@@ -51,11 +55,6 @@
 {
     return [NSString stringWithFormat:@"%@", [self defaultApiRequestWithL:kApiPeople andL2:kApiPeopleFriends]];
 }
-
-//+ (NSString *)apiPeopleFriendsActive
-//{
-//    return [NSString stringWithFormat:@"%@", [self defaultApiRequestWithL:kApiPeople andL2:kApiPeopleFriendsActive]];
-//}
 
 
 #pragma mark - FRIENDS FEED
@@ -114,13 +113,23 @@
 
 + (NSDictionary *)apiMailboxSendWithAttachmentTo:(NSString *)recipient message:(NSString *)message
 {
-    NSDictionary *params = @{@"auth_nick"     : [Preferences auth_nick:nil],
-                             @"auth_token"     : [Preferences auth_token:nil],
-                             @"l"           : @"mail",
-                             @"l2"          : @"send",
+#if TARGET_OS_SIMULATOR
+    NSDictionary *params = @{@"loguser"     : [Preferences username:nil],
+                             @"logpass"     : [Preferences password:nil],
+                             @"l"           : kApiMail,
+                             @"l2"          : kApiMailMessageSend,
                              @"recipient"   : recipient,
                              @"message"     : message};
     return params;
+#else
+    NSDictionary *params = @{@"auth_nick"     : [Preferences auth_nick:nil],
+                             @"auth_token"     : [Preferences auth_token:nil],
+                             @"l"           : kApiMail,
+                             @"l2"          : kApiMailMessageSend,
+                             @"recipient"   : recipient,
+                             @"message"     : message};
+    return params;
+#endif
 }
 
 #pragma mark - BOOKMARKS
@@ -146,6 +155,44 @@
 {
     return [NSString stringWithFormat:@"%@&id=%@&direction=older&id_wu=%@", [self defaultApiRequestWithL:kApiDiscussion andL2:kApiDiscussionMessages], discussionId, fromId];
 }
+
++ (NSString *)apiMessagesForDiscussion:(NSString *)discussionId loadPreviousFromId:(NSString *)fromId
+{
+    return [NSString stringWithFormat:@"%@&id=%@&direction=newer&id_wu=%@", [self defaultApiRequestWithL:kApiDiscussion andL2:kApiDiscussionMessages], discussionId, fromId];
+}
+
++ (NSString *)apiDiscussionSendMessage:(NSString *)discussionId message:(NSString *)message
+{
+    return [NSString stringWithFormat:@"%@&id=%@&message=%@", [self defaultApiRequestWithL:kApiDiscussion andL2:kApiDiscussionSend], discussionId, [self safeStringOf:message]];
+}
+
++ (NSDictionary *)apiDiscussionSendWithAttachment:(NSString *)discussionId message:(NSString *)message
+{
+#if TARGET_OS_SIMULATOR
+    NSDictionary *params = @{@"loguser"     : [Preferences username:nil],
+                             @"logpass"     : [Preferences password:nil],
+                             @"l"           : kApiDiscussion,
+                             @"l2"          : kApiDiscussionSend,
+                             @"id"          : discussionId,
+                             @"message"     : message};
+    return params;
+#else
+    NSDictionary *params = @{@"auth_nick"     : [Preferences auth_nick:nil],
+                             @"auth_token"     : [Preferences auth_token:nil],
+                             @"l"           : kApiDiscussion,
+                             @"l2"          : kApiDiscussionSend,
+                             @"id"          : discussionId,
+                             @"message"     : message};
+    return params;
+#endif
+}
+
++ (NSString *)apiDiscussionDeleteMessage:(NSString *)discussionId postId:(NSString *)postId
+{
+    return [NSString stringWithFormat:@"%@&id=%@&id_wu=%@", [self defaultApiRequestWithL:kApiDiscussion andL2:kApiDiscussionDelete], discussionId, postId];
+}
+
+
 
 
 @end
