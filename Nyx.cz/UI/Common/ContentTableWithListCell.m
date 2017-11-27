@@ -24,8 +24,8 @@
         _unreadLabel.textColor = [UIColor whiteColor];
         _unreadLabel.userInteractionEnabled = NO;
         _unreadLabel.textAlignment = NSTextAlignmentCenter;
-        _unreadLabel.font = [UIFont boldSystemFontOfSize:10];
-        _unreadLabel.layer.cornerRadius = 12;
+        _unreadLabel.font = [UIFont boldSystemFontOfSize:12];
+        _unreadLabel.layer.cornerRadius = 9;
         _unreadLabel.clipsToBounds = YES;
         [self addSubview:_unreadLabel];
         
@@ -33,11 +33,12 @@
         _boardNameLabel.backgroundColor = [UIColor clearColor];
         _boardNameLabel.userInteractionEnabled = NO;
         _boardNameLabel.textAlignment = NSTextAlignmentLeft;
-        _boardNameLabel.font = [UIFont boldSystemFontOfSize:10];
+        _boardNameLabel.font = [UIFont systemFontOfSize:12];
         [self addSubview:_boardNameLabel];
         
         _separator = [[UIView alloc] init];
-        _separator.backgroundColor = [UIColor colorWithWhite:.5 alpha:.5];
+        _sepColor = [UIColor colorWithWhite:.6 alpha:.1];
+        _separator.backgroundColor = _sepColor;
         [self addSubview:_separator];
     }
     return self;
@@ -48,7 +49,7 @@
     [super setSelected:selected animated:animated];
     // Preserver background colors.
     _unreadLabel.backgroundColor = COLOR_SYSTEM_TURQUOISE;
-    _separator.backgroundColor = [UIColor colorWithWhite:.5 alpha:.5];
+    _separator.backgroundColor = _sepColor;
 }
 
 - (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated
@@ -56,7 +57,7 @@
     [super setHighlighted:highlighted animated:animated];
     // Preserver background colors.
     _unreadLabel.backgroundColor = COLOR_SYSTEM_TURQUOISE;
-    _separator.backgroundColor = [UIColor colorWithWhite:.5 alpha:.5];
+    _separator.backgroundColor = _sepColor;
 }
 
 - (void)layoutSubviews
@@ -65,11 +66,11 @@
     
     CGRect f = self.frame;
     
-    _unreadLabel.frame = CGRectMake(3, 3, 26, f.size.height - 6);
+    _unreadLabel.frame = CGRectMake(3, 3, 28, f.size.height - 6);
     
-    _boardNameLabel.frame = CGRectMake(34, 2, f.size.width - 36, f.size.height - 4);
+    _boardNameLabel.frame = CGRectMake(36, 2, f.size.width - 36, f.size.height - 4);
     
-    _separator.frame = CGRectMake(5, f.size.height - 1, f.size.width - 10, 1);
+    _separator.frame = CGRectMake(15, f.size.height - 1, f.size.width - 30, 1);
 }
 
 - (void)configureCellForIndexPath:(NSIndexPath *)idxPath

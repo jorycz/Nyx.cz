@@ -119,7 +119,8 @@
                              @"l"           : kApiMail,
                              @"l2"          : kApiMailMessageSend,
                              @"recipient"   : recipient,
-                             @"message"     : message};
+                             @"message"     : message
+                             };
     return params;
 #else
     NSDictionary *params = @{@"auth_nick"     : [Preferences auth_nick:nil],
@@ -127,7 +128,8 @@
                              @"l"           : kApiMail,
                              @"l2"          : kApiMailMessageSend,
                              @"recipient"   : recipient,
-                             @"message"     : message};
+                             @"message"     : message
+                             };
     return params;
 #endif
 }
@@ -161,11 +163,6 @@
     return [NSString stringWithFormat:@"%@&id=%@&direction=newer&id_wu=%@", [self defaultApiRequestWithL:kApiDiscussion andL2:kApiDiscussionMessages], discussionId, fromId];
 }
 
-+ (NSString *)apiDiscussionSendMessage:(NSString *)discussionId message:(NSString *)message
-{
-    return [NSString stringWithFormat:@"%@&id=%@&message=%@", [self defaultApiRequestWithL:kApiDiscussion andL2:kApiDiscussionSend], discussionId, [self safeStringOf:message]];
-}
-
 + (NSDictionary *)apiDiscussionSendWithAttachment:(NSString *)discussionId message:(NSString *)message
 {
 #if TARGET_OS_SIMULATOR
@@ -174,7 +171,8 @@
                              @"l"           : kApiDiscussion,
                              @"l2"          : kApiDiscussionSend,
                              @"id"          : discussionId,
-                             @"message"     : message};
+                             @"message"     : message
+                             };
     return params;
 #else
     NSDictionary *params = @{@"auth_nick"     : [Preferences auth_nick:nil],
@@ -182,7 +180,8 @@
                              @"l"           : kApiDiscussion,
                              @"l2"          : kApiDiscussionSend,
                              @"id"          : discussionId,
-                             @"message"     : message};
+                             @"message"     : message
+                             };
     return params;
 #endif
 }

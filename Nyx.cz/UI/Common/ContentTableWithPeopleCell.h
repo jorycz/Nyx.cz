@@ -13,7 +13,7 @@
 @interface ContentTableWithPeopleCell : UITableViewCell <CacheManagerDelegate>
 {
     UIImageView *_avatarView;
-    UILabel *_nickLabel;
+    UILabel *_nickLabel, *_timeLabel;
     UITextView *_bodyView;
     UIView *_separator;
 }
@@ -30,6 +30,7 @@
 @property (nonatomic, strong) NSString *mailboxMailStatus;
 @property (nonatomic, strong) NSString *activeFriendStatus;
 @property (nonatomic, strong) NSString *discussionNewPost;
+@property (nonatomic, strong) NSString *time;
 
 
 - (void)configureCellForIndexPath:(NSIndexPath *)idxPath;

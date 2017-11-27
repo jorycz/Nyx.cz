@@ -27,36 +27,7 @@
 {
 }
 
-- (void)downloadDataForApiRequest:(NSString *)apiRequest
-{
-//    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), apiRequest);
-    NSMutableURLRequest *mutableRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:kServerAPIURL]
-                                                                  cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
-                                                              timeoutInterval:10];
-    [mutableRequest setHTTPMethod:@"POST"];
-    [mutableRequest setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
-    [mutableRequest setHTTPBody:[apiRequest dataUsingEncoding:NSUTF8StringEncoding]];
-    NSURLSession *session = [NSURLSession sharedSession];
-    NSURLSessionDataTask *sessionDataTask = [session dataTaskWithRequest:mutableRequest
-                                                       completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error)
-                                             {
-                                                 if (error)
-                                                 {
-                                                     NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), [error localizedDescription]);
-                                                     [self downloadDidEndWithData:nil forIdentification:self.identifitaion];
-                                                 }
-                                                 else
-                                                 {
-                                                     // **** DEBUG ****
-                                                     //            NSLog(@"= DEBUG: %@: Response length %lu", [self class], (unsigned long)[data length]);
-                                                     //            NSString *dataString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-                                                     //            NSLog(@"= DEBUG: DATA [%@]", dataString);
-                                                     // **** DEBUG ****
-                                                     [self downloadDidEndWithData:data forIdentification:self.identifitaion];
-                                                 }
-                                             }];
-    [sessionDataTask resume];
-}
+#pragma mark - UTILITY for BINARY API CALLS
 
 // POST DATA & BINARY https://stackoverflow.com/questions/24250475/post-multipart-form-data-with-objective-c
 
@@ -97,10 +68,13 @@
     
     // add image data
     
-    for (NSString *path in paths) {
+    for (NSString *path in paths)
+    {
         NSString *filename  = [path lastPathComponent];
         NSData   *data      = [NSData dataWithContentsOfFile:path];
         NSString *mimetype  = [self mimeTypeForPath:path];
+        
+        NSLog(@"%@ - %@ ADDING : [%@]", self, NSStringFromSelector(_cmd), filename);
         
 //        NSLog(@"PATH %@", path);
 //        NSLog(@"FILENAME %@", filename);
@@ -118,8 +92,11 @@
     return httpBody;
 }
 
-- (void)downloadDataForApiRequestWithParameters:(NSDictionary *)params andAttachmentName:(NSString *)attachmentName
+#pragma mark - API CALLS - BINARY
+
+- (void)downloadDataForApiRequestWithParameters:(NSDictionary *)params andAttachmentName:(NSArray *)attachmentNames
 {
+//    NSLog(@"%@ - %@ : ERROR [%@]", self, NSStringFromSelector(_cmd), params);
     NSMutableURLRequest *mutableRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:kServerAPIURL]
                                                                   cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
                                                               timeoutInterval:10];
@@ -129,10 +106,18 @@
     NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary];
     [mutableRequest setValue:contentType forHTTPHeaderField: @"Content-Type"];
     
-    StorageManager *sm = [[StorageManager alloc] init];
-//    NSString *path = [[NSBundle mainBundle] pathForResource:@"logo" ofType:@"png"];
-    NSString *path = [NSString stringWithFormat:@"%@/%@", sm.imageCacheRoot, attachmentName];
-    NSData *httpBody = [self createBodyWithBoundary:boundary parameters:params paths:@[path] fieldName:@"attachment"];
+    NSData *httpBody;
+    NSMutableArray *paths = [[NSMutableArray alloc] init];
+    if (attachmentNames && [attachmentNames count] > 0) {
+        for (NSInteger i = 0 ; i < [attachmentNames count]; i++) {
+            StorageManager *sm = [[StorageManager alloc] init];
+            NSString *path = [NSString stringWithFormat:@"%@/%@", sm.imageCacheRoot, [attachmentNames objectAtIndex:i]];
+            [paths addObject:path];
+        }
+        httpBody = [self createBodyWithBoundary:boundary parameters:params paths:paths fieldName:@"attachment"];
+    } else {
+        httpBody = [self createBodyWithBoundary:boundary parameters:params paths:@[] fieldName:@"attachment"];
+    }
     [mutableRequest setHTTPBody:httpBody];
     
     NSURLSession *session = [NSURLSession sharedSession];
@@ -156,6 +141,41 @@
                                              }];
     [sessionDataTask resume];
 }
+
+#pragma mark - API CALLS - ENCODED URL
+
+- (void)downloadDataForApiRequest:(NSString *)apiRequest
+{
+    //    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), apiRequest);
+    NSMutableURLRequest *mutableRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:kServerAPIURL]
+                                                                  cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
+                                                              timeoutInterval:10];
+    [mutableRequest setHTTPMethod:@"POST"];
+    [mutableRequest setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+    [mutableRequest setHTTPBody:[apiRequest dataUsingEncoding:NSUTF8StringEncoding]];
+    NSURLSession *session = [NSURLSession sharedSession];
+    NSURLSessionDataTask *sessionDataTask = [session dataTaskWithRequest:mutableRequest
+                                                       completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error)
+                                             {
+                                                 if (error)
+                                                 {
+                                                     NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), [error localizedDescription]);
+                                                     [self downloadDidEndWithData:nil forIdentification:self.identifitaion];
+                                                 }
+                                                 else
+                                                 {
+                                                     // **** DEBUG ****
+                                                     //            NSLog(@"= DEBUG: %@: Response length %lu", [self class], (unsigned long)[data length]);
+                                                     //            NSString *dataString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                                                     //            NSLog(@"= DEBUG: DATA [%@]", dataString);
+                                                     // **** DEBUG ****
+                                                     [self downloadDidEndWithData:data forIdentification:self.identifitaion];
+                                                 }
+                                             }];
+    [sessionDataTask resume];
+}
+
+#pragma mark - URL DOWNLOAD
 
 - (void)downloadDataFromURL:(NSString *)urlStr
 {

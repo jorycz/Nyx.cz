@@ -11,6 +11,8 @@
 @interface ContentTableWithListCell : UITableViewCell
 {
     UILabel *_unreadLabel, *_boardNameLabel;
+    
+    UIColor *_sepColor;
     UIView *_separator;
 }
 

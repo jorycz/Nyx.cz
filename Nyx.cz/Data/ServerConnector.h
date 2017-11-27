@@ -21,7 +21,7 @@
 
 
 - (void)downloadDataForApiRequest:(NSString *)apiRequest;
-- (void)downloadDataForApiRequestWithParameters:(NSDictionary *)params andAttachmentName:(NSString *)attachmentName;
+- (void)downloadDataForApiRequestWithParameters:(NSDictionary *)params andAttachmentName:(NSArray *)attachmentNames;
 
 - (void)downloadDataFromURL:(NSString *)urlStr;
 

@@ -71,6 +71,8 @@
     [_table setDataSource:self];
     [_table setDelegate:self];
     [_table setRowHeight:_rh];
+    
+    self.nController.topViewController.navigationItem.rightBarButtonItem = nil;
 }
 
 - (void)viewWillLayoutSubviews

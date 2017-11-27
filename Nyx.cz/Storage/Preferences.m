@@ -111,7 +111,24 @@
     }
 }
 
+#pragma mark - UTILITY
+
++ (NSArray *)messagesForDiscussion:(NSMutableArray *)value
+{
+    NSString *key = @"_STOREDMESSAGESFORDISCUSSION";
+    if (value) {
+        [[NSUserDefaults standardUserDefaults] setObject:value forKey:key];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        return nil;
+    } else {
+        return [[NSUserDefaults standardUserDefaults] objectForKey:key];
+    }
+}
+
 
 @end
+
+
+
 
 

@@ -71,6 +71,9 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mainButtonPressed:) name:kMainButtonNotification object:nil];
     
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:(UIBarButtonSystemItemReply) target:self action:@selector(sideMenuOpen)];
+    
+    if ([Preferences preferredStartingLocation:nil] && [[Preferences preferredStartingLocation:nil] length] > 0)
+        [Preferences lastUserPosition:[Preferences preferredStartingLocation:nil]];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -102,7 +105,9 @@
         if (!preferredMenyKey && !lastMenuKey) {
             [self sideMenuOpen];
         } else {
-            if (preferredMenyKey && [preferredMenyKey length] > 0) {
+            if (preferredMenyKey && [preferredMenyKey length] > 0)
+            {
+                [Preferences lastUserPosition:preferredMenyKey];
                 [self loadContentForMenuKey:preferredMenyKey];
             } else {
                 [self loadContentForMenuKey:lastMenuKey];
@@ -127,7 +132,8 @@
 {
     if (!self.closeCoverView)
     {
-        [self.navigationItem.rightBarButtonItem setEnabled:NO];
+        self.navigationItem.rightBarButtonItem.enabled = NO;
+        self.navigationItem.leftBarButtonItem.enabled = NO;
         [UIView animateWithDuration:.3 animations:^{
             self.contentVc.view.center = CGPointMake(_viewCenter.x + _sideMenuMaxShift, _viewCenter.y);
             self.sideMenu.alpha = 1;
@@ -136,7 +142,6 @@
             self.closeCoverView.delegate = self;
             self.closeCoverView.frame = self.view.bounds;
             [self.contentVc.view addSubview:self.closeCoverView];
-            self.navigationItem.leftBarButtonItem.enabled = NO;
         }];
     }
 }
@@ -149,6 +154,7 @@
     } completion:^(BOOL finished) {
         [self.closeCoverView removeFromSuperview];
         self.closeCoverView = nil;
+        self.navigationItem.rightBarButtonItem.enabled = YES;
         self.navigationItem.leftBarButtonItem.enabled = YES;
     }];
 }

@@ -34,6 +34,14 @@
         _nickLabel.font = [UIFont boldSystemFontOfSize:14];
         [self addSubview:_nickLabel];
         
+        _timeLabel = [[UILabel alloc] init];
+        _timeLabel.backgroundColor = [UIColor clearColor];
+        _timeLabel.userInteractionEnabled = NO;
+        _timeLabel.textAlignment = NSTextAlignmentRight;
+        _timeLabel.textColor = [UIColor lightGrayColor];
+        _timeLabel.font = [UIFont systemFontOfSize:12];
+        [self addSubview:_timeLabel];
+        
         _bodyView = [[UITextView alloc] init];
         _bodyView.backgroundColor = [UIColor clearColor];
         _bodyView.userInteractionEnabled = NO;
@@ -70,7 +78,8 @@
     
     CGRect f = self.frame;
     _avatarView.frame = CGRectMake(5, 5, 50, 60);
-    _nickLabel.frame = CGRectMake(64, 5, f.size.width - 65, 15);
+    _nickLabel.frame = CGRectMake(64, 5, f.size.width - 65 - 140, 15);
+    _timeLabel.frame = CGRectMake(64 + (f.size.width - 65 - 140) + 10, 5, 125, 13);
     _bodyView.frame = CGRectMake(60, 20, f.size.width - kWidthForTableCellBodyTextViewSubstract, f.size.height - 25);
     _separator.frame = CGRectMake(10, f.size.height - 1, f.size.width - 20, 1);
 }
@@ -99,6 +108,9 @@
     }
     if (self.discussionNewPost && [self.discussionNewPost isEqualToString:@"yes"]) {
         self.backgroundColor = COLOR_SYSTEM_TURQUOISE_LIGHT;
+    }
+    if (self.time && [self.time length] > 0) {
+        _timeLabel.text = self.time;
     }
     [self getAvatar];
 }

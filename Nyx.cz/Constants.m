@@ -8,6 +8,7 @@
 
 #import "Constants.h"
 
+
 @implementation Constants
 
 
@@ -25,6 +26,7 @@ NSString* const kNotificationMailboxLoadFrom = @"kNotificationMailboxLoadFrom";
 NSString* const kNotificationMailboxNewMessageFor = @"kNotificationMailboxNewMessageFor";
 NSString* const kNotificationDiscussionLoadOlderFrom = @"kNotificationDiscussionLoadOlderFrom";
 NSString* const kNotificationDiscussionLoadNewerFrom = @"kNotificationDiscussionLoadNewerFrom";
+NSString* const kNotificationListTableChanged = @"kNotificationListTableChanged";
 
 NSString* const kPeopleTableModeFeed = @"kPeopleTableModeFeed";
 NSString* const kPeopleTableModeFeedDetail = @"kPeopleTableModeFeedDetail";
@@ -34,6 +36,8 @@ NSString* const kPeopleTableModeFriends = @"kPeopleTableModeFriends";
 NSString* const kPeopleTableModeFriendsDetail = @"kPeopleTableModeFriendsDetail";
 NSString* const kPeopleTableModeDiscussion = @"kPeopleTableModeDiscussion";
 NSString* const kPeopleTableModeDiscussionDetail = @"kPeopleTableModeDiscussionDetail";
+
+CGFloat const kLongPressMinimumDuration = 0.5f;
 
 // API
 NSString* const kApiLoguser = @"loguser";

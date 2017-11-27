@@ -24,6 +24,7 @@
     {
         self.backgroundColor = [UIColor whiteColor];
         _firstInit = YES;
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshDataForMainContent) name:kNotificationListTableChanged object:nil];
     }
     return self;
 }
@@ -51,9 +52,9 @@
         // NSLog(@"- navigation bar height %li - status bar height %li - ", (long)navigationBarHeight, (long)statusBarHeigh);
         self.table.view.frame = CGRectMake(0, navigationBarHeight + statusBarHeigh, f.size.width, f.size.height - (navigationBarHeight + statusBarHeigh));
         
-        //        self.nController.topViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
-        //                                                                                                                             target:self
-        //                                                                                                                             action:@selector(chooseNickname:)];
+        self.nController.topViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
+                                                                                                                             target:self
+                                                                                                                             action:@selector(refreshDataForMainContent)];
         [self refreshDataForMainContent];
     }
 }

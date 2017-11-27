@@ -21,10 +21,11 @@
 + (NSString *)auth_nick:(NSString *)value;
 + (NSString *)auth_token:(NSString *)value;
 
-
 + (NSString *)lastUserPosition:(NSString *)value;
 + (NSString *)preferredStartingLocation:(NSString *)value;
 + (NSString *)showImagesInlineInPost:(NSString *)value;
+
++ (NSArray *)messagesForDiscussion:(NSMutableArray *)value;
 
 
 @end

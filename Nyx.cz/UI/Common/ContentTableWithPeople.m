@@ -114,7 +114,7 @@
     {
         cell = [[ContentTableWithPeopleCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdForReuse];
         UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressOnCell:)];
-        longPress.minimumPressDuration = 1.0;
+        longPress.minimumPressDuration = kLongPressMinimumDuration;
         [cell addGestureRecognizer:longPress];
     }
     NSDictionary *cellData = [[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
@@ -142,6 +142,7 @@
             nick = [cellData objectForKey:@"other_nick"];
             cell.mailboxDirection = [cellData objectForKey:@"direction"];
             cell.mailboxMailStatus = [cellData objectForKey:@"message_status"];
+            cell.discussionNewPost = [cellData objectForKey:@"new"];
         }
         if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion] || [self.peopleTableMode isEqualToString:kPeopleTableModeDiscussionDetail])
         {
@@ -149,6 +150,8 @@
             cell.discussionNewPost = [cellData objectForKey:@"new"];
         }
         cell.nick = nick;
+        Timestamp *ts = [[Timestamp alloc] initWithTimestamp:[cellData objectForKey:@"time"]];
+        cell.time = [ts getTimeWithDate];
         
         // Must be always set!
         cell.bodyText = [[self.nyxPostsRowBodyTexts objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
@@ -533,7 +536,16 @@
     });
 }
 
+#pragma mark - REFRESH DATA IN LIST TABLE
 
+- (void)didMoveToParentViewController:(UIViewController *)parent
+{
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion]) {
+        if (!parent) {
+            POST_NOTIFICATION_LIST_TABLE_CHANGED
+        }
+    }
+}
 
 
 @end

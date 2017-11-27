@@ -15,7 +15,7 @@
 #import "ContentTableWithPeople.h"
 
 
-@interface PeopleRespondVC : UIViewController <CacheManagerDelegate, ServerConnectorDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
+@interface PeopleRespondVC : UIViewController <CacheManagerDelegate, ServerConnectorDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIGestureRecognizerDelegate>
 {
     CGFloat _widthForTableCellBodyTextView;
     CGSize _keyboardSize;
@@ -25,6 +25,8 @@
     CGRect _tableFrame;
     
     NSString *_postIdentificationTable, *_postIdentificationPostFeedMessage, *_postIdentificationPostMailboxMessage, *_postIdentificationPostDiscussionMessage;
+    NSString *_currentAttachmentName;
+    NSString *_respondTo;
 }
 
 
@@ -46,6 +48,6 @@
 
 @property (nonatomic, strong) NSString *peopleRespondMode;
 
-@property (nonatomic, strong) NSString *attachmentName;
+@property (nonatomic, strong) NSMutableArray *attachmentNames;
 
 @end

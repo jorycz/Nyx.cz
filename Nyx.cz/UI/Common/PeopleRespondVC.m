@@ -35,6 +35,7 @@
         _postIdentificationPostFeedMessage = @"message";
         _postIdentificationPostMailboxMessage = @"mailMessage";
         _postIdentificationPostDiscussionMessage = @"discussionMessage";
+        self.attachmentNames = [[NSMutableArray alloc] init];
     }
     return self;
 }
@@ -89,13 +90,41 @@
     [self.sendButton setImage:[UIImage imageNamed:@"send"] forState:(UIControlStateNormal)];
     [self.sendButton addTarget:self action:@selector(sendResponse) forControlEvents:UIControlEventTouchUpInside];
     
+    if ([self.peopleRespondMode isEqualToString:kPeopleTableModeDiscussion])
+    {
+        UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressOnSendButtonDetected:)];
+        longPress.minimumPressDuration = kLongPressMinimumDuration;
+        [self.sendButton addGestureRecognizer:longPress];
+    }
+    
     if ([self.peopleRespondMode isEqualToString:kPeopleTableModeMailbox] ||
         [self.peopleRespondMode isEqualToString:kPeopleTableModeFriends] ||
         [self.peopleRespondMode isEqualToString:kPeopleTableModeDiscussion]) {
         [self rightButtonIsAttachment:NO];
     }
     
-    
+    if ([self.peopleRespondMode isEqualToString:kPeopleTableModeDiscussion])
+    {
+        
+        // Add respond variables to respond text input view AND previous messages if exist.
+        if (self.nick && [self.nick length] > 0 && self.postId && [self.postId length] > 0)
+        {
+            _respondTo = [NSString stringWithFormat:@"{reply %@|%@}: ", [self.nick uppercaseString], self.postId];
+        }
+        
+        NSMutableString *tmp = [[NSMutableString alloc] init];
+        if ([self currentlyStoredMessages] && [[self currentlyStoredMessages] count] > 0) {
+            for (NSDictionary *d in [self currentlyStoredMessages]) {
+                [tmp appendString:[d objectForKey:@"text"]];
+                [self.attachmentNames addObject:[d objectForKey:@"attachment"]];
+            }
+            self.responseView.text = [NSString stringWithFormat:@"%@\n\n%@", tmp, _respondTo];
+        }
+        else
+        {
+            self.responseView.text = _respondTo;
+        }
+    }
 }
 
 - (void)rightButtonIsAttachment:(BOOL)attachmentButton
@@ -134,7 +163,7 @@
         self.bottomView.frame = CGRectMake(0, f.size.height - bottomBarHeight, f.size.width, bottomBarHeight);
         _bottomFrame = self.bottomView.frame;
         self.responseView.frame = CGRectMake(edgeInsect, edgeInsect, _bottomFrame.size.width - bottomBarHeight - (2 * edgeInsect), bottomBarHeight - (2 * edgeInsect));
-        self.sendButton.frame = CGRectMake(_bottomFrame.size.width - (bottomBarHeight - edgeInsect), edgeInsect, bottomBarHeight - (2 * edgeInsect), bottomBarHeight - (2 * edgeInsect));
+        self.sendButton.frame = CGRectMake(_bottomFrame.size.width - (bottomBarHeight - edgeInsect) - 3, edgeInsect, bottomBarHeight - (2 * edgeInsect), bottomBarHeight - (2 * edgeInsect));
         
         // 64 = navigation bar + status bar
         self.table.view.frame = CGRectMake(0, 64, f.size.width, f.size.height - 64 - 76);
@@ -205,6 +234,71 @@
     });
 }
 
+#pragma mark - BUTTON
+
+- (void)sendResponse
+{
+    if ([self.responseView.text length] > 0)
+    {
+        if ([self currentlyStoredMessages] && [[self currentlyStoredMessages] count] > 0)
+        {
+            NSString *message = [NSString stringWithFormat:@"Bude odeslána tato zpráva a další %li. Příloha bude odeslána pouze poslední přidaná.", (long)[[self currentlyStoredMessages] count]];
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Odeslat tuto a všechny uložené zprávy?"
+                                                                           message:message
+                                                                    preferredStyle:(UIAlertControllerStyleAlert)];
+            UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Zrušit" style:(UIAlertActionStyleCancel) handler:^(UIAlertAction * _Nonnull action) {}];
+            UIAlertAction *sendAll = [UIAlertAction actionWithTitle:@"Odeslat vše" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+                [self send];
+            }];
+            [alert addAction:cancel];
+            [alert addAction:sendAll];
+            [self presentViewController:alert animated:YES completion:^{}];
+        }
+        else
+        {
+            [self send];
+        }
+    }
+    else
+    {
+        PRESENT_ERROR(@"Chyba", @"Nemohu odeslat prázdnou zprávu.")
+    }
+}
+
+- (void)send
+{
+    [self placeLoadingView];
+    
+    ServerConnector *sc = [[ServerConnector alloc] init];
+    sc.delegate = self;
+    
+    if ([self.peopleRespondMode isEqualToString:kPeopleTableModeFeed])
+    {
+        sc.identifitaion = _postIdentificationPostFeedMessage;
+        NSString *apiRequest = [ApiBuilder apiFeedOfFriendsPostCommentAs:self.nick withId:self.postId sendMessage:self.responseView.text];
+        [sc downloadDataForApiRequest:apiRequest];
+    }
+    if ([self.peopleRespondMode isEqualToString:kPeopleTableModeMailbox] ||
+        [self.peopleRespondMode isEqualToString:kPeopleTableModeFriends])
+    {
+        sc.identifitaion = _postIdentificationPostMailboxMessage;
+        if (!self.attachmentNames || [self.attachmentNames count] < 1) {
+            NSString *apiRequest = [ApiBuilder apiMailboxSendTo:self.nick message:self.responseView.text];
+            [sc downloadDataForApiRequest:apiRequest];
+        } else {
+            NSDictionary *apiRequest = [ApiBuilder apiMailboxSendWithAttachmentTo:self.nick message:self.responseView.text];
+            [sc downloadDataForApiRequestWithParameters:apiRequest andAttachmentName:self.attachmentNames];
+        }
+    }
+    if ([self.peopleRespondMode isEqualToString:kPeopleTableModeDiscussion])
+    {
+        sc.identifitaion = _postIdentificationPostDiscussionMessage;
+        NSDictionary *apiRequest = [ApiBuilder apiDiscussionSendWithAttachment:self.discussionId message:self.responseView.text];
+        // self.attachmentNames can be nil.
+        [sc downloadDataForApiRequestWithParameters:apiRequest andAttachmentName:self.attachmentNames];
+    }
+}
+
 #pragma mark - SERVER API DELEGATE
 
 - (void)downloadFinishedWithData:(NSData *)data withIdentification:(NSString *)identification
@@ -259,6 +353,8 @@
                         [self closeKeyboard];
                         [self.nController popViewControllerAnimated:YES];
                         POST_NOTIFICATION_DISCUSSION_LOAD_NEWER_FROM(self.postId)
+                        // Delete stored messages.
+                        [self deleteStoredMessages];
                     });
                 }
             }
@@ -329,49 +425,6 @@
         [self.view addSubview:self.bottomView];
         [self.bottomView addSubview:self.responseView];
         [self.bottomView addSubview:self.sendButton];
-    }
-}
-
-#pragma mark - BUTTON
-
-- (void)sendResponse
-{
-    if ([self.responseView.text length] > 0)
-    {
-        [self placeLoadingView];
-        
-        ServerConnector *sc = [[ServerConnector alloc] init];
-        sc.delegate = self;
-        
-        if ([self.peopleRespondMode isEqualToString:kPeopleTableModeFeed])
-        {
-            sc.identifitaion = _postIdentificationPostFeedMessage;
-            NSString *apiRequest = [ApiBuilder apiFeedOfFriendsPostCommentAs:self.nick withId:self.postId sendMessage:self.responseView.text];
-            [sc downloadDataForApiRequest:apiRequest];
-        }
-        if ([self.peopleRespondMode isEqualToString:kPeopleTableModeMailbox] ||
-            [self.peopleRespondMode isEqualToString:kPeopleTableModeFriends])
-        {
-            sc.identifitaion = _postIdentificationPostMailboxMessage;
-            if (!self.attachmentName) {
-                NSString *apiRequest = [ApiBuilder apiMailboxSendTo:self.nick message:self.responseView.text];
-                [sc downloadDataForApiRequest:apiRequest];
-            } else {
-                NSDictionary *apiRequest = [ApiBuilder apiMailboxSendWithAttachmentTo:self.nick message:self.responseView.text];
-                [sc downloadDataForApiRequestWithParameters:apiRequest andAttachmentName:self.attachmentName];
-            }
-        }
-        if ([self.peopleRespondMode isEqualToString:kPeopleTableModeDiscussion])
-        {
-            sc.identifitaion = _postIdentificationPostDiscussionMessage;
-            if (!self.attachmentName) {
-                NSString *apiRequest = [ApiBuilder apiDiscussionSendMessage:self.discussionId message:self.responseView.text];
-                [sc downloadDataForApiRequest:apiRequest];
-            } else {
-                NSDictionary *apiRequest = [ApiBuilder apiDiscussionSendWithAttachment:self.discussionId message:self.responseView.text];
-                [sc downloadDataForApiRequestWithParameters:apiRequest andAttachmentName:self.attachmentName];
-            }
-        }
     }
 }
 
@@ -485,8 +538,12 @@
     UIGraphicsEndImageContext();
     NSData *newImageData = UIImageJPEGRepresentation(newImage, 0.8f);
     NSLog(@"%@ - %@ : Image size [%li] bytes.", self, NSStringFromSelector(_cmd), (long)[newImageData length]);
-    [sc storeImage:newImageData withName:@"attachment.jpg"];
-    self.attachmentName = @"attachment.jpg";
+    
+    NSString *timestamp = [NSString stringWithFormat:@"%f",[[NSDate date] timeIntervalSince1970]];
+    NSString *attachmentName = [NSString stringWithFormat:@"attachment_%@.jpg", timestamp];
+    [sc storeImage:newImageData withName:attachmentName];
+    _currentAttachmentName = attachmentName;
+    [self.attachmentNames addObject:attachmentName];
     
     [self dismissViewControllerAnimated:YES completion:^{
         [self rightButtonIsAttachment:YES];
@@ -504,7 +561,7 @@
                                                                    message:@"Ke zprávě je přiložena příloha. Opravdu odstranit?"
                                                             preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *delete = [UIAlertAction actionWithTitle:@"Smazat" style:(UIAlertActionStyleDestructive) handler:^(UIAlertAction * _Nonnull action) {
-        self.attachmentName = nil;
+        [self.attachmentNames removeObject:_currentAttachmentName];
         [self rightButtonIsAttachment:NO];
     }];
     UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Zrušit" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
@@ -514,6 +571,66 @@
     [self presentViewController:alert animated:YES completion:^{}];
 }
 
+#pragma mark - LONG TAP ON SEND BUTTON - STORE TO SEND IT LATER
+
+- (void)longPressOnSendButtonDetected:(UILongPressGestureRecognizer *)sender
+{
+    if (sender.state == UIGestureRecognizerStateBegan)
+    {
+        NSString *message = @"Tuto zprávu (včetně minulých, pokud existují) je možno uložit a přidávat k ní další odpovědi dalším lidem. Při odeslání jsou pak všechny odpovědi odeslány naráz. Již uložené zprávy nelze editovat.\nPřílohu je možno přidat k příspěvkům pouze jednu. Odešle se poslední přidaná.";
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Uložit, odeslat, nebo začít novou zprávu?"
+                                                                       message:message
+                                                                preferredStyle:(UIAlertControllerStyleActionSheet)];
+        UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Zrušit" style:(UIAlertActionStyleCancel) handler:^(UIAlertAction * _Nonnull action) {}];
+        UIAlertAction *store = [UIAlertAction actionWithTitle:@"Uložit" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+            [self storeCurrentMessageToPreferences];
+        }];
+        UIAlertAction *deleteAll = [UIAlertAction actionWithTitle:@"Smazat uložené a začít znova" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+            [self deleteStoredMessages];
+        }];
+        UIAlertAction *sendNow = [UIAlertAction actionWithTitle:@"Odeslat" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+            [self sendResponse];
+        }];
+        [alert addAction:cancel];
+        [alert addAction:store];
+        [alert addAction:deleteAll];
+        [alert addAction:sendNow];
+        [self presentViewController:alert animated:YES completion:^{}];
+    }
+}
+
+- (NSArray *)currentlyStoredMessages
+{
+    NSArray *currentlyStoredMessages = [Preferences messagesForDiscussion:nil];
+    return currentlyStoredMessages;
+}
+
+- (void)storeCurrentMessageToPreferences
+{
+    NSMutableArray *finalArray = [[NSMutableArray alloc] init];
+    if ([self currentlyStoredMessages] && [[self currentlyStoredMessages] count] > 0)
+        [finalArray addObjectsFromArray:[self currentlyStoredMessages]];
+    NSDictionary *storedMessage = @{@"text": self.responseView.text, @"attachment": (_currentAttachmentName ? _currentAttachmentName : @"")};
+    [finalArray addObject:storedMessage];
+    
+    NSLog(@"FINAL \n%@", finalArray);
+    [Preferences messagesForDiscussion:finalArray];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self closeKeyboard];
+        [self.nController popViewControllerAnimated:YES];
+    });
+}
+
+- (void)deleteStoredMessages
+{
+    [Preferences messagesForDiscussion:(NSMutableArray *)@[]];
+    self.responseView.text = _respondTo;
+    [self.attachmentNames removeAllObjects];
+}
 
 @end
+
+
+
 

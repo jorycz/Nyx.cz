@@ -7,6 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
+// CGFloat
+#import <UIKit/UIKit.h>
+
 
 @interface Constants : NSObject
 
@@ -23,6 +26,8 @@
 
 #define POST_NOTIFICATION_DISCUSSION_LOAD_OLDER_FROM(s) [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDiscussionLoadOlderFrom object:nil userInfo:@{@"nKey" : (s)}];
 #define POST_NOTIFICATION_DISCUSSION_LOAD_NEWER_FROM(s) [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDiscussionLoadNewerFrom object:nil userInfo:@{@"nKey" : (s)}];
+
+#define POST_NOTIFICATION_LIST_TABLE_CHANGED [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationListTableChanged object:nil userInfo:nil];
 
 #define PERFSTART NSDate *now = [NSDate date];
 #define PERFSTOP NSLog(@"%@ / %@: TIME : %f", [self class], NSStringFromSelector(_cmd), [[NSDate date] timeIntervalSinceDate:now]);
@@ -49,6 +54,7 @@ extern NSString* const kNotificationMailboxLoadFrom;
 extern NSString* const kNotificationMailboxNewMessageFor;
 extern NSString* const kNotificationDiscussionLoadOlderFrom;
 extern NSString* const kNotificationDiscussionLoadNewerFrom;
+extern NSString* const kNotificationListTableChanged;
 
 extern NSString* const kPeopleTableModeFeed;
 extern NSString* const kPeopleTableModeFeedDetail;
@@ -58,6 +64,8 @@ extern NSString* const kPeopleTableModeFriends;
 extern NSString* const kPeopleTableModeFriendsDetail;
 extern NSString* const kPeopleTableModeDiscussion;
 extern NSString* const kPeopleTableModeDiscussionDetail;
+
+extern CGFloat const kLongPressMinimumDuration;
 
 // API
 extern NSString* const kApiLoguser;

@@ -17,6 +17,7 @@
 - (id)initWithTimestamp:(NSString *)timestamp;
 - (NSString *)getDayDate;
 - (NSString *)getTime;
+- (NSString *)getTimeWithDate;
 
 
 @end
