@@ -16,6 +16,8 @@
 		2B0D5DB71FBC40F30052D63C /* Nyx_czUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B0D5DB61FBC40F30052D63C /* Nyx_czUITests.m */; };
 		2B1D59491FCB06CF009E4A88 /* SettingsVCCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B1D59481FCB06CF009E4A88 /* SettingsVCCell.m */; };
 		2B1D594F1FCB4EAD009E4A88 /* ComputeRowHeightTextAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B1D594E1FCB4EAD009E4A88 /* ComputeRowHeightTextAttachment.m */; };
+		2B1D59551FCCB3DD009E4A88 /* WebVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B1D59541FCCB3DD009E4A88 /* WebVC.m */; };
+		2B1D59581FCCC9DF009E4A88 /* PostImagesPreview.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B1D59571FCCC9DF009E4A88 /* PostImagesPreview.m */; };
 		2B2303721FBC59DC00286062 /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B2303711FBC59DC00286062 /* logo.png */; };
 		2B23037A1FBC5BE700286062 /* Post.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B2303791FBC5BE700286062 /* Post.m */; };
 		2B23037D1FBC5C7F00286062 /* ServerConnector.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B23037C1FBC5C7F00286062 /* ServerConnector.m */; };
@@ -123,6 +125,10 @@
 		2B1D59481FCB06CF009E4A88 /* SettingsVCCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SettingsVCCell.m; sourceTree = "<group>"; };
 		2B1D594D1FCB4EAD009E4A88 /* ComputeRowHeightTextAttachment.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ComputeRowHeightTextAttachment.h; sourceTree = "<group>"; };
 		2B1D594E1FCB4EAD009E4A88 /* ComputeRowHeightTextAttachment.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ComputeRowHeightTextAttachment.m; sourceTree = "<group>"; };
+		2B1D59531FCCB3DD009E4A88 /* WebVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WebVC.h; sourceTree = "<group>"; };
+		2B1D59541FCCB3DD009E4A88 /* WebVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WebVC.m; sourceTree = "<group>"; };
+		2B1D59561FCCC9DF009E4A88 /* PostImagesPreview.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PostImagesPreview.h; sourceTree = "<group>"; };
+		2B1D59571FCCC9DF009E4A88 /* PostImagesPreview.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PostImagesPreview.m; sourceTree = "<group>"; };
 		2B2303711FBC59DC00286062 /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logo.png; path = Nyx.cz/Images/logo.png; sourceTree = SOURCE_ROOT; };
 		2B2303781FBC5BE700286062 /* Post.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Post.h; sourceTree = "<group>"; };
 		2B2303791FBC5BE700286062 /* Post.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Post.m; sourceTree = "<group>"; };
@@ -492,6 +498,10 @@
 				2B42D44A1FCA2124009F751D /* ContentTableWithList.m */,
 				2B42D44C1FCA27B9009F751D /* ContentTableWithListCell.h */,
 				2B42D44D1FCA27B9009F751D /* ContentTableWithListCell.m */,
+				2B1D59531FCCB3DD009E4A88 /* WebVC.h */,
+				2B1D59541FCCB3DD009E4A88 /* WebVC.m */,
+				2B1D59561FCCC9DF009E4A88 /* PostImagesPreview.h */,
+				2B1D59571FCCC9DF009E4A88 /* PostImagesPreview.m */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -668,6 +678,7 @@
 				2B0D5D911FBC40F20052D63C /* AppDelegate.m in Sources */,
 				2B317FF31FC221200063B9EE /* ContentNotification.m in Sources */,
 				2B317FD71FC20AD90063B9EE /* ContactVC.m in Sources */,
+				2B1D59551FCCB3DD009E4A88 /* WebVC.m in Sources */,
 				2BD251C51FC0D28600BE6272 /* MainContentVC.m in Sources */,
 				2B317FFF1FC246A40063B9EE /* ContentTableWithPeople.m in Sources */,
 				2B31801F1FC4DB590063B9EE /* ContentMailbox.m in Sources */,
@@ -675,6 +686,7 @@
 				2B2303871FBC60C300286062 /* StorageManager.m in Sources */,
 				2B0D5DA21FBC40F30052D63C /* main.m in Sources */,
 				2B0D5D9A1FBC40F30052D63C /* Nyx_cz.xcdatamodeld in Sources */,
+				2B1D59581FCCC9DF009E4A88 /* PostImagesPreview.m in Sources */,
 				2B2303831FBC5CE200286062 /* Constants.m in Sources */,
 				2B2303911FBC65CA00286062 /* LoginScreenVC.m in Sources */,
 				2B42D44E1FCA27B9009F751D /* ContentTableWithListCell.m in Sources */,

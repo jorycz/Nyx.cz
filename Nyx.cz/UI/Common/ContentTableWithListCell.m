@@ -25,7 +25,7 @@
         _unreadLabel.userInteractionEnabled = NO;
         _unreadLabel.textAlignment = NSTextAlignmentCenter;
         _unreadLabel.font = [UIFont boldSystemFontOfSize:12];
-        _unreadLabel.layer.cornerRadius = 9;
+        _unreadLabel.layer.cornerRadius = 8;
         _unreadLabel.clipsToBounds = YES;
         [self addSubview:_unreadLabel];
         
@@ -75,12 +75,15 @@
 
 - (void)configureCellForIndexPath:(NSIndexPath *)idxPath
 {
+    _unreadLabel.alpha = 1;
     NSInteger unread = [self.unreadCount integerValue];
     if (unread > 999) {
         _unreadLabel.text = @"1K+";
     } else {
         _unreadLabel.text = self.unreadCount;
     }
+    if (unread < 1)
+        _unreadLabel.alpha = .2;
     _boardNameLabel.text = self.boardName;
     self.backgroundColor = [UIColor whiteColor];
 }

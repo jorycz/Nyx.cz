@@ -26,7 +26,7 @@
         self.menuEntries = @[@"Spočítat velikost cache",
                              @"Počáteční lokace",
                              @"Smazat nastavení",
-                             @"Zobrazovat obrázky v textu"];
+                             @"Zobrazovat obrázky"];
         self.menuSubtitles = @[@"Spočítá a případně umožní vymazat obsah mezipaměti.",
                                @"",
                                @"Smaže veškeré nastavení kromě autorizace.",

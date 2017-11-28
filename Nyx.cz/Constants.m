@@ -37,7 +37,7 @@ NSString* const kPeopleTableModeFriendsDetail = @"kPeopleTableModeFriendsDetail"
 NSString* const kPeopleTableModeDiscussion = @"kPeopleTableModeDiscussion";
 NSString* const kPeopleTableModeDiscussionDetail = @"kPeopleTableModeDiscussionDetail";
 
-CGFloat const kLongPressMinimumDuration = 0.5f;
+CGFloat const kLongPressMinimumDuration = 0.4f;
 
 // API
 NSString* const kApiLoguser = @"loguser";

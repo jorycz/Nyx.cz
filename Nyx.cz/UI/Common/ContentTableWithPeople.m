@@ -10,6 +10,11 @@
 #import "PeopleRespondVC.h"
 #import "ApiBuilder.h"
 #import "LoadingView.h"
+// Post content
+#import "WebVC.h"
+#import "PostImagesPreview.h"
+// Pasteboard
+#import <MobileCoreServices/MobileCoreServices.h>
 
 
 @interface ContentTableWithPeople ()
@@ -227,7 +232,9 @@
     }
     // ---------------------
     
-    if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeedDetail]  || [self.peopleTableMode isEqualToString:kPeopleTableModeMailboxDetail]) {
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeedDetail]  ||
+        [self.peopleTableMode isEqualToString:kPeopleTableModeMailboxDetail] ||
+        [self.peopleTableMode isEqualToString:kPeopleTableModeDiscussionDetail]) {
         ContentTableWithPeopleCell *cell = [tableView cellForRowAtIndexPath:indexPath];
         [self cellClickedWithAttributedText:cell.bodyText];
     }
@@ -449,9 +456,13 @@
 
 #pragma mark - LONG PRESS DETECTOR
 
-- (void)longPressOnCell:(id)sender
+- (void)longPressOnCell:(UILongPressGestureRecognizer *)sender
 {
-    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), sender);
+    if (sender.state == UIGestureRecognizerStateBegan)
+    {
+        ContentTableWithPeopleCell *cell = (ContentTableWithPeopleCell *)sender.view;
+        [self cellClickedWithAttributedText:cell.bodyText];
+    }
 }
 
 #pragma mark - CELL BODY TEXT DETECTOR
@@ -462,7 +473,9 @@
         NSLog(@"%@ - %@ : ERROR [%@]", self, NSStringFromSelector(_cmd), @"Navigation controller doesn't exist !!!");
         return;
     }
+    
     NSMutableArray *detectedUrls = [[NSMutableArray alloc] init];
+    
     // First - detect properly configured URLs. Like with <a ...> tags.
     [attrText enumerateAttributesInRange:NSMakeRange(0, attrText.length)
                                  options:NSAttributedStringEnumerationReverse
@@ -473,6 +486,7 @@
             [detectedUrls addObject:url];
         }
     }];
+    
     // Second - there could be URLs in text just in plain text - like https:// ...
     NSArray *words = [[attrText string] componentsSeparatedByString:@" "];
     for (NSString *component in words) {
@@ -480,9 +494,11 @@
             NSLog(@"%@ - %@ Detected URL as TEXT : [%@]", self, NSStringFromSelector(_cmd), component);
             // If there is new line at the end of the string - NSURL is nil.
             NSURL *u = [NSURL URLWithString:[component stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]];
-            [detectedUrls addObject:u];
+            if (u)
+                [detectedUrls addObject:u];
         }
     }
+    
     // Remove strange links
     NSMutableArray *goodLinks = [NSMutableArray array];
     for (NSURL *url in detectedUrls) {
@@ -490,30 +506,128 @@
             [goodLinks addObject:url];
         }
     }
-    [self showActionSheetForURLs:goodLinks];
+    
+    [self showActionSheetForURLs:goodLinks forText:attrText];
 }
 
-- (void)showActionSheetForURLs:(NSArray *)urls
+- (void)showActionSheetForURLs:(NSArray *)urls forText:(NSAttributedString *)attrText
 {
-    // Remove duplicates if any
-    NSArray *uniqueUrls = [[NSSet setWithArray:urls] allObjects];
-    if ([uniqueUrls count] > 0) {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Otevřít URL"
-                                                                       message:@"Link bude otevřen v Safari"
-                                                                preferredStyle:UIAlertControllerStyleActionSheet];
-        for (NSURL *url in uniqueUrls) {
+    // Remove duplicates [NSSet] if any and filter arrays for images.
+    NSArray *urlsWithoutImages = [[NSArray alloc] initWithArray:[self urlsWithoutImages:urls] copyItems:YES];
+    NSArray *urlsWithImagesOnly = [[NSArray alloc] initWithArray:[self urlsWithImagesOnly:urls] copyItems:YES];
+    
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Volby příspěvku"
+                                                                   message:nil
+                                                            preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    if ([urlsWithoutImages count] > 0) {
+        for (NSURL *url in urlsWithoutImages) {
             UIAlertAction *action = [UIAlertAction actionWithTitle:[url absoluteString] style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
-                [[UIApplication sharedApplication] openURL:url
-                                                   options:@{}
-                                         completionHandler:^(BOOL success) {}];
+//                [[UIApplication sharedApplication] openURL:url
+//                                                   options:@{}
+//                                         completionHandler:^(BOOL success) {}];
+                WebVC *web = [[WebVC alloc] init];
+                UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:web];
+                web.urlToLoad = url;
+                [self presentViewController:nc animated:YES completion:^{}];
             }];
             [alert addAction:action];
         }
-        UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Zrušit" style:(UIAlertActionStyleCancel) handler:^(UIAlertAction * _Nonnull action) {}];
-        [alert addAction:cancel];
-        [self presentViewController:alert animated:YES completion:nil];
     }
+    
+    NSArray *i = [self detectImagesAttributedText:attrText];
+    if (i && [i count] > 0)
+    {
+        UIAlertAction *showImages = [UIAlertAction actionWithTitle:@"Zobrazit obrázky" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+            PostImagesPreview *pip = [[PostImagesPreview alloc] init];
+            UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:pip];
+            pip.images = i;
+            pip.imageUrls = urlsWithImagesOnly;
+            nc.modalPresentationStyle = UIModalPresentationCustom;
+            [self presentViewController:nc animated:YES completion:^{}];
+        }];
+        [alert addAction:showImages];
+    }
+    
+    UIAlertAction *copy = [UIAlertAction actionWithTitle:@"Kopírovat" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+        NSMutableDictionary *item = [[NSMutableDictionary alloc] init];
+        NSData *rtf = [attrText dataFromRange:NSMakeRange(0, attrText.length)
+                           documentAttributes:@{NSDocumentTypeDocumentAttribute: NSRTFDTextDocumentType}
+                                        error:nil];
+        if (rtf)
+            [item setObject:rtf forKey:(id)kUTTypeFlatRTFD];
+        // Fallback
+        [item setObject:attrText.string forKey:(id)kUTTypeUTF8PlainText];
+        UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+        pasteboard.items = @[item];
+    }];
+    [alert addAction:copy];
+
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Zrušit" style:(UIAlertActionStyleCancel) handler:^(UIAlertAction * _Nonnull action) {}];
+    [alert addAction:cancel];
+    [self presentViewController:alert animated:YES completion:nil];
 }
+
+- (NSArray *)urlsWithoutImages:(NSArray *)detectedUrl
+{
+    NSMutableArray *a = [[NSMutableArray alloc] init];
+    for (NSURL *u in detectedUrl) {
+        if ([[[u absoluteString] lowercaseString] hasSuffix:@"jpeg"] ||
+            [[[u absoluteString] lowercaseString] hasSuffix:@"jpg"] ||
+            [[[u absoluteString] lowercaseString] hasSuffix:@"png"])
+        {
+            continue;
+        }
+        if (![a containsObject:u])
+        {
+            [a addObject:u];
+        }
+    }
+    return (NSArray *)a;
+}
+
+- (NSArray *)urlsWithImagesOnly:(NSArray *)detectedUrl
+{
+    NSMutableArray *a = [[NSMutableArray alloc] init];
+    for (NSURL *u in detectedUrl) {
+        if ([[[u absoluteString] lowercaseString] hasSuffix:@"jpeg"] ||
+            [[[u absoluteString] lowercaseString] hasSuffix:@"jpg"] ||
+            [[[u absoluteString] lowercaseString] hasSuffix:@"png"])
+        {
+            if (![a containsObject:u]) {
+                [a addObject:u];
+            }
+        }
+    }
+    return (NSArray *)a;
+}
+
+- (NSArray *)detectImagesAttributedText:(NSAttributedString *)attrText
+{
+    NSMutableArray *imagesArray = [[NSMutableArray alloc] init];
+    [attrText enumerateAttribute:NSAttachmentAttributeName
+                         inRange:NSMakeRange(0, [attrText length])
+                         options:0
+                      usingBlock:^(id value, NSRange range, BOOL *stop)
+    {
+        if ([value isKindOfClass:[NSTextAttachment class]])
+        {
+            NSTextAttachment *attachment = (NSTextAttachment *)value;
+            UIImage *image = nil;
+            if ([attachment image])
+                image = [attachment image];
+            else
+                image = [attachment imageForBounds:[attachment bounds]
+                                     textContainer:nil
+                                    characterIndex:range.location];
+            
+            if (image)
+                [imagesArray addObject:image];
+        }
+    }];
+    return imagesArray;
+}
+
 
 #pragma mark - LOADING VIEW
 

@@ -48,7 +48,10 @@
         
         if (inlineImages && [inlineImages length] > 0)
         {
+//            NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"-- Replacing URL link with attachments itself.");
             [self replaceLinkWithAttachments];
+        } else {
+//            NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"-- Keeping URL link in HTML.");
         }
         
         // Count size
@@ -86,20 +89,28 @@
 {
 //    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), self.attributedText);
     
-    // Detect properly configured URLs. Like with <a ...> tags.
+    // Detect properly configured URLs. Like with <a ...> <img ...> and so tags.
     [self.attributedText enumerateAttributesInRange:NSMakeRange(0, self.attributedText.length)
                                             options:NSAttributedStringEnumerationReverse
                                          usingBlock:^(NSDictionary<NSAttributedStringKey,id> * _Nonnull attrs, NSRange range, BOOL * _Nonnull stop) {
         if ([attrs objectForKey:@"NSLink"]) {
             NSURL *url = [attrs objectForKey:@"NSLink"];
-            NSLog(@"%@ - %@ Detected URL as NSLink : [%@]", self, NSStringFromSelector(_cmd), url);
-            UIImage *inlineImage = [self getImageForUrl:url];
-            if (inlineImage)
-            {
-                ComputeRowHeightTextAttachment *textAttachment = [[ComputeRowHeightTextAttachment alloc] init];
-                textAttachment.image = inlineImage;
-                NSAttributedString *attrStringWithImage = [NSAttributedString attributedStringWithAttachment:textAttachment];
-                [self.attributedText replaceCharactersInRange:range withAttributedString:attrStringWithImage];
+            NSString *urlStr = [url absoluteString];
+//            NSLog(@"%@ - %@ Detected URL as NSLink : [%@]", self, NSStringFromSelector(_cmd), url);
+            if ([urlStr hasPrefix:@"http"]) {
+                if ([[urlStr lowercaseString] hasSuffix:@"jpeg"] ||
+                    [[urlStr lowercaseString] hasSuffix:@"jpg"] ||
+                    [[urlStr lowercaseString] hasSuffix:@"png"])
+                {
+                    UIImage *inlineImage = [self getImageForUrl:url];
+                    if (inlineImage)
+                    {
+                        ComputeRowHeightTextAttachment *textAttachment = [[ComputeRowHeightTextAttachment alloc] init];
+                        textAttachment.image = inlineImage;
+                        NSAttributedString *attrStringWithImage = [NSAttributedString attributedStringWithAttachment:textAttachment];
+                        [self.attributedText replaceCharactersInRange:range withAttributedString:attrStringWithImage];
+                    }
+                }
             }
         }
     }];

@@ -36,7 +36,7 @@
     [super viewDidLoad];
     
     _info = [[UITextField alloc] init];
-    _info.text = @"Není vybrána žádná sekce.";
+    _info.text = @":-)";
     _info.userInteractionEnabled = NO;
     _info.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:_info];
