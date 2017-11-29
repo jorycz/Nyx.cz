@@ -42,6 +42,13 @@
         _timeLabel.font = [UIFont systemFontOfSize:12];
         [self addSubview:_timeLabel];
         
+        _ratingLabel = [[UILabel alloc] init];
+        _ratingLabel.backgroundColor = [UIColor clearColor];
+        _ratingLabel.userInteractionEnabled = NO;
+        _ratingLabel.textAlignment = NSTextAlignmentCenter;
+        _ratingLabel.font = [UIFont systemFontOfSize:12];
+        [self addSubview:_ratingLabel];
+        
         _bodyView = [[UITextView alloc] init];
         _bodyView.backgroundColor = [UIColor clearColor];
         _bodyView.userInteractionEnabled = NO;
@@ -77,10 +84,21 @@
     [super layoutSubviews];
     
     CGRect f = self.frame;
-    _avatarView.frame = CGRectMake(5, 5, 50, 60);
-    _nickLabel.frame = CGRectMake(64, 5, f.size.width - 65 - 140, 15);
-    _timeLabel.frame = CGRectMake(64 + (f.size.width - 65 - 140) + 10, 5, 124, 13);
+    
+    CGFloat insect = 5;
+    CGFloat avatarWidth = 50;
+    CGFloat avatarHeight = 60;
+    
+    CGFloat timeWidth = 115;
+    
+    _avatarView.frame = CGRectMake(insect, insect, avatarWidth, avatarHeight);
+    
+    _nickLabel.frame = CGRectMake(avatarWidth + insect, insect, f.size.width - (avatarWidth + insect) - timeWidth - _ratingWidth - (3 * insect), 15);
+    _timeLabel.frame = CGRectMake(_nickLabel.frame.origin.x + _nickLabel.frame.size.width + insect, insect, timeWidth, 13);
+    _ratingLabel.frame = CGRectMake(_timeLabel.frame.origin.x + _timeLabel.frame.size.width + insect, insect, _ratingWidth, 13);
+    
     _bodyView.frame = CGRectMake(60, 20, f.size.width - kWidthForTableCellBodyTextViewSubstract, f.size.height - 25);
+    
     _separator.frame = CGRectMake(10, f.size.height - 1, f.size.width - 20, 1);
 }
 
@@ -88,6 +106,7 @@
 {
     _nickLabel.text = self.nick;
     _bodyView.attributedText = self.bodyText;
+    
     self.backgroundColor = [UIColor whiteColor];
     
     if (self.mailboxDirection && [self.mailboxDirection isEqualToString:@"to"]) {
@@ -112,6 +131,20 @@
     if (self.time && [self.time length] > 0) {
         _timeLabel.text = self.time;
     }
+    if (self.rating && [self.rating length] > 0 && ![self.rating isEqualToString:@"0"]) {
+        _ratingWidth = 25;
+        NSInteger r = [self.rating integerValue];
+        if (r < 0) {
+            _ratingLabel.textColor = [UIColor redColor];
+            _ratingLabel.text = self.rating;
+        } else {
+            _ratingLabel.textColor = [UIColor greenColor];
+            _ratingLabel.text = [NSString stringWithFormat:@"+%@", self.rating];
+        }
+    } else {
+        _ratingWidth = 0;
+    }
+    NSLog(@"%@ - %@ : [%li]", self, NSStringFromSelector(_cmd), (long)_ratingWidth);
     [self getAvatar];
 }
 

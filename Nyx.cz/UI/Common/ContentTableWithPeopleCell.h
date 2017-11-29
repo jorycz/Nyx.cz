@@ -13,9 +13,11 @@
 @interface ContentTableWithPeopleCell : UITableViewCell <CacheManagerDelegate>
 {
     UIImageView *_avatarView;
-    UILabel *_nickLabel, *_timeLabel;
+    UILabel *_nickLabel, *_timeLabel, *_ratingLabel;
     UITextView *_bodyView;
     UIView *_separator;
+    
+    CGFloat _ratingWidth;
 }
 
 
@@ -31,6 +33,7 @@
 @property (nonatomic, strong) NSString *activeFriendStatus;
 @property (nonatomic, strong) NSString *discussionNewPost;
 @property (nonatomic, strong) NSString *time;
+@property (nonatomic, strong) NSString *rating;
 
 
 - (void)configureCellForIndexPath:(NSIndexPath *)idxPath;

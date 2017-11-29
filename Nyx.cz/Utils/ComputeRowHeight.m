@@ -72,6 +72,7 @@
              if (newFont) {
                  [self.attributedText removeAttribute:NSFontAttributeName range:range];
                  [self.attributedText addAttribute:NSFontAttributeName value:newFont range:range];
+             } else {
              }
          }];
         

@@ -39,6 +39,7 @@
 - (void)didMoveToWindow
 {
     [super didMoveToWindow];
+    
     if (self.window && _firstInit)
     {
         _firstInit = NO;

@@ -82,8 +82,18 @@
     
     if (_firstInit) {
         _firstInit = NO;
-        [self discussionTableInit];
+        
+        // DISCUSSION TABLE INIT !
+        // Is allocated and going to be present - one time only.
+        self.discussionTable = [[ContentTableWithPeople alloc] initWithRowHeight:70];
+        self.discussionTable.nController = self.nController;
+        self.discussionTable.allowsSelection = YES;
+        self.discussionTable.canEditFirstRow = YES;
+        self.discussionTable.peopleTableMode = kPeopleTableModeDiscussion;
     }
+    
+    // - 65 is there because there is big avatar left of table cell body text view.
+    _widthForTableCellBodyTextView = self.view.frame.size.width - kWidthForTableCellBodyTextViewSubstract;
 }
 
 - (void)didReceiveMemoryWarning
@@ -364,22 +374,6 @@
         PRESENT_ERROR(@"Error", @"No data from server.")
     }
 }
-
-#pragma mark - TABLE INIT - DISCUSSION
-
-- (void)discussionTableInit
-{
-    // Is allocated and going to be present - one time only.
-    self.discussionTable = [[ContentTableWithPeople alloc] initWithRowHeight:70];
-    self.discussionTable.nController = self.nController;
-    self.discussionTable.allowsSelection = YES;
-    self.discussionTable.canEditFirstRow = YES;
-    self.discussionTable.peopleTableMode = kPeopleTableModeDiscussion;
-    
-    // - 65 is there because there is big avatar left of table cell body text view.
-    _widthForTableCellBodyTextView = self.view.frame.size.width - kWidthForTableCellBodyTextViewSubstract;
-}
-
 
 
 

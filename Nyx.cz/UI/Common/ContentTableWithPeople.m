@@ -158,6 +158,7 @@
         {
             nick = [cellData objectForKey:@"nick"];
             cell.discussionNewPost = [cellData objectForKey:@"new"];
+            cell.rating = [cellData objectForKey:@"wu_rating"];
         }
         cell.nick = nick;
         Timestamp *ts = [[Timestamp alloc] initWithTimestamp:[cellData objectForKey:@"time"]];

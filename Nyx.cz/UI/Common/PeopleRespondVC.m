@@ -161,6 +161,7 @@
 - (void)viewWillLayoutSubviews
 {
     [super viewWillLayoutSubviews];
+    
     if (_firstInit) {
         _firstInit = NO;
         CGRect f = self.view.frame;
