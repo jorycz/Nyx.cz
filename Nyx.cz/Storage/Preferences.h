@@ -24,7 +24,9 @@
 + (NSString *)lastUserPosition:(NSString *)value;
 + (NSString *)preferredStartingLocation:(NSString *)value;
 + (NSString *)showImagesInlineInPost:(NSString *)value;
++ (NSString *)openUrlsInSafari:(NSString *)value;
 
+// Cache for not finished messages
 + (NSArray *)messagesForDiscussion:(NSMutableArray *)value;
 
 

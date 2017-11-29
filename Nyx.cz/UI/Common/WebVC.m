@@ -37,13 +37,12 @@
     
     _web = [[UIWebView alloc] init];
     _web.delegate = self;
-    _web.scrollView.bounces = NO;
     _web.scalesPageToFit = YES;
     [self.view addSubview:_web];
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemBookmarks
                                                                                    target:self
-                                                                                   action:@selector(dismiss)];
+                                                                                   action:@selector(openInSafari)];
 }
 
 - (void)didReceiveMemoryWarning
@@ -80,9 +79,11 @@
 {
 }
 
-- (void)dismiss
+- (void)openInSafari
 {
-    [self dismissViewControllerAnimated:YES completion:^{}];
+    [[UIApplication sharedApplication] openURL:self.urlToLoad
+                                       options:@{}
+                             completionHandler:^(BOOL success) {}];
 }
 
 

@@ -77,11 +77,11 @@
     }
     
     self.bottomView = [[UIView alloc] init];
-    self.bottomView.backgroundColor = [UIColor colorWithWhite:.95 alpha:1];
+    self.bottomView.backgroundColor = [UIColor colorWithWhite:.8 alpha:1];
     
     self.responseView = [[UITextView alloc] init];
 //    [self.responseView setTextContainerInset:(UIEdgeInsetsZero)];
-    self.responseView.backgroundColor = [UIColor lightGrayColor];
+    self.responseView.backgroundColor = [UIColor colorWithWhite:.95 alpha:1];
     self.responseView.clipsToBounds = YES;
     self.responseView.layer.cornerRadius = 6.0f;
     
@@ -105,7 +105,6 @@
     
     if ([self.peopleRespondMode isEqualToString:kPeopleTableModeDiscussion])
     {
-        
         // Add respond variables to respond text input view AND previous messages if exist.
         if (self.nick && [self.nick length] > 0 && self.postId && [self.postId length] > 0)
         {
@@ -113,16 +112,24 @@
         }
         
         NSMutableString *tmp = [[NSMutableString alloc] init];
-        if ([self currentlyStoredMessages] && [[self currentlyStoredMessages] count] > 0) {
+        if ([self currentlyStoredMessages] && [[self currentlyStoredMessages] count] > 0)
+        {
             for (NSDictionary *d in [self currentlyStoredMessages]) {
                 [tmp appendString:[d objectForKey:@"text"]];
-                [self.attachmentNames addObject:[d objectForKey:@"attachment"]];
+                if ([d objectForKey:@"attachment"])
+                    [self.attachmentNames addObject:[d objectForKey:@"attachment"]];
             }
-            self.responseView.text = [NSString stringWithFormat:@"%@\n\n%@", tmp, _respondTo];
+            if (_respondTo && [_respondTo length] > 0) {
+                self.responseView.text = [NSString stringWithFormat:@"%@\n\n%@", tmp, _respondTo];
+            } else {
+                self.responseView.text = [NSString stringWithFormat:@"%@\n\n", tmp];
+            }
         }
         else
         {
-            self.responseView.text = _respondTo;
+            if (_respondTo && [_respondTo length] > 0) {
+                self.responseView.text = _respondTo;
+            }
         }
     }
 }
@@ -242,7 +249,7 @@
     {
         if ([self currentlyStoredMessages] && [[self currentlyStoredMessages] count] > 0)
         {
-            NSString *message = [NSString stringWithFormat:@"Bude odeslána tato zpráva a další %li. Příloha bude odeslána pouze poslední přidaná.", (long)[[self currentlyStoredMessages] count]];
+            NSString *message = [NSString stringWithFormat:@"Bude odeslána tato zpráva včetně dalších odpovědí. Příloha bude odeslána pouze poslední přidaná."];
             UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Odeslat tuto a všechny uložené zprávy?"
                                                                            message:message
                                                                     preferredStyle:(UIAlertControllerStyleAlert)];
@@ -561,7 +568,8 @@
                                                                    message:@"Ke zprávě je přiložena příloha. Opravdu odstranit?"
                                                             preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *delete = [UIAlertAction actionWithTitle:@"Smazat" style:(UIAlertActionStyleDestructive) handler:^(UIAlertAction * _Nonnull action) {
-        [self.attachmentNames removeObject:_currentAttachmentName];
+//        [self.attachmentNames removeObject:_currentAttachmentName];
+        [self.attachmentNames removeAllObjects];
         [self rightButtonIsAttachment:NO];
     }];
     UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Zrušit" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
@@ -608,12 +616,13 @@
 - (void)storeCurrentMessageToPreferences
 {
     NSMutableArray *finalArray = [[NSMutableArray alloc] init];
-    if ([self currentlyStoredMessages] && [[self currentlyStoredMessages] count] > 0)
-        [finalArray addObjectsFromArray:[self currentlyStoredMessages]];
-    NSDictionary *storedMessage = @{@"text": self.responseView.text, @"attachment": (_currentAttachmentName ? _currentAttachmentName : @"")};
+    NSDictionary *storedMessage;
+    if ([self.attachmentNames lastObject]) {
+        storedMessage = @{@"text": self.responseView.text, @"attachment": [self.attachmentNames lastObject]};
+    } else {
+        storedMessage = @{@"text": self.responseView.text};
+    }
     [finalArray addObject:storedMessage];
-    
-    NSLog(@"FINAL \n%@", finalArray);
     [Preferences messagesForDiscussion:finalArray];
     
     dispatch_async(dispatch_get_main_queue(), ^{

@@ -79,7 +79,7 @@
     CGRect f = self.frame;
     _avatarView.frame = CGRectMake(5, 5, 50, 60);
     _nickLabel.frame = CGRectMake(64, 5, f.size.width - 65 - 140, 15);
-    _timeLabel.frame = CGRectMake(64 + (f.size.width - 65 - 140) + 10, 5, 125, 13);
+    _timeLabel.frame = CGRectMake(64 + (f.size.width - 65 - 140) + 10, 5, 124, 13);
     _bodyView.frame = CGRectMake(60, 20, f.size.width - kWidthForTableCellBodyTextViewSubstract, f.size.height - 25);
     _separator.frame = CGRectMake(10, f.size.height - 1, f.size.width - 20, 1);
 }

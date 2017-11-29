@@ -26,11 +26,15 @@
         self.menuEntries = @[@"Spočítat velikost cache",
                              @"Počáteční lokace",
                              @"Smazat nastavení",
-                             @"Zobrazovat obrázky"];
+                             @"Zobrazovat obrázky",
+                             @"Otevřít v Safari"
+                             ];
         self.menuSubtitles = @[@"Spočítá a případně umožní vymazat obsah mezipaměti.",
                                @"",
                                @"Smaže veškeré nastavení kromě autorizace.",
-                               @"Zobrazovat v postech obrázky nebo URL."];
+                               @"Zobrazovat v postech obrázky nebo URL.",
+                               @"Otevře URL linky v Safari místo v aplikaci."
+                               ];
     }
     return self;
 }
@@ -124,7 +128,12 @@
     }
     
     if (indexPath.row == 3) {
-        cell.settingsSwitch = [self placeSwitchWithTag:3];
+        cell.settingsSwitch = [self placeSwitchWithTag:indexPath.row];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    }
+    
+    if (indexPath.row == 4) {
+        cell.settingsSwitch = [self placeSwitchWithTag:indexPath.row];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     
@@ -146,6 +155,8 @@
             break;
         case 3:
             break;
+        case 4:
+            break;
         default:
             break;
     }
@@ -161,6 +172,7 @@
     view.tintColor = [UIColor colorWithRed:1 green:0 blue:0 alpha:.9];
 }
 
+
 #pragma mark - SWITCH
 
 - (UISwitch *)placeSwitchWithTag:(NSInteger)tag
@@ -172,6 +184,8 @@
     // INITIAL STATE
     if (tag == 3)
         [[Preferences showImagesInlineInPost:nil] length] > 0 ? [s setOn:YES] : [s setOn:NO] ;
+    if (tag == 4)
+        [[Preferences openUrlsInSafari:nil] length] > 0 ? [s setOn:YES] : [s setOn:NO] ;
     
     return s;
 }
@@ -182,7 +196,10 @@
     
     if (s.tag == 3)
         s.isOn ? [Preferences showImagesInlineInPost:@"yes"] : [Preferences showImagesInlineInPost:@""] ;
+    if (s.tag == 4)
+        s.isOn ? [Preferences openUrlsInSafari:@"yes"] : [Preferences openUrlsInSafari:@""] ;
 }
+
 
 #pragma mark - ACTIONS
 

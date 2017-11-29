@@ -26,7 +26,7 @@
 {
     [super loadView];
     self.view = [[UIView alloc] init];
-    self.view.backgroundColor = [UIColor colorWithWhite:1 alpha:0.92];
+    self.view.backgroundColor = [UIColor colorWithWhite:1 alpha:0.95];
 }
 
 - (void)didReceiveMemoryWarning
@@ -55,12 +55,11 @@
     pageScrollView.opaque = NO;
     pageScrollView.clipsToBounds = NO;
     pageScrollView.pagingEnabled = YES;
-    pageScrollView.frame = CGRectMake(0, (viewHeight / 2) - (viewWidth / 2), viewWidth, viewWidth);
+    pageScrollView.frame = CGRectMake(0, 80, viewWidth, viewHeight - 80);
     pageScrollView.showsHorizontalScrollIndicator = NO;
     pageScrollView.showsVerticalScrollIndicator = NO;
     [self.view addSubview:pageScrollView];
     
-    float w = pageScrollView.frame.size.width;
     
     for(NSInteger i = 0; i < [self.images count]; i++)
     {
@@ -68,16 +67,18 @@
         view.tag = i;
         view.userInteractionEnabled = NO;
         view.contentMode = UIViewContentModeScaleAspectFit;
-        view.backgroundColor = [UIColor whiteColor];
+        view.backgroundColor = [UIColor clearColor];
         if (self.images && [self.images count] > 0)
             view.image = [self.images objectAtIndex:i];
-        view.frame = CGRectMake(0 + (i * w), 0, w, w);
+        view.frame = CGRectMake(0 + (i * viewWidth), 0, pageScrollView.frame.size.width, pageScrollView.frame.size.height);
         [pageScrollView addSubview:view];
         
         // If SHOW IMAGES INLINE in the HTML is ENABLED, no images download is needed and this array is empty.
         // No http can be found inside HTML body, because all images are downloaded as NSTextAttachments in ComputeRowHeight class.
         if (self.imageUrls && [self.imageUrls count] > 0)
         {
+            self.title = [NSString stringWithFormat:@"%@ - Nahrávám ...", self.title];
+            
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 NSURL *u = [self.imageUrls objectAtIndex:i];
                 if (u && [[u absoluteString] length] > 0)
@@ -87,6 +88,7 @@
                         if (d && [d length] > 0)
                         {
                             view.image = [[UIImage alloc] initWithData:d];
+                            self.title = @"Obrázky";
                         } else {
                             NSLog(@"%@ - %@ : ERROR [%@]", self, NSStringFromSelector(_cmd), @"Malformed data. Can't create UIImage from that data.");
                         }

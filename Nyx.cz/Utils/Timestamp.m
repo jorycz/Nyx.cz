@@ -56,7 +56,7 @@
         NSDate *date = [NSDate dateWithTimeIntervalSince1970:ts];
         //        NSDate *date = [NSDate dateWithTimeIntervalSince1970:ts/1000];
         NSDateFormatter *dateformatter = [[NSDateFormatter alloc] init];
-        [dateformatter setDateFormat:@"dd. MM. yyyy HH:mm:ss"];
+        [dateformatter setDateFormat:@"dd. MM. yyyy HH:mm"];
         return [dateformatter stringFromDate:date];
     } else {
         NSLog(@"%@ - %@ : ERROR [%@]", self, NSStringFromSelector(_cmd), @"No timestamp!");

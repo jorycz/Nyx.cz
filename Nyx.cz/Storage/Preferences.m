@@ -111,6 +111,19 @@
     }
 }
 
++ (NSString *)openUrlsInSafari:(NSString *)value
+{
+    NSString *key = @"_URLSINSAFARI";
+    if (value) {
+        [[NSUserDefaults standardUserDefaults] setValue:value forKey:key];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        return nil;
+    } else {
+        return [[NSUserDefaults standardUserDefaults] stringForKey:key];
+    }
+}
+
+
 #pragma mark - UTILITY
 
 + (NSArray *)messagesForDiscussion:(NSMutableArray *)value

@@ -523,13 +523,16 @@
     if ([urlsWithoutImages count] > 0) {
         for (NSURL *url in urlsWithoutImages) {
             UIAlertAction *action = [UIAlertAction actionWithTitle:[url absoluteString] style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
-//                [[UIApplication sharedApplication] openURL:url
-//                                                   options:@{}
-//                                         completionHandler:^(BOOL success) {}];
-                WebVC *web = [[WebVC alloc] init];
-                UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:web];
-                web.urlToLoad = url;
-                [self presentViewController:nc animated:YES completion:^{}];
+                if ([Preferences openUrlsInSafari:nil] && [[Preferences openUrlsInSafari:nil] length] > 0)
+                {
+                    [[UIApplication sharedApplication] openURL:url
+                                                       options:@{}
+                                             completionHandler:^(BOOL success) {}];
+                } else {
+                    WebVC *web = [[WebVC alloc] init];
+                    web.urlToLoad = url;
+                    [self.nController pushViewController:web animated:YES];
+                }
             }];
             [alert addAction:action];
         }
