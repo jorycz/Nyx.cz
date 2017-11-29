@@ -110,7 +110,6 @@
     NSMutableArray *paths = [[NSMutableArray alloc] init];
     if (attachmentNames && [attachmentNames count] > 0)
     {
-        NSLog(@"%@", attachmentNames);
         for (NSInteger i = 0 ; i < [attachmentNames count]; i++) {
             StorageManager *sm = [[StorageManager alloc] init];
             NSString *path = [NSString stringWithFormat:@"%@/%@", sm.imageCacheRoot, [attachmentNames objectAtIndex:i]];
@@ -118,7 +117,6 @@
         }
         httpBody = [self createBodyWithBoundary:boundary parameters:params paths:paths fieldName:@"attachment"];
     } else {
-        NSLog(@"NA");
         httpBody = [self createBodyWithBoundary:boundary parameters:params paths:@[] fieldName:@"attachment"];
     }
     [mutableRequest setHTTPBody:httpBody];

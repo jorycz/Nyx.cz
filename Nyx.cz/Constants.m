@@ -18,6 +18,8 @@ NSInteger const kCacheMaxDays = 31;
 NSInteger const kLoadingCoverViewTag = 666;
 NSString* const kDisableTableSections = @"kDisableTableSections";
 NSInteger const kWidthForTableCellBodyTextViewSubstract = 65;
+NSInteger const kNavigationBarHeight = 44;
+NSInteger const kStatusBarStandardHeight = 20;
 
 NSString* const kNotificationShowError = @"kNotificationShowError";
 NSString* const kNotificationFriendsFeedChanged = @"kNotificationFriendsFeedChanged";

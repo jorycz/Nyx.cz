@@ -351,7 +351,8 @@
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.nController.topViewController.navigationItem.rightBarButtonItem setEnabled:YES];
-            if ([identification isEqualToString:_serverIdentificationDiscussion]) {
+            if ([identification isEqualToString:_serverIdentificationDiscussion])
+            {
                 [self.discussionTable reloadTableData];
                 [self.nController pushViewController:self.discussionTable animated:YES];
                 [self removeLoadingView];

@@ -25,6 +25,7 @@
         self.backgroundColor = [UIColor whiteColor];
         _firstInit = YES;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshDataForMainContent) name:kNotificationFriendsFeedChanged object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(adjustFrameForCurrentStatusBar) name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
     }
     return self;
 }
@@ -49,11 +50,7 @@
         self.table.peopleTableMode = kPeopleTableModeFeed;
         [self addSubview:self.table.view];
         
-        CGRect f = self.bounds;
-        CGFloat navigationBarHeight = self.nController.navigationBar.frame.size.height;
-        CGFloat statusBarHeigh = [UIApplication sharedApplication].statusBarFrame.size.height;
-        // NSLog(@"- navigation bar height %li - status bar height %li - ", (long)navigationBarHeight, (long)statusBarHeigh);
-        self.table.view.frame = CGRectMake(0, navigationBarHeight + statusBarHeigh, f.size.width, f.size.height - (navigationBarHeight + statusBarHeigh));
+        [self adjustFrameForCurrentStatusBar];
         
         // - 65 is there because there is big avatar left of table cell body text view.
         _widthForTableCellBodyTextView = self.frame.size.width - kWidthForTableCellBodyTextViewSubstract;
@@ -64,6 +61,17 @@
         
         [self refreshDataForMainContent];
     }
+}
+
+- (void)adjustFrameForCurrentStatusBar
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        CGRect f = self.bounds;
+        //        CGFloat navigationBarHeight = self.nController.navigationBar.frame.size.height;
+        //        CGFloat statusBarHeigh = [UIApplication sharedApplication].statusBarFrame.size.height;
+        //         NSLog(@"- navigation bar height %li - status bar height %li - ", (long)navigationBarHeight, (long)statusBarHeigh);
+        self.table.view.frame = CGRectMake(0, kNavigationBarHeight + kStatusBarStandardHeight, f.size.width, f.size.height - (kNavigationBarHeight + [Preferences statusBarHeigh:0]));
+    });
 }
 
 - (void)refreshDataForMainContent

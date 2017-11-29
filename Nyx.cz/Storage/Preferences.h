@@ -7,6 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
+// CGFloat
+#import <UIKit/UIKit.h>
+
 
 @interface Preferences : NSObject
 
@@ -28,6 +31,8 @@
 
 // Cache for not finished messages
 + (NSArray *)messagesForDiscussion:(NSMutableArray *)value;
+// Current status bar
++ (CGFloat)statusBarHeigh:(CGFloat)value;
 
 
 @end

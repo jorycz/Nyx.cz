@@ -8,6 +8,10 @@
 
 #import "AppDelegate.h"
 #import "Constants.h"
+#import "Preferences.h"
+
+#import <AVFoundation/AVFoundation.h>
+
 
 @interface AppDelegate ()
 
@@ -15,12 +19,37 @@
 
 @implementation AppDelegate
 
+#pragma mark - IN CALL STATUS BAR
+
+//- (void)inCallBar:(NSNotification *)notification
+//{
+//}
+
+- (void)application:(UIApplication *)application willChangeStatusBarFrame:(CGRect)newStatusBarFrame
+{
+//    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), NSStringFromCGRect(newStatusBarFrame));
+    NSLog(@"%@ - %@ : StatusBar height will change to [%li]", self, NSStringFromSelector(_cmd), (long)newStatusBarFrame.size.height);
+    CGFloat c = newStatusBarFrame.size.height;
+    [Preferences statusBarHeigh:c];
+}
+
+//- (void)application:(UIApplication *)application didChangeStatusBarFrame:(CGRect)oldStatusBarFrame
+//{
+//    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), NSStringFromCGRect(oldStatusBarFrame));
+//}
+
+#pragma mark - INIT
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.mainScreen = [[MainVC alloc] init];
     UINavigationController *mainNavigationController = [[UINavigationController alloc] initWithRootViewController:self.mainScreen];
     mainNavigationController.navigationBar.tintColor = COLOR_SYSTEM_TURQUOISE;
+    
+    // IN CALL STATUS BAR
+    // Not needed with willChangeStatusBarFrame and didChangeStatusBarFrame methods above.
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(inCallBar:) name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(inCallBar:) name:UIApplicationDidChangeStatusBarFrameNotification object:nil];
     
     [self initNotificationTopBar];
     

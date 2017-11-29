@@ -46,6 +46,9 @@ extern NSInteger const kCacheMaxDays;
 extern NSInteger const kLoadingCoverViewTag;
 extern NSString* const kDisableTableSections;
 extern NSInteger const kWidthForTableCellBodyTextViewSubstract;
+extern NSInteger const kNavigationBarHeight;
+extern NSInteger const kStatusBarStandardHeight;
+
 
 extern NSString* const kNotificationShowError;
 extern NSString* const kNotificationFriendsFeedChanged;

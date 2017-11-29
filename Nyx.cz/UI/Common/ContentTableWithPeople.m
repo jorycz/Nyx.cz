@@ -38,6 +38,10 @@
     return self;
 }
 
+- (void)dealloc
+{
+}
+
 - (void)loadView
 {
     [super loadView];
@@ -95,6 +99,7 @@
     [_table reloadData];
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion])
         [self removeLoadingView];
+    [_table scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:(UITableViewScrollPositionTop) animated:NO];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView

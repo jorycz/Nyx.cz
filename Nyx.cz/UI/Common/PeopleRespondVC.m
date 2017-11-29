@@ -83,6 +83,7 @@
 //    [self.responseView setTextContainerInset:(UIEdgeInsetsZero)];
     self.responseView.backgroundColor = [UIColor colorWithWhite:.95 alpha:1];
     self.responseView.clipsToBounds = YES;
+    self.responseView.font = [UIFont systemFontOfSize:13];
     self.responseView.layer.cornerRadius = 6.0f;
     
     self.sendButton = [[UIButton alloc] init];
@@ -103,6 +104,7 @@
         [self rightButtonIsAttachment:NO];
     }
     
+    // RESTORE PREVIOUS text to respond view.
     if ([self.peopleRespondMode isEqualToString:kPeopleTableModeDiscussion])
     {
         // Add respond variables to respond text input view AND previous messages if exist.
@@ -165,15 +167,19 @@
         // - 65 is there because there is big avatar left of table cell body text view.
         _widthForTableCellBodyTextView = f.size.width - kWidthForTableCellBodyTextViewSubstract;
         
-        CGFloat bottomBarHeight = 76;
+        CGFloat bottomBarHeight = f.size.height / 4;
         CGFloat edgeInsect = 10;
+        CGFloat maxButtonSize = 70;
+        
         self.bottomView.frame = CGRectMake(0, f.size.height - bottomBarHeight, f.size.width, bottomBarHeight);
         _bottomFrame = self.bottomView.frame;
-        self.responseView.frame = CGRectMake(edgeInsect, edgeInsect, _bottomFrame.size.width - bottomBarHeight - (2 * edgeInsect), bottomBarHeight - (2 * edgeInsect));
-        self.sendButton.frame = CGRectMake(_bottomFrame.size.width - (bottomBarHeight - edgeInsect) - 3, edgeInsect, bottomBarHeight - (2 * edgeInsect), bottomBarHeight - (2 * edgeInsect));
+        
+        self.responseView.frame = CGRectMake(edgeInsect, edgeInsect, _bottomFrame.size.width - maxButtonSize - (3 * edgeInsect), bottomBarHeight - (2 * edgeInsect));
+        
+        self.sendButton.frame = CGRectMake(_bottomFrame.size.width - maxButtonSize - edgeInsect, bottomBarHeight / 2 - (maxButtonSize / 2), maxButtonSize, maxButtonSize);
         
         // 64 = navigation bar + status bar
-        self.table.view.frame = CGRectMake(0, 64, f.size.width, f.size.height - 64 - 76);
+        self.table.view.frame = CGRectMake(0, 64, f.size.width, f.size.height - 64 - bottomBarHeight);
         _tableFrame = self.table.view.frame;
     }
 }
@@ -484,8 +490,6 @@
 
 - (void)chooseAttachment
 {
-    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"");
-    
     UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
     imagePickerController.modalPresentationStyle = UIModalPresentationCurrentContext;
     imagePickerController.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;

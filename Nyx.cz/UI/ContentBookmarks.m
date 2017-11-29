@@ -25,6 +25,7 @@
         self.backgroundColor = [UIColor whiteColor];
         _firstInit = YES;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshDataForMainContent) name:kNotificationListTableChanged object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(adjustFrameForCurrentStatusBar) name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
     }
     return self;
 }
@@ -46,17 +47,21 @@
         self.table.nController = self.nController;
         [self addSubview:self.table.view];
         
-        CGRect f = self.bounds;
-        CGFloat navigationBarHeight = self.nController.navigationBar.frame.size.height;
-        CGFloat statusBarHeigh = [UIApplication sharedApplication].statusBarFrame.size.height;
-        // NSLog(@"- navigation bar height %li - status bar height %li - ", (long)navigationBarHeight, (long)statusBarHeigh);
-        self.table.view.frame = CGRectMake(0, navigationBarHeight + statusBarHeigh, f.size.width, f.size.height - (navigationBarHeight + statusBarHeigh));
+        [self adjustFrameForCurrentStatusBar];
         
         self.nController.topViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
                                                                                                                              target:self
                                                                                                                              action:@selector(refreshDataForMainContent)];
         [self refreshDataForMainContent];
     }
+}
+
+- (void)adjustFrameForCurrentStatusBar
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        CGRect f = self.bounds;
+        self.table.view.frame = CGRectMake(0, kNavigationBarHeight + kStatusBarStandardHeight, f.size.width, f.size.height - (kNavigationBarHeight + kStatusBarStandardHeight));
+    });
 }
 
 - (void)refreshDataForMainContent

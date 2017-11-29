@@ -56,7 +56,7 @@
         
         // Count size
         // Replace FONT inside HTML string.
-        UIFont *font = [UIFont systemFontOfSize:14];
+        UIFont *font = [UIFont systemFontOfSize:13];
         UIFontDescriptor *baseDescriptor = font.fontDescriptor;
         BOOL bPreserveSize = YES;
         
