@@ -106,6 +106,9 @@
 {
     _nickLabel.text = self.nick;
     _bodyView.attributedText = self.bodyText;
+    _avatarView.alpha = 1;
+    _nickLabel.alpha = 1;
+    _bodyView.alpha = 1;
     
     self.backgroundColor = [UIColor whiteColor];
     
@@ -137,6 +140,12 @@
         if (r < 0) {
             _ratingLabel.textColor = [UIColor redColor];
             _ratingLabel.text = self.rating;
+            if (r < 5)
+            {
+                _avatarView.alpha = .3;
+                _nickLabel.alpha = .3;
+                _bodyView.alpha = .3;
+            }
         } else {
             _ratingLabel.textColor = [UIColor greenColor];
             _ratingLabel.text = [NSString stringWithFormat:@"+%@", self.rating];
@@ -144,7 +153,6 @@
     } else {
         _ratingWidth = 0;
     }
-    NSLog(@"%@ - %@ : [%li]", self, NSStringFromSelector(_cmd), (long)_ratingWidth);
     [self getAvatar];
 }
 
