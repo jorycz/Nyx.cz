@@ -32,6 +32,9 @@
 		2B2303941FBC73AF00286062 /* JSONParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B2303931FBC73AF00286062 /* JSONParser.m */; };
 		2B2303971FBC943400286062 /* UserNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B2303961FBC943400286062 /* UserNotification.m */; };
 		2B23039A1FBC945100286062 /* NotificationTopBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B2303991FBC945100286062 /* NotificationTopBar.m */; };
+		2B2E00971FD1739B00C0639C /* thumbup@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B2E00941FD1739B00C0639C /* thumbup@2x.png */; };
+		2B2E00981FD1739B00C0639C /* delete@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B2E00951FD1739B00C0639C /* delete@2x.png */; };
+		2B2E00991FD1739B00C0639C /* thumbdown@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B2E00961FD1739B00C0639C /* thumbdown@2x.png */; };
 		2B317FD71FC20AD90063B9EE /* ContactVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B317FD61FC20AD90063B9EE /* ContactVC.m */; };
 		2B317FDB1FC21BB00063B9EE /* Timestamp.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B317FDA1FC21BB00063B9EE /* Timestamp.m */; };
 		2B317FE41FC21F1D0063B9EE /* ContentFriendsFeed.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B317FE31FC21F1D0063B9EE /* ContentFriendsFeed.m */; };
@@ -156,6 +159,9 @@
 		2B2303961FBC943400286062 /* UserNotification.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UserNotification.m; sourceTree = "<group>"; };
 		2B2303981FBC945100286062 /* NotificationTopBar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NotificationTopBar.h; sourceTree = "<group>"; };
 		2B2303991FBC945100286062 /* NotificationTopBar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NotificationTopBar.m; sourceTree = "<group>"; };
+		2B2E00941FD1739B00C0639C /* thumbup@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "thumbup@2x.png"; sourceTree = "<group>"; };
+		2B2E00951FD1739B00C0639C /* delete@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "delete@2x.png"; sourceTree = "<group>"; };
+		2B2E00961FD1739B00C0639C /* thumbdown@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "thumbdown@2x.png"; sourceTree = "<group>"; };
 		2B317FD51FC20AD90063B9EE /* ContactVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ContactVC.h; sourceTree = "<group>"; };
 		2B317FD61FC20AD90063B9EE /* ContactVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ContactVC.m; sourceTree = "<group>"; };
 		2B317FD91FC21BB00063B9EE /* Timestamp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Timestamp.h; sourceTree = "<group>"; };
@@ -333,9 +339,20 @@
 			path = Nyx.czUITests;
 			sourceTree = "<group>";
 		};
+		2B1D59621FD1611C009E4A88 /* TableActions */ = {
+			isa = PBXGroup;
+			children = (
+				2B2E00951FD1739B00C0639C /* delete@2x.png */,
+				2B2E00961FD1739B00C0639C /* thumbdown@2x.png */,
+				2B2E00941FD1739B00C0639C /* thumbup@2x.png */,
+			);
+			path = TableActions;
+			sourceTree = "<group>";
+		};
 		2B2303701FBC59C400286062 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				2B1D59621FD1611C009E4A88 /* TableActions */,
 				2B42D3F81FC8CD24009F751D /* LoadingAnimation */,
 				2B2303711FBC59DC00286062 /* logo.png */,
 				2BD251D41FC108E200BE6272 /* contact@2x.png */,
@@ -619,6 +636,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2B42D4211FC8CD3E009F751D /* 7.png in Resources */,
+				2B2E00981FD1739B00C0639C /* delete@2x.png in Resources */,
 				2B42D4261FC8CD3E009F751D /* 17.png in Resources */,
 				2B42D4221FC8CD3E009F751D /* 22.png in Resources */,
 				2B42D4201FC8CD3E009F751D /* 14.png in Resources */,
@@ -627,8 +645,10 @@
 				2B3180141FC450990063B9EE /* send@2x.png in Resources */,
 				2B42D4181FC8CD3E009F751D /* 3.png in Resources */,
 				2B0D5D9F1FBC40F30052D63C /* LaunchScreen.storyboard in Resources */,
+				2B2E00971FD1739B00C0639C /* thumbup@2x.png in Resources */,
 				2B42D41A1FC8CD3E009F751D /* 13.png in Resources */,
 				2BD251D61FC108E200BE6272 /* settings@2x.png in Resources */,
+				2B2E00991FD1739B00C0639C /* thumbdown@2x.png in Resources */,
 				2B42D41D1FC8CD3E009F751D /* 9.png in Resources */,
 				2BD251D81FC108E200BE6272 /* logout@2x.png in Resources */,
 				2B42D4241FC8CD3E009F751D /* 2.png in Resources */,

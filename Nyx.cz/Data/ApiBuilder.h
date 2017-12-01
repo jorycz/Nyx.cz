@@ -44,6 +44,8 @@
 + (NSString *)apiMessagesForDiscussion:(NSString *)discussionId loadPreviousFromId:(NSString *)fromId;
 + (NSDictionary *)apiDiscussionSendWithAttachment:(NSString *)discussionId message:(NSString *)message;
 + (NSString *)apiDiscussionDeleteMessage:(NSString *)discussionId postId:(NSString *)postId;
++ (NSString *)apiDiscussionGiveRatingInDiscussion:(NSString *)discussionId toPost:(NSString *)postId positiveRating:(BOOL)positiveRating;
++ (NSString *)apiDiscussionGetRatingInDiscussion:(NSString *)discussionId forPost:(NSString *)postId;
 
 
 @end

@@ -83,6 +83,8 @@ extern NSString* const kApiDiscussion;
 extern NSString* const kApiDiscussionMessages;
 extern NSString* const kApiDiscussionSend;
 extern NSString* const kApiDiscussionDelete;
+extern NSString* const kApiDiscussionRatingGive;
+extern NSString* const kApiDiscussionRatingInfo;
 
 extern NSString* const kApiEvents;
 

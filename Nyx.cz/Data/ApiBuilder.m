@@ -198,6 +198,18 @@
     return [NSString stringWithFormat:@"%@&id=%@&id_wu=%@", [self defaultApiRequestWithL:kApiDiscussion andL2:kApiDiscussionDelete], discussionId, postId];
 }
 
++ (NSString *)apiDiscussionGiveRatingInDiscussion:(NSString *)discussionId toPost:(NSString *)postId positiveRating:(BOOL)positiveRating
+{
+    NSString *r;
+    positiveRating ? (r = @"positive") : (r = @"negative&neg_confirmation=1") ;
+    return [NSString stringWithFormat:@"%@&rating=%@&id=%@&id_wu=%@&toggle=1", [self defaultApiRequestWithL:kApiDiscussion andL2:kApiDiscussionRatingGive], r, discussionId, postId];
+}
+
++ (NSString *)apiDiscussionGetRatingInDiscussion:(NSString *)discussionId forPost:(NSString *)postId
+{
+    return [NSString stringWithFormat:@"%@&id=%@&id_wu=%@", [self defaultApiRequestWithL:kApiDiscussion andL2:kApiDiscussionRatingInfo], discussionId, postId];
+}
+
 
 
 

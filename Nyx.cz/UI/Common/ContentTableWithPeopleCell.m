@@ -64,6 +64,8 @@
         tapRecognizer.numberOfTapsRequired = 1;
         tapRecognizer.numberOfTouchesRequired = 1;
         [_avatarView addGestureRecognizer:tapRecognizer];
+        
+        self.ratingGiven = [[NSMutableString alloc] init];
     }
     return self;
 }
@@ -137,7 +139,12 @@
     if (self.time && [self.time length] > 0) {
         _timeLabel.text = self.time;
     }
-    if (self.rating && [self.rating length] > 0 && ![self.rating isEqualToString:@"0"]) {
+    
+    if (self.ratingGiven && [self.ratingGiven length] > 0) {
+        self.rating = (NSString *)self.ratingGiven;
+    }
+    if (self.rating && [self.rating length] > 0 && ![self.rating isEqualToString:@"0"])
+    {
         _ratingWidth = 25;
         NSInteger r = [self.rating integerValue];
         if (r < 0) {
@@ -155,6 +162,8 @@
         }
     } else {
         _ratingWidth = 0;
+        [self setNeedsLayout];
+        [self setNeedsDisplay];
     }
     [self getAvatar];
 }

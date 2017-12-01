@@ -54,6 +54,8 @@ NSString* const kApiDiscussion = @"discussion";
 NSString* const kApiDiscussionMessages = @"messages";
 NSString* const kApiDiscussionSend = @"send";
 NSString* const kApiDiscussionDelete = @"delete";
+NSString* const kApiDiscussionRatingGive = @"rating_give";
+NSString* const kApiDiscussionRatingInfo = @"rating_info";
 
 NSString* const kApiEvents = @"events";
 

@@ -15,8 +15,10 @@
 {
     UITableView *_table;
     CGFloat _rh;
-    NSIndexPath *_indexPathToDelete;
-    BOOL _scrollToTopAfterDataReload;
+    NSIndexPath *_indexPathToDelete, *_indexPathToRating;
+    BOOL _scrollToTopAfterDataReload, _tableEditShowDelete, _tableEditShowThumbs;
+    
+    NSString *_identificationDelete, *_identificationThumbs, *_identificationThumbsAfterRatingGive;
 }
 
 

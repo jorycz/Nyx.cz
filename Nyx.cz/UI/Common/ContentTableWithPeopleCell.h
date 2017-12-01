@@ -38,6 +38,8 @@
 @property (nonatomic, strong) NSString *time;
 @property (nonatomic, strong) NSString *rating;
 
+@property (nonatomic, strong) NSMutableString *ratingGiven;
+
 
 - (void)configureCellForIndexPath:(NSIndexPath *)idxPath;
 
