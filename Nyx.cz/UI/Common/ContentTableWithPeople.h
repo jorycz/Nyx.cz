@@ -16,6 +16,7 @@
     UITableView *_table;
     CGFloat _rh;
     NSIndexPath *_indexPathToDelete;
+    BOOL _scrollToTopAfterDataReload;
 }
 
 
@@ -23,6 +24,7 @@
 
 @property (nonatomic, strong) NSMutableArray *nyxSections;
 @property (nonatomic, strong) NSMutableArray *nyxRowsForSections;
+
 @property (nonatomic, strong) NSMutableArray *nyxPostsRowHeights;
 @property (nonatomic, strong) NSMutableArray *nyxPostsRowBodyTexts;
 

@@ -93,6 +93,7 @@ extern NSString* const kApiFeedSendComment;
 extern NSString* const kApiFeedDeleteComment;
 extern NSString* const kApiFeedDeleteEntry;
 extern NSString* const kApiFeedSendPost;
+extern NSString* const kApiFeedSendNotices;
 
 extern NSString* const kApiMail;
 extern NSString* const kApiMailMessages;

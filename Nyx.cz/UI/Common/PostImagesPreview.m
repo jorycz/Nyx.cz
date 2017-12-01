@@ -7,6 +7,8 @@
 //
 
 #import "PostImagesPreview.h"
+#import "Preferences.h"
+
 
 @interface PostImagesPreview ()
 
@@ -55,29 +57,42 @@
     pageScrollView.opaque = NO;
     pageScrollView.clipsToBounds = NO;
     pageScrollView.pagingEnabled = YES;
-    pageScrollView.frame = CGRectMake(0, 80, viewWidth, viewHeight - 80);
+    pageScrollView.frame = CGRectMake(0, 75, viewWidth, viewHeight - 80);
     pageScrollView.showsHorizontalScrollIndicator = NO;
     pageScrollView.showsVerticalScrollIndicator = NO;
     [self.view addSubview:pageScrollView];
     
-    
-    for(NSInteger i = 0; i < [self.images count]; i++)
+    if ([Preferences showImagesInlineInPost:nil] && [[Preferences showImagesInlineInPost:nil] length] > 0)
     {
-        UIImageView *view = [[UIImageView alloc] init];
-        view.tag = i;
-        view.userInteractionEnabled = NO;
-        view.contentMode = UIViewContentModeScaleAspectFit;
-        view.backgroundColor = [UIColor clearColor];
-        if (self.images && [self.images count] > 0)
-            view.image = [self.images objectAtIndex:i];
-        view.frame = CGRectMake(0 + (i * viewWidth), 0, pageScrollView.frame.size.width, pageScrollView.frame.size.height);
-        [pageScrollView addSubview:view];
-        
-        // If SHOW IMAGES INLINE in the HTML is ENABLED, no images download is needed and this array is empty.
+        // If SHOW IMAGES INLINE in the HTML is ENABLED, no images download is needed and URLs array is empty.
         // No http can be found inside HTML body, because all images are downloaded as NSTextAttachments in ComputeRowHeight class.
-        if (self.imageUrls && [self.imageUrls count] > 0)
+        for(NSInteger i = 0; i < [self.images count]; i++)
+        {
+            UIImageView *view = [self imgvWithTag:i];
+            view.frame = CGRectMake(0 + (i * viewWidth), 0, pageScrollView.frame.size.width, pageScrollView.frame.size.height);
+            if (self.images && [self.images count] > 0)
+                view.image = [self.images objectAtIndex:i];
+            [pageScrollView addSubview:view];
+            pageScrollView.contentSize = CGSizeMake(self.view.frame.size.width * [self.images count], pageScrollView.frame.size.height);
+        }
+        pageScrollView.contentSize = CGSizeMake(self.view.frame.size.width * [self.images count], pageScrollView.frame.size.height);
+    }
+    else
+    {
+        // If no INLINE IMAGES selected in settings - download images from URLs.
+        // There could be small images as previews in HTML post still.
+        for(NSInteger i = 0; i < [self.imageUrls count]; i++)
         {
             self.title = [NSString stringWithFormat:@"%@ - Nahrávám ...", self.title];
+            UIImageView *view = [self imgvWithTag:i];
+            view.frame = CGRectMake(0 + (i * viewWidth), 0, pageScrollView.frame.size.width, pageScrollView.frame.size.height);
+            
+            // There COULD be some small preview - set it now.
+            if (self.images && [self.images count] > i)
+                view.image = [self.images objectAtIndex:i];
+            
+            [pageScrollView addSubview:view];
+            pageScrollView.contentSize = CGSizeMake(self.view.frame.size.width * [self.imageUrls count], pageScrollView.frame.size.height);
             
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 NSURL *u = [self.imageUrls objectAtIndex:i];
@@ -99,8 +114,18 @@
             });
         }
     }
-    
-    pageScrollView.contentSize = CGSizeMake(self.view.frame.size.width * [self.images count], pageScrollView.frame.size.height);
+}
+
+#pragma mark - IMAGE VIEW
+
+- (UIImageView *)imgvWithTag:(NSInteger)t
+{
+    UIImageView *view = [[UIImageView alloc] init];
+    view.tag = t;
+    view.userInteractionEnabled = NO;
+    view.contentMode = UIViewContentModeScaleAspectFit;
+    view.backgroundColor = [UIColor clearColor];
+    return  view;
 }
 
 #pragma mark - DISMISS

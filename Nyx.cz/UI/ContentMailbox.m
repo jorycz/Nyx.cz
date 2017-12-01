@@ -81,20 +81,7 @@
 
 - (void)refreshDataForMainContent
 {
-    [self placeLoadingView];
     [self getFreshData];
-}
-
-- (void)loadMoreMailsFromId:(NSNotification *)sender
-{
-    [self placeLoadingView];
-
-    NSString *fromID = [[sender userInfo] objectForKey:@"nKey"];
-    NSString *apiRequest = [ApiBuilder apiMailboxLoadOlderMessagesFromId:fromID];
-    ServerConnector *sc = [[ServerConnector alloc] init];
-    sc.delegate = self;
-    sc.identifitaion = _serverIdentificationMailboxOlderMessages;
-    [sc downloadDataForApiRequest:apiRequest];
 }
 
 #pragma mark - LOADING VIEW
@@ -122,10 +109,24 @@
 
 - (void)getFreshData
 {
+    [self placeLoadingView];
+    
     NSString *apiRequest = [ApiBuilder apiMailbox];
     ServerConnector *sc = [[ServerConnector alloc] init];
     sc.delegate = self;
     sc.identifitaion = _serverIdentificationMailbox;
+    [sc downloadDataForApiRequest:apiRequest];
+}
+
+- (void)loadMoreMailsFromId:(NSNotification *)sender
+{
+    [self placeLoadingView];
+    
+    NSString *fromID = [[sender userInfo] objectForKey:@"nKey"];
+    NSString *apiRequest = [ApiBuilder apiMailboxLoadOlderMessagesFromId:fromID];
+    ServerConnector *sc = [[ServerConnector alloc] init];
+    sc.delegate = self;
+    sc.identifitaion = _serverIdentificationMailboxOlderMessages;
     [sc downloadDataForApiRequest:apiRequest];
 }
 

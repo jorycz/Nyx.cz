@@ -28,6 +28,8 @@
 + (NSString *)apiFeedOfFriendsDeletePostAs:(NSString *)nick withId:(NSString *)postId;
 + (NSString *)apiFeedOfFriendsPostMessage:(NSString *)post;
 
++ (NSString *)apiFeedNoticesAndKeepNew:(BOOL)keepNew;
+
 + (NSString *)apiMailbox;
 + (NSString *)apiMailboxLoadOlderMessagesFromId:(NSString *)fromId;
 + (NSString *)apiMailboxSendTo:(NSString *)recipient message:(NSString *)message;

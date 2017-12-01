@@ -89,6 +89,13 @@
     return [NSString stringWithFormat:@"%@&message=%@", [self defaultApiRequestWithL:kApiFeed andL2:kApiFeedSendPost], [self safeStringOf:post]];
 }
 
+#pragma mark - NOTICES
+
++ (NSString *)apiFeedNoticesAndKeepNew:(BOOL)keepNew
+{
+    return [NSString stringWithFormat:@"%@&keep_new=%@", [self defaultApiRequestWithL:kApiFeed andL2:kApiFeedSendNotices], keepNew ? @"1" : @"0"];
+}
+
 #pragma mark - MAILBOX
 
 + (NSString *)apiMailbox

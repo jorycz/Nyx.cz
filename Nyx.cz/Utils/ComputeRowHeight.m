@@ -29,7 +29,7 @@
             // HACK !!!
             // that magical 10 si 2 * textView.textContainer.lineFragmentPadding
             // read more https://stackoverflow.com/questions/13621084/boundingrectwithsize-for-nsattributedstring-returning-wrong-size
-            currentWidth -= 10;
+//            currentWidth -= 10;
             
             NSError *error = nil;
             self.attributedText = [[NSMutableAttributedString alloc] initWithData:textData options:@{NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,

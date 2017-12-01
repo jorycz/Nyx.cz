@@ -30,21 +30,25 @@
 }
 
 
+@property (nonatomic, strong) UIView *bottomView;
+@property (nonatomic, strong) UITextView *responseView;
+@property (nonatomic, strong) UIButton *sendButton;
+@property (nonatomic, strong) UIButton *manageButton;
+
 @property (nonatomic , strong) UINavigationController *nController;
 @property (nonatomic, strong) ServerConnector *sc;
 
 @property (nonatomic, strong) NSString *nick;
 @property (nonatomic, strong) NSAttributedString *bodyText;
+@property (nonatomic, strong) NSString *bodyTextSource;
 @property (nonatomic, assign) CGFloat bodyHeight;
 @property (nonatomic, strong) NSString *postId;
 @property (nonatomic, strong) NSString *discussionId;
+@property (nonatomic, strong) NSString *firstDiscussionPostId;
+
 @property (nonatomic, strong) ContentTableWithPeople *table;
 
 @property (nonatomic, strong) NSDictionary *postData;
-
-@property (nonatomic, strong) UIView *bottomView;
-@property (nonatomic, strong) UITextView *responseView;
-@property (nonatomic, strong) UIButton *sendButton;
 
 @property (nonatomic, strong) NSString *peopleRespondMode;
 

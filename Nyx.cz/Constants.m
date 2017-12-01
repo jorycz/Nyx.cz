@@ -17,7 +17,7 @@ NSString *const kServerAPIURL = @"https://www.nyx.cz/api.php";
 NSInteger const kCacheMaxDays = 31;
 NSInteger const kLoadingCoverViewTag = 666;
 NSString* const kDisableTableSections = @"kDisableTableSections";
-NSInteger const kWidthForTableCellBodyTextViewSubstract = 65;
+NSInteger const kWidthForTableCellBodyTextViewSubstract = 60;
 NSInteger const kNavigationBarHeight = 44;
 NSInteger const kStatusBarStandardHeight = 20;
 
@@ -64,6 +64,7 @@ NSString* const kApiFeedSendComment = @"send_comment";
 NSString* const kApiFeedDeleteComment = @"delete_comment";
 NSString* const kApiFeedDeleteEntry = @"delete_entry";
 NSString* const kApiFeedSendPost = @"send";
+NSString* const kApiFeedSendNotices = @"notices";
 
 NSString* const kApiMail = @"mail";
 NSString* const kApiMailMessages = @"messages";

@@ -91,12 +91,10 @@
     [self.sendButton setImage:[UIImage imageNamed:@"send"] forState:(UIControlStateNormal)];
     [self.sendButton addTarget:self action:@selector(sendResponse) forControlEvents:UIControlEventTouchUpInside];
     
-    if ([self.peopleRespondMode isEqualToString:kPeopleTableModeDiscussion])
-    {
-        UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressOnSendButtonDetected:)];
-        longPress.minimumPressDuration = kLongPressMinimumDuration;
-        [self.sendButton addGestureRecognizer:longPress];
-    }
+    self.manageButton = [[UIButton alloc] init];
+    self.manageButton.backgroundColor = [UIColor clearColor];
+    [self.manageButton setImage:[UIImage imageNamed:@"email"] forState:(UIControlStateNormal)];
+    [self.manageButton addTarget:self action:@selector(manageMessage:) forControlEvents:UIControlEventTouchUpInside];
     
     if ([self.peopleRespondMode isEqualToString:kPeopleTableModeMailbox] ||
         [self.peopleRespondMode isEqualToString:kPeopleTableModeFriends] ||
@@ -177,7 +175,14 @@
         
         self.responseView.frame = CGRectMake(edgeInsect, edgeInsect, _bottomFrame.size.width - maxButtonSize - (3 * edgeInsect), bottomBarHeight - (2 * edgeInsect));
         
-        self.sendButton.frame = CGRectMake(_bottomFrame.size.width - maxButtonSize - edgeInsect, bottomBarHeight / 2 - (maxButtonSize / 2), maxButtonSize, maxButtonSize);
+        if ([self.peopleRespondMode isEqualToString:kPeopleTableModeDiscussion])
+        {
+            self.sendButton.frame = CGRectMake(_bottomFrame.size.width - maxButtonSize - edgeInsect, edgeInsect, maxButtonSize, maxButtonSize);
+            self.manageButton.frame = CGRectMake(_bottomFrame.size.width - maxButtonSize - edgeInsect + 5, _bottomFrame.size.height - maxButtonSize - edgeInsect + 3, maxButtonSize - 10, maxButtonSize - 10);
+        } else
+        {
+            self.sendButton.frame = CGRectMake(_bottomFrame.size.width - maxButtonSize - edgeInsect, (bottomBarHeight / 2) - (maxButtonSize / 2), maxButtonSize, maxButtonSize);
+        }
         
         // 64 = navigation bar + status bar
         self.table.view.frame = CGRectMake(0, 64, f.size.width, f.size.height - 64 - bottomBarHeight);
@@ -252,7 +257,7 @@
 
 - (void)sendResponse
 {
-    if ([self.responseView.text length] > 0)
+    if ([self.responseView.text length] > 0 && ![self.responseView.text isEqualToString:_respondTo])
     {
         if ([self currentlyStoredMessages] && [[self currentlyStoredMessages] count] > 0)
         {
@@ -292,6 +297,7 @@
         NSString *apiRequest = [ApiBuilder apiFeedOfFriendsPostCommentAs:self.nick withId:self.postId sendMessage:self.responseView.text];
         [sc downloadDataForApiRequest:apiRequest];
     }
+    
     if ([self.peopleRespondMode isEqualToString:kPeopleTableModeMailbox] ||
         [self.peopleRespondMode isEqualToString:kPeopleTableModeFriends])
     {
@@ -304,6 +310,7 @@
             [sc downloadDataForApiRequestWithParameters:apiRequest andAttachmentName:self.attachmentNames];
         }
     }
+    
     if ([self.peopleRespondMode isEqualToString:kPeopleTableModeDiscussion])
     {
         sc.identifitaion = _postIdentificationPostDiscussionMessage;
@@ -366,7 +373,7 @@
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [self closeKeyboard];
                         [self.nController popViewControllerAnimated:YES];
-                        POST_NOTIFICATION_DISCUSSION_LOAD_NEWER_FROM(self.postId)
+                        POST_NOTIFICATION_DISCUSSION_LOAD_NEWER_FROM(self.firstDiscussionPostId)
                         // Delete stored messages.
                         [self deleteStoredMessages];
                     });
@@ -439,6 +446,7 @@
         [self.view addSubview:self.bottomView];
         [self.bottomView addSubview:self.responseView];
         [self.bottomView addSubview:self.sendButton];
+        [self.bottomView addSubview:self.manageButton];
     }
 }
 
@@ -584,32 +592,27 @@
     [self presentViewController:alert animated:YES completion:^{}];
 }
 
-#pragma mark - LONG TAP ON SEND BUTTON - STORE TO SEND IT LATER
+#pragma mark - MANAGE MESSAGE BUTTON - STORE TO SEND IT LATER or DELETE
 
-- (void)longPressOnSendButtonDetected:(UILongPressGestureRecognizer *)sender
+- (void)manageMessage:(id)sender
 {
-    if (sender.state == UIGestureRecognizerStateBegan)
-    {
-        NSString *message = @"Tuto zprávu (včetně minulých, pokud existují) je možno uložit a přidávat k ní další odpovědi dalším lidem. Při odeslání jsou pak všechny odpovědi odeslány naráz. Již uložené zprávy nelze editovat.\nPřílohu je možno přidat k příspěvkům pouze jednu. Odešle se poslední přidaná.";
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Uložit, odeslat, nebo začít novou zprávu?"
-                                                                       message:message
-                                                                preferredStyle:(UIAlertControllerStyleActionSheet)];
-        UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Zrušit" style:(UIAlertActionStyleCancel) handler:^(UIAlertAction * _Nonnull action) {}];
-        UIAlertAction *store = [UIAlertAction actionWithTitle:@"Uložit" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
-            [self storeCurrentMessageToPreferences];
-        }];
-        UIAlertAction *deleteAll = [UIAlertAction actionWithTitle:@"Smazat uložené a začít znova" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
-            [self deleteStoredMessages];
-        }];
-        UIAlertAction *sendNow = [UIAlertAction actionWithTitle:@"Odeslat" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
-            [self sendResponse];
-        }];
-        [alert addAction:cancel];
-        [alert addAction:store];
-        [alert addAction:deleteAll];
-        [alert addAction:sendNow];
-        [self presentViewController:alert animated:YES completion:^{}];
-    }
+    NSString *message = @"Tuto rozepsanou zprávu je možno uložit a přidávat k ní další text nebo odpovědi dalším lidem. Pokud existuje rozepsaná zpráva, automaticky se příště načte. Při odeslání je pak celá zpráva odeslána naráz.\n\nPřílohu je možno přidat k příspěvkům pouze jednu. Odešle se poslední přidaná.";
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Uložit rozepsanou zprávu nebo začít novou?"
+                                                                   message:message
+                                                            preferredStyle:(UIAlertControllerStyleActionSheet)];
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Zrušit" style:(UIAlertActionStyleCancel) handler:^(UIAlertAction * _Nonnull action) {}];
+    UIAlertAction *store = [UIAlertAction actionWithTitle:@"Uložit" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+        [self storeCurrentMessageToPreferences];
+    }];
+    UIAlertAction *deleteAll = [UIAlertAction actionWithTitle:@"Smazat uložené a začít znova"
+                                                        style:(UIAlertActionStyleDestructive)
+                                                      handler:^(UIAlertAction * _Nonnull action) {
+                                                          [self deleteStoredMessages];
+                                                      }];
+    [alert addAction:cancel];
+    [alert addAction:store];
+    [alert addAction:deleteAll];
+    [self presentViewController:alert animated:YES completion:^{}];
 }
 
 - (NSArray *)currentlyStoredMessages

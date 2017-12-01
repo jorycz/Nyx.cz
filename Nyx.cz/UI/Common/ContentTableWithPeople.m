@@ -34,6 +34,7 @@
         self.nyxPostsRowHeights = [[NSMutableArray alloc] init];
         self.nyxPostsRowBodyTexts = [[NSMutableArray alloc] init];
         self.canEditFirstRow = YES;
+        _scrollToTopAfterDataReload = NO;
     }
     return self;
 }
@@ -99,7 +100,12 @@
     [_table reloadData];
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion])
         [self removeLoadingView];
-    [_table scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:(UITableViewScrollPositionTop) animated:NO];
+    // neposouvat kdyz scrollujeme dolu a nacitaji se dalsi posty !!!
+    if (!_scrollToTopAfterDataReload) {
+        _scrollToTopAfterDataReload = YES;
+    } else {
+        [_table scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:(UITableViewScrollPositionTop) animated:NO];
+    }
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -146,6 +152,7 @@
         {
             nick = [cellData objectForKey:@"nick"];
             cell.commentsCount = [cellData objectForKey:@"comments_count"];
+            cell.bodyTextSource = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"text"];
         }
         if ([self.peopleTableMode isEqualToString:kPeopleTableModeMailbox] || [self.peopleTableMode isEqualToString:kPeopleTableModeMailboxDetail])
         {
@@ -153,12 +160,14 @@
             cell.mailboxDirection = [cellData objectForKey:@"direction"];
             cell.mailboxMailStatus = [cellData objectForKey:@"message_status"];
             cell.discussionNewPost = [cellData objectForKey:@"new"];
+            cell.bodyTextSource = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"content"];
         }
         if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion] || [self.peopleTableMode isEqualToString:kPeopleTableModeDiscussionDetail])
         {
             nick = [cellData objectForKey:@"nick"];
             cell.discussionNewPost = [cellData objectForKey:@"new"];
             cell.rating = [cellData objectForKey:@"wu_rating"];
+            cell.bodyTextSource = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"content"];
         }
         cell.nick = nick;
         Timestamp *ts = [[Timestamp alloc] initWithTimestamp:[cellData objectForKey:@"time"]];
@@ -222,6 +231,7 @@
         postId = [userPostData objectForKey:@"id_wu"];
         f = [[[self.nyxPostsRowHeights objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] floatValue];
     }
+    NSString *firstPostId = [[[self.nyxRowsForSections objectAtIndex:0] objectAtIndex:0] objectForKey:@"id_wu"];
     NSAttributedString *str = [[self.nyxPostsRowBodyTexts objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
     
     // RESPOND VIEW --------
@@ -230,19 +240,26 @@
         [self.peopleTableMode isEqualToString:kPeopleTableModeFriends] ||
         [self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion])
     {
+        // Zobrazovat v pripade ze existuji predesle reakce na prispevek?
+//        ContentTableWithPeopleCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+//        NSArray *recipientNames = [self getRecipientNamesFromSourceHtml:cell.bodyTextSource];
+//        NSArray *recipientLinks = [self getRelativeOnlyUrls:[self getAllURLsFromAttributedAndSourceText:cell.bodyText]];
+//        NSLog(@"%@ - %@ :  NICKS [%@]", self, NSStringFromSelector(_cmd), recipientNames);
+//        NSLog(@"%@ - %@ :  URLS  [%@]", self, NSStringFromSelector(_cmd), recipientLinks);
+        
         [self showRespondViewWithNick:nick
                              bodyText:str
                            bodyHeight:f
                                postId:postId
-                         userPostData:userPostData];
+                         userPostData:userPostData
+               refreshFromFirstPostId:firstPostId];
     }
     // ---------------------
-    
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeedDetail]  ||
         [self.peopleTableMode isEqualToString:kPeopleTableModeMailboxDetail] ||
         [self.peopleTableMode isEqualToString:kPeopleTableModeDiscussionDetail]) {
         ContentTableWithPeopleCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-        [self cellClickedWithAttributedText:cell.bodyText];
+        [self cellClickedForMoreActions:cell];
     }
 }
 
@@ -323,16 +340,18 @@
                          bodyText:club
                        bodyHeight:45
                            postId:firstPostId
-                     userPostData:@{}];
+                     userPostData:@{@"content": clubDescription}
+           refreshFromFirstPostId:(NSString *)firstPostId];
 }
 
-#pragma mark - TABLE ACTIONS - FEED
+#pragma mark - TABLE ACTIONS - RESPOND TO SOMEONE
 
 - (void)showRespondViewWithNick:(NSString *)nick
                        bodyText:(NSAttributedString *)bodyText
                      bodyHeight:(CGFloat)f
                          postId:(NSString *)postId
                    userPostData:(NSDictionary *)userPostData
+         refreshFromFirstPostId:(NSString *)firstPostId
 {
     PeopleRespondVC *response = [[PeopleRespondVC alloc] init];
     response.nick = nick;
@@ -341,6 +360,7 @@
     response.postId = postId;
     // --- Needed only for discussion club -------
     response.discussionId = [self.disscussionClubData objectForKey:@"id_klub"];
+    response.firstDiscussionPostId = firstPostId;
     // -------------------------------------------
     response.postData = userPostData;
     response.nController = self.nController;
@@ -394,6 +414,7 @@
         if (indexPath.row + 1 == [[self.nyxRowsForSections objectAtIndex:0] count])
         {
             NSString *fromID = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"id_mail"];
+            _scrollToTopAfterDataReload = NO;
             POST_NOTIFICATION_MAILBOX_LOAD_FROM(fromID)
         }
     }
@@ -402,6 +423,7 @@
         if (indexPath.row + 1 == [[self.nyxRowsForSections objectAtIndex:0] count])
         {
             NSString *fromID = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"id_wu"];
+            _scrollToTopAfterDataReload = NO;
             [self placeLoadingView];
             POST_NOTIFICATION_DISCUSSION_LOAD_OLDER_FROM(fromID)
         }
@@ -467,60 +489,37 @@
     if (sender.state == UIGestureRecognizerStateBegan)
     {
         ContentTableWithPeopleCell *cell = (ContentTableWithPeopleCell *)sender.view;
-        [self cellClickedWithAttributedText:cell.bodyText];
+        [self cellClickedForMoreActions:cell];
     }
 }
 
 #pragma mark - CELL BODY TEXT DETECTOR
 
-- (void)cellClickedWithAttributedText:(NSAttributedString *)attrText
+- (void)cellClickedForMoreActions:(ContentTableWithPeopleCell *)cell
 {
     if (!self.nController) {
         NSLog(@"%@ - %@ : ERROR [%@]", self, NSStringFromSelector(_cmd), @"Navigation controller doesn't exist !!!");
         return;
     }
     
-    NSMutableArray *detectedUrls = [[NSMutableArray alloc] init];
-    
-    // First - detect properly configured URLs. Like with <a ...> tags.
-    [attrText enumerateAttributesInRange:NSMakeRange(0, attrText.length)
-                                 options:NSAttributedStringEnumerationReverse
-                              usingBlock:^(NSDictionary<NSAttributedStringKey,id> * _Nonnull attrs, NSRange range, BOOL * _Nonnull stop) {
-        if ([attrs objectForKey:@"NSLink"]) {
-            NSURL *url = [attrs objectForKey:@"NSLink"];
-            NSLog(@"%@ - %@ Detected URL as NSLink : [%@]", self, NSStringFromSelector(_cmd), url);
-            [detectedUrls addObject:url];
-        }
-    }];
-    
-    // Second - there could be URLs in text just in plain text - like https:// ...
-    NSArray *words = [[attrText string] componentsSeparatedByString:@" "];
-    for (NSString *component in words) {
-        if ([component hasPrefix:@"http"]) {
-            NSLog(@"%@ - %@ Detected URL as TEXT : [%@]", self, NSStringFromSelector(_cmd), component);
-            // If there is new line at the end of the string - NSURL is nil.
-            NSURL *u = [NSURL URLWithString:[component stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]];
-            if (u)
-                [detectedUrls addObject:u];
-        }
+    // ENABLE sharing actions only for some table modes.
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeed] ||
+        [self.peopleTableMode isEqualToString:kPeopleTableModeFeedDetail] ||
+        [self.peopleTableMode isEqualToString:kPeopleTableModeMailbox] ||
+        [self.peopleTableMode isEqualToString:kPeopleTableModeMailboxDetail] ||
+        [self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion] ||
+        [self.peopleTableMode isEqualToString:kPeopleTableModeDiscussionDetail])
+    {
+        // Remove strange links and detect recipient URLs if any
+        NSArray *httpOnlyUrls = [self getHttpOnlyUrls:[self getAllURLsFromAttributedAndSourceText:cell.bodyText]];
+        [self showActionSheetForURLs:httpOnlyUrls forText:cell.bodyText withSource:cell.bodyTextSource];
     }
-    
-    // Remove strange links
-    NSMutableArray *goodLinks = [NSMutableArray array];
-    for (NSURL *url in detectedUrls) {
-        if ([[url absoluteString] hasPrefix:@"http"]) {
-            [goodLinks addObject:url];
-        }
-    }
-    
-    [self showActionSheetForURLs:goodLinks forText:attrText];
 }
 
-- (void)showActionSheetForURLs:(NSArray *)urls forText:(NSAttributedString *)attrText
+- (void)showActionSheetForURLs:(NSArray *)httpUrls forText:(NSAttributedString *)attrText withSource:(NSString *)sourceText
 {
     // Remove duplicates [NSSet] if any and filter arrays for images.
-    NSArray *urlsWithoutImages = [[NSArray alloc] initWithArray:[self urlsWithoutImages:urls] copyItems:YES];
-    NSArray *urlsWithImagesOnly = [[NSArray alloc] initWithArray:[self urlsWithImagesOnly:urls] copyItems:YES];
+    NSArray *urlsWithoutImages = [[NSArray alloc] initWithArray:[self urlsWithoutImages:httpUrls] copyItems:YES];
     
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Volby příspěvku"
                                                                    message:nil
@@ -544,8 +543,9 @@
         }
     }
     
-    NSArray *i = [self detectImagesAttributedText:attrText];
-    if (i && [i count] > 0)
+    NSArray *urlsWithImagesOnly = [[NSArray alloc] initWithArray:[self urlsWithImagesOnly:httpUrls] copyItems:YES];
+    NSArray *i = [self detectImageAttachmentsInsideAttribudetText:attrText];
+    if ((i && [i count] > 0) || [urlsWithImagesOnly count] > 0)
     {
         UIAlertAction *showImages = [UIAlertAction actionWithTitle:@"Zobrazit obrázky" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
             PostImagesPreview *pip = [[PostImagesPreview alloc] init];
@@ -571,11 +571,19 @@
         pasteboard.items = @[item];
     }];
     [alert addAction:copy];
-
+    
+    UIAlertAction *copySource = [UIAlertAction actionWithTitle:@"Kopírovat HTML kód" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+        UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+        pasteboard.string = sourceText;
+    }];
+    [alert addAction:copySource];
+    
     UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Zrušit" style:(UIAlertActionStyleCancel) handler:^(UIAlertAction * _Nonnull action) {}];
     [alert addAction:cancel];
     [self presentViewController:alert animated:YES completion:nil];
 }
+
+#pragma mark - TEXT BODY PARSING FOR URLs
 
 - (NSArray *)urlsWithoutImages:(NSArray *)detectedUrl
 {
@@ -611,7 +619,7 @@
     return (NSArray *)a;
 }
 
-- (NSArray *)detectImagesAttributedText:(NSAttributedString *)attrText
+- (NSArray *)detectImageAttachmentsInsideAttribudetText:(NSAttributedString *)attrText
 {
     NSMutableArray *imagesArray = [[NSMutableArray alloc] init];
     [attrText enumerateAttribute:NSAttachmentAttributeName
@@ -637,6 +645,71 @@
     return imagesArray;
 }
 
+- (NSMutableArray *)getAllURLsFromAttributedAndSourceText:(NSAttributedString *)attrText
+{
+    NSMutableArray *detectedUrls = [[NSMutableArray alloc] init];
+    
+    // First - detect properly configured URLs. Like with <a ...> tags.
+    [attrText enumerateAttributesInRange:NSMakeRange(0, attrText.length)
+                                 options:NSAttributedStringEnumerationLongestEffectiveRangeNotRequired
+                              usingBlock:^(NSDictionary<NSAttributedStringKey,id> * _Nonnull attrs, NSRange range, BOOL * _Nonnull stop) {
+                                  if ([attrs objectForKey:@"NSLink"]) {
+                                      NSURL *url = [attrs objectForKey:@"NSLink"];
+//                                      NSLog(@"%@ - %@ Detected URL as NSLink : [%@]", self, NSStringFromSelector(_cmd), url);
+                                      [detectedUrls addObject:url];
+                                  }
+                              }];
+    
+    // Second - there could be URLs in text just in plain text - like https:// ...
+    NSArray *words = [[attrText string] componentsSeparatedByString:@" "];
+    for (NSString *component in words) {
+        if ([component hasPrefix:@"http"]) {
+//            NSLog(@"%@ - %@ Detected URL as TEXT : [%@]", self, NSStringFromSelector(_cmd), component);
+            // If there is new line at the end of the string - NSURL is nil.
+            NSURL *u = [NSURL URLWithString:[component stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]];
+            if (u)
+                [detectedUrls addObject:u];
+        }
+    }
+    return detectedUrls;
+}
+
+- (NSArray *)getHttpOnlyUrls:(NSArray *)allUrls
+{
+    NSMutableArray *urls = [NSMutableArray array];
+    for (NSURL *url in allUrls) {
+        if ([[url absoluteString] hasPrefix:@"http"])
+        {
+            [urls addObject:url];
+        }
+    }
+    return (NSArray *)urls;
+}
+
+- (NSArray *)getRelativeOnlyUrls:(NSArray *)allUrls
+{
+    NSMutableArray *urls = [NSMutableArray array];
+    for (NSURL *url in allUrls) {
+        if ([[url absoluteString] hasPrefix:@"applewebdata"])
+        {
+            [urls addObject:[url query]];
+        }
+    }
+    return (NSArray *)urls;
+}
+
+- (NSArray *)getRecipientNamesFromSourceHtml:(NSString *)sourceText
+{
+    NSArray *recNames = [sourceText componentsSeparatedByString:@"\""];
+    NSMutableArray *recipientNames = [NSMutableArray array];
+    for (NSString *name in recNames) {
+        if ([name hasPrefix:@"replyto"])
+        {
+            [recipientNames addObject:[name substringFromIndex:7]];
+        }
+    }
+    return (NSArray *)recipientNames;
+}
 
 #pragma mark - LOADING VIEW
 

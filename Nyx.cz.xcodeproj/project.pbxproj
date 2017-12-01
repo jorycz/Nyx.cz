@@ -18,6 +18,8 @@
 		2B1D594F1FCB4EAD009E4A88 /* ComputeRowHeightTextAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B1D594E1FCB4EAD009E4A88 /* ComputeRowHeightTextAttachment.m */; };
 		2B1D59551FCCB3DD009E4A88 /* WebVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B1D59541FCCB3DD009E4A88 /* WebVC.m */; };
 		2B1D59581FCCC9DF009E4A88 /* PostImagesPreview.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B1D59571FCCC9DF009E4A88 /* PostImagesPreview.m */; };
+		2B1D595F1FD016FD009E4A88 /* email@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B1D595E1FD016FA009E4A88 /* email@2x.png */; };
+		2B1D59611FD079C3009E4A88 /* chat@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B1D59601FD079C3009E4A88 /* chat@2x.png */; };
 		2B2303721FBC59DC00286062 /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B2303711FBC59DC00286062 /* logo.png */; };
 		2B23037A1FBC5BE700286062 /* Post.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B2303791FBC5BE700286062 /* Post.m */; };
 		2B23037D1FBC5C7F00286062 /* ServerConnector.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B23037C1FBC5C7F00286062 /* ServerConnector.m */; };
@@ -129,6 +131,8 @@
 		2B1D59541FCCB3DD009E4A88 /* WebVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WebVC.m; sourceTree = "<group>"; };
 		2B1D59561FCCC9DF009E4A88 /* PostImagesPreview.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PostImagesPreview.h; sourceTree = "<group>"; };
 		2B1D59571FCCC9DF009E4A88 /* PostImagesPreview.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PostImagesPreview.m; sourceTree = "<group>"; };
+		2B1D595E1FD016FA009E4A88 /* email@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "email@2x.png"; sourceTree = "<group>"; };
+		2B1D59601FD079C3009E4A88 /* chat@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "chat@2x.png"; sourceTree = "<group>"; };
 		2B2303711FBC59DC00286062 /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logo.png; path = Nyx.cz/Images/logo.png; sourceTree = SOURCE_ROOT; };
 		2B2303781FBC5BE700286062 /* Post.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Post.h; sourceTree = "<group>"; };
 		2B2303791FBC5BE700286062 /* Post.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Post.m; sourceTree = "<group>"; };
@@ -340,6 +344,8 @@
 				2B3180131FC450980063B9EE /* send@2x.png */,
 				2B3180261FC70C5A0063B9EE /* attachment@2x.png */,
 				2B3180281FC76B680063B9EE /* burger@2x.png */,
+				2B1D595E1FD016FA009E4A88 /* email@2x.png */,
+				2B1D59601FD079C3009E4A88 /* chat@2x.png */,
 			);
 			path = Images;
 			sourceTree = "<group>";
@@ -626,6 +632,7 @@
 				2B42D41D1FC8CD3E009F751D /* 9.png in Resources */,
 				2BD251D81FC108E200BE6272 /* logout@2x.png in Resources */,
 				2B42D4241FC8CD3E009F751D /* 2.png in Resources */,
+				2B1D595F1FD016FD009E4A88 /* email@2x.png in Resources */,
 				2B42D4151FC8CD3E009F751D /* 5.png in Resources */,
 				2B42D41B1FC8CD3E009F751D /* 12.png in Resources */,
 				2B42D41C1FC8CD3E009F751D /* 21.png in Resources */,
@@ -641,6 +648,7 @@
 				2B42D41F1FC8CD3E009F751D /* 6.png in Resources */,
 				2B42D4141FC8CD3E009F751D /* 0.png in Resources */,
 				2B42D4161FC8CD3E009F751D /* 4.png in Resources */,
+				2B1D59611FD079C3009E4A88 /* chat@2x.png in Resources */,
 				2B42D4121FC8CD3E009F751D /* 1.png in Resources */,
 				2B42D4111FC8CD3E009F751D /* 19.png in Resources */,
 				2B3180271FC70C5B0063B9EE /* attachment@2x.png in Resources */,
