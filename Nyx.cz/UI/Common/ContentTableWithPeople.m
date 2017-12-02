@@ -243,20 +243,29 @@
         [self.peopleTableMode isEqualToString:kPeopleTableModeFriends] ||
         [self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion])
     {
-        // TODO TO DO
-        // Zobrazovat v pripade ze existuji predesle reakce na prispevek?
-//        ContentTableWithPeopleCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-//        NSArray *recipientNames = [self getRecipientNamesFromSourceHtml:cell.bodyTextSource];
-//        NSArray *recipientLinks = [self getRelativeOnlyUrls:[self getAllURLsFromAttributedAndSourceText:cell.bodyText]];
-//        NSLog(@"%@ - %@ :  NICKS [%@]", self, NSStringFromSelector(_cmd), recipientNames);
-//        NSLog(@"%@ - %@ :  URLS  [%@]", self, NSStringFromSelector(_cmd), recipientLinks);
+        // Previous reactions ID (wu) to this POST.
+        ContentTableWithPeopleCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+        NSArray *recipientNames = [self getRecipientNamesFromSourceHtml:cell.bodyTextSource];
+        NSArray *recipientLinks = [self getRelativeOnlyUrls:[self getAllURLsFromAttributedAndSourceText:cell.bodyText]];
+        NSMutableArray *previousResponses = [[NSMutableArray alloc] init];
+        if ([recipientNames count] == [recipientLinks count]) {
+            for (NSInteger index = 0; index < [recipientNames count] ; index++)
+            {
+                NSString *name = [recipientNames objectAtIndex:index];
+                NSString *reactionId = [[[recipientLinks objectAtIndex:index] componentsSeparatedByString:@"="] lastObject];
+                [previousResponses addObject:@{@"name": name, @"reactionId": reactionId}];
+            }
+        }
+//        NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), previousResponses);
         
         [self showRespondViewWithNick:nick
                              bodyText:str
                            bodyHeight:f
                                postId:postId
                          userPostData:userPostData
-               refreshFromFirstPostId:firstPostId];
+               refreshFromFirstPostId:firstPostId
+                previousReactionPosts:(NSArray *)previousResponses
+         ];
     }
     // ---------------------
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeedDetail]  ||
@@ -432,7 +441,9 @@
                        bodyHeight:45
                            postId:firstPostId
                      userPostData:@{@"content": clubDescription}
-           refreshFromFirstPostId:(NSString *)firstPostId];
+           refreshFromFirstPostId:(NSString *)firstPostId
+            previousReactionPosts:nil
+     ];
 }
 
 #pragma mark - TABLE ACTIONS - RESPOND TO SOMEONE
@@ -443,6 +454,7 @@
                          postId:(NSString *)postId
                    userPostData:(NSDictionary *)userPostData
          refreshFromFirstPostId:(NSString *)firstPostId
+          previousReactionPosts:(NSArray *)previousReactionPostIds
 {
     PeopleRespondVC *response = [[PeopleRespondVC alloc] init];
     response.nick = nick;
@@ -452,11 +464,37 @@
     // --- Needed only for discussion club -------
     response.discussionId = [self.disscussionClubData objectForKey:@"id_klub"];
     response.firstDiscussionPostId = firstPostId;
+    response.previousReactions = previousReactionPostIds;
     // -------------------------------------------
     response.postData = userPostData;
     response.nController = self.nController;
     response.peopleRespondMode = self.peopleTableMode;
     [self.nController pushViewController:response animated:YES];
+}
+
+#pragma mark - TABLE ACTIONS when SCROLL REACH END (mailbox, discussion) - LOAD MORE
+
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeMailbox]) {
+        // Load more mails when reach end.
+        if (indexPath.row + 1 == [[self.nyxRowsForSections objectAtIndex:0] count])
+        {
+            NSString *fromID = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"id_mail"];
+            _scrollToTopAfterDataReload = NO;
+            POST_NOTIFICATION_MAILBOX_LOAD_FROM(fromID)
+        }
+    }
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion]) {
+        // Load more posts when reach end.
+        if (indexPath.row + 1 == [[self.nyxRowsForSections objectAtIndex:0] count])
+        {
+            NSString *fromID = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"id_wu"];
+            _scrollToTopAfterDataReload = NO;
+            [self placeLoadingView];
+            POST_NOTIFICATION_DISCUSSION_LOAD_OLDER_FROM(fromID)
+        }
+    }
 }
 
 #pragma mark - DELETING
@@ -520,32 +558,6 @@
     sc.identifitaion = identification;
     sc.delegate = self;
     [sc downloadDataForApiRequest:api];
-}
-
-
-#pragma mark - TABLE ACTIONS when SCROLL REACH END (mailbox, discussion) - LOAD MORE
-
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if ([self.peopleTableMode isEqualToString:kPeopleTableModeMailbox]) {
-        // Load more mails when reach end.
-        if (indexPath.row + 1 == [[self.nyxRowsForSections objectAtIndex:0] count])
-        {
-            NSString *fromID = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"id_mail"];
-            _scrollToTopAfterDataReload = NO;
-            POST_NOTIFICATION_MAILBOX_LOAD_FROM(fromID)
-        }
-    }
-    if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion]) {
-        // Load more posts when reach end.
-        if (indexPath.row + 1 == [[self.nyxRowsForSections objectAtIndex:0] count])
-        {
-            NSString *fromID = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"id_wu"];
-            _scrollToTopAfterDataReload = NO;
-            [self placeLoadingView];
-            POST_NOTIFICATION_DISCUSSION_LOAD_OLDER_FROM(fromID)
-        }
-    }
 }
 
 #pragma mark - SERVER DELEGATE

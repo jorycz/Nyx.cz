@@ -178,7 +178,7 @@
             if ([[[[Preferences messagesForDiscussion:nil] firstObject] objectForKey:@"text"] length] > 0) {
                 storedMessage = [[[Preferences messagesForDiscussion:nil] firstObject] objectForKey:@"text"];
             } else {
-                storedMessage = @"Žádná uložená zpráva neexistuje.";
+                storedMessage = @"Žádná uložená zpráva.";
             }
             
             UIAlertController *a = [UIAlertController alertControllerWithTitle:@"Uložená zpráva"

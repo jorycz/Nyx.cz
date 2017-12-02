@@ -27,6 +27,7 @@
     {
         self.title = @"Detail";
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
         _firstInit = YES;
         _closingKeyboard = NO;
         _moveTableFirst = NO;
@@ -35,7 +36,12 @@
         _postIdentificationPostFeedMessage = @"message";
         _postIdentificationPostMailboxMessage = @"mailMessage";
         _postIdentificationPostDiscussionMessage = @"discussionMessage";
+        _postIdentificationPostReaction = @"reactionToPost";
         self.attachmentNames = [[NSMutableArray alloc] init];
+        
+        _nyxRowsForSection = [[NSMutableArray alloc] init];
+        _nyxRowHeights = [[NSMutableArray alloc] init];
+        _nyxTexts = [[NSMutableArray alloc] init];
     }
     return self;
 }
@@ -132,6 +138,13 @@
             }
         }
     }
+    
+    // FOR DOWNLOADING PREVIOUS REACTIONS.
+    _reactionsToDownload = [[NSMutableArray alloc] initWithArray:self.previousReactions];
+    // Add previous reactions to these arrays.
+    [_nyxRowsForSection addObject:self.postData];
+    [_nyxRowHeights addObject:[NSNumber numberWithFloat:self.bodyHeight]];
+    [_nyxTexts addObject:self.bodyText];
 }
 
 - (void)rightButtonIsAttachment:(BOOL)attachmentButton
@@ -193,7 +206,6 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
     if ([self.peopleRespondMode isEqualToString:kPeopleTableModeFeed]) {
         [self placeLoadingView];
         [self getAvatar];
@@ -205,6 +217,12 @@
         // All data required is already in properties. No loading needed to respond someone to mail.
         [self configureTableWithJson:nil];
     }
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 }
 
 #pragma mark - DATA
@@ -378,6 +396,26 @@
                         [self deleteStoredMessages];
                     });
                 }
+                if ([identification isEqualToString:_postIdentificationPostReaction]) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        NSArray *reactionsForUser = [jp.jsonDictionary objectForKey:@"data"];
+                        for (NSDictionary *post in reactionsForUser)
+                        {
+                            NSString *id_wu = [post objectForKey:@"id_wu"];
+                            NSString *reaction_id_wu = [[_reactionsToDownload firstObject] objectForKey:@"reactionId"];
+                            if ([id_wu isEqualToString:reaction_id_wu])
+                            {
+                                [_nyxRowsForSection addObject:post];
+                                ComputeRowHeight *rowHeight = [[ComputeRowHeight alloc] initWithText:[post objectForKey:@"content"] forWidth:_widthForTableCellBodyTextView minHeight:40 inlineImages:nil];
+                                [_nyxRowHeights addObject:[NSNumber numberWithFloat:rowHeight.heightForRow]];
+                                [_nyxTexts addObject:rowHeight.attributedText];
+                                
+                                [_reactionsToDownload removeObjectAtIndex:0];
+                                [self configureTableWithJson:nil];
+                            }
+                        }
+                    });
+                }
             }
         }
     }
@@ -431,10 +469,17 @@
         [self.peopleRespondMode isEqualToString:kPeopleTableModeFriends] ||
         [self.peopleRespondMode isEqualToString:kPeopleTableModeDiscussion])
     {
+        [self.table.nyxSections removeAllObjects];
+        [self.table.nyxRowsForSections removeAllObjects];
+        [self.table.nyxPostsRowHeights removeAllObjects];
+        [self.table.nyxPostsRowBodyTexts removeAllObjects];
+        
         [self.table.nyxSections addObjectsFromArray:@[kDisableTableSections]];
-        [self.table.nyxRowsForSections addObjectsFromArray:@[@[self.postData]]];
-        [self.table.nyxPostsRowHeights addObjectsFromArray:@[@[[NSNumber numberWithFloat:self.bodyHeight]]]];
-        [self.table.nyxPostsRowBodyTexts addObjectsFromArray:@[@[self.bodyText]]];
+        [self.table.nyxRowsForSections addObjectsFromArray:@[_nyxRowsForSection]];
+        [self.table.nyxPostsRowHeights addObjectsFromArray:@[_nyxRowHeights]];
+        [self.table.nyxPostsRowBodyTexts addObjectsFromArray:@[_nyxTexts]];
+        
+        [self showPreviousReactions];
     }
     
     if (!self.table.view.window) {
@@ -460,8 +505,19 @@
     [self.responseView setText:@""];
 }
 
-- (void)keyboardWillChangeFrame:(NSNotification *) notification
+- (void)keyboardWillHide:(NSNotification *)notification
 {
+    _moveTableFirst = YES;
+    _keyboardSize = CGSizeMake(0, 0);
+    [self performSelectorOnMainThread:@selector(keyboardChanged) withObject:nil waitUntilDone:YES];
+}
+
+- (void)keyboardWillChangeFrame:(NSNotification *)notification
+{
+//    NSLog(@"K NEW %li", (long)[[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size.height);
+//    NSLog(@"NOW %li", (long)_keyboardSize.height);
+    if ([[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size.height == _keyboardSize.height)
+        return;
     // Last keyboard position was higher than current ? Move table first so user can't see empty space.
     if ([[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size.height < _keyboardSize.height) {
         _moveTableFirst = YES;
@@ -645,6 +701,24 @@
     self.responseView.text = _respondTo;
     [self.attachmentNames removeAllObjects];
 }
+
+#pragma mark - SHOW PREVIOUS REACTIONS
+
+- (void)showPreviousReactions
+{
+    if (_reactionsToDownload && [_reactionsToDownload count] > 0)
+    {
+        NSString *nickname = [[_reactionsToDownload firstObject] objectForKey:@"name"];
+        
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+        NSString *apiRequest = [ApiBuilder apiDiscussionSearchInDiscussion:self.discussionId forNick:nickname withText:@""];
+        ServerConnector *sc = [[ServerConnector alloc] init];
+        sc.delegate = self;
+        sc.identifitaion = _postIdentificationPostReaction;
+        [sc downloadDataForApiRequest:apiRequest];
+    }
+}
+
 
 @end
 

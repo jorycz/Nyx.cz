@@ -210,6 +210,10 @@
     return [NSString stringWithFormat:@"%@&id=%@&id_wu=%@", [self defaultApiRequestWithL:kApiDiscussion andL2:kApiDiscussionRatingInfo], discussionId, postId];
 }
 
++ (NSString *)apiDiscussionSearchInDiscussion:(NSString *)discussionId forNick:(NSString *)nickId withText:(NSString *)text
+{
+    return [NSString stringWithFormat:@"%@&id=%@&filter_user=%@&filter_text=%@", [self defaultApiRequestWithL:kApiDiscussion andL2:kApiDiscussionMessages], discussionId, nickId, text];
+}
 
 
 

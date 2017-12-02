@@ -46,6 +46,7 @@
 + (NSString *)apiDiscussionDeleteMessage:(NSString *)discussionId postId:(NSString *)postId;
 + (NSString *)apiDiscussionGiveRatingInDiscussion:(NSString *)discussionId toPost:(NSString *)postId positiveRating:(BOOL)positiveRating;
 + (NSString *)apiDiscussionGetRatingInDiscussion:(NSString *)discussionId forPost:(NSString *)postId;
++ (NSString *)apiDiscussionSearchInDiscussion:(NSString *)discussionId forNick:(NSString *)nickId withText:(NSString *)text;
 
 
 @end

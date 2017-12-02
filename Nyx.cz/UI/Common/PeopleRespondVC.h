@@ -24,9 +24,11 @@
     CGRect _bottomFrame;
     CGRect _tableFrame;
     
-    NSString *_postIdentificationTable, *_postIdentificationPostFeedMessage, *_postIdentificationPostMailboxMessage, *_postIdentificationPostDiscussionMessage;
+    NSString *_postIdentificationTable, *_postIdentificationPostFeedMessage, *_postIdentificationPostMailboxMessage, *_postIdentificationPostDiscussionMessage, *_postIdentificationPostReaction;
     NSString *_currentAttachmentName;
     NSString *_respondTo;
+    
+    NSMutableArray *_reactionsToDownload, *_nyxRowsForSection, *_nyxRowHeights, *_nyxTexts;
 }
 
 
@@ -45,6 +47,7 @@
 @property (nonatomic, strong) NSString *postId;
 @property (nonatomic, strong) NSString *discussionId;
 @property (nonatomic, strong) NSString *firstDiscussionPostId;
+@property (nonatomic, strong) NSArray *previousReactions;
 
 @property (nonatomic, strong) ContentTableWithPeople *table;
 
