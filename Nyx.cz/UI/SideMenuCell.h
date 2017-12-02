@@ -10,15 +10,15 @@
 
 @interface SideMenuCell : UITableViewCell
 {
-    UILabel *_news;
+    UILabel *_alert;
 }
-
-
-@property (nonatomic, assign) NSInteger newPosts;
 
 
 - (void)updateMenuLabel:(NSString *)l;
 - (void)updateLabelColor;
+
+- (void)showNewMailAlert:(BOOL)show;
+- (void)showNewNotificationsAlert:(BOOL)show;
 
 
 @end

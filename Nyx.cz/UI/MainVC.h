@@ -12,13 +12,17 @@
 #import "CloseCoverView.h"
 #import "MainContentVC.h"
 
+#import "ServerConnector.h"
+#import "JSONParser.h"
+#import "ApiBuilder.h"
 
-@interface MainVC : UIViewController <UIGestureRecognizerDelegate, CloseCoverViewDelegate, SideMenuDelegate>
+
+@interface MainVC : UIViewController <UIGestureRecognizerDelegate, CloseCoverViewDelegate, SideMenuDelegate, ServerConnectorDelegate>
 {
     CGPoint _viewCenter;
     CGFloat _sideMenuMaxShift, _sideMenuBreakingPoint;
     CGFloat _alphaMenuIncrement;
-    BOOL _firstShow;
+    BOOL _firstShow, _gettingNewNotifications;
 }
 
 @property (nonatomic, strong) LoginScreenVC *loginScreen;
@@ -28,6 +32,7 @@
 
 
 - (void)sideMenuClose;
+- (void)getNewNyxNotifications;
 
 
 @end

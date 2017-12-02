@@ -15,6 +15,10 @@
 
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
+{
+    UIBackgroundTaskIdentifier _backgroundTask;
+}
+
 
 @property (strong, nonatomic) UIWindow *window;
 @property (nonatomic, strong) UserNotification *userNotification;

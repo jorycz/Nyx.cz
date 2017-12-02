@@ -11,6 +11,7 @@
 #import "Preferences.h"
 
 #import <AVFoundation/AVFoundation.h>
+#import <UserNotifications/UserNotifications.h>
 
 
 @interface AppDelegate ()
@@ -60,6 +61,40 @@
     self.window.backgroundColor = UIColorFromRGB(0xBAE0FF);
     self.window.rootViewController = mainNavigationController;
     [self.window makeKeyAndVisible];
+
+    [[UNUserNotificationCenter currentNotificationCenter] getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
+        switch (settings.authorizationStatus) {
+            case UNAuthorizationStatusNotDetermined:
+            {
+                [[UNUserNotificationCenter currentNotificationCenter] requestAuthorizationWithOptions:(UNAuthorizationOptionAlert|
+                                                                                                       UNAuthorizationOptionSound|
+                                                                                                       UNAuthorizationOptionBadge|
+                                                                                                       UNAuthorizationOptionCarPlay)
+                                                                                    completionHandler:^(BOOL granted, NSError * _Nullable error) {
+                                                                                        // Enable or disable features based on authorization.
+                                                                                        if (granted) {
+                                                                                            NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"GRANTED");
+                                                                                        } else {
+                                                                                            NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"DENIED");
+                                                                                        }
+                                                                                    }];
+            }
+                break;
+                
+            case UNAuthorizationStatusAuthorized:
+                break;
+                
+            case UNAuthorizationStatusDenied:
+                NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"NOTIFICATIONS DENIED!");
+                break;
+                
+            default:
+                break;
+        }
+    }];
+    
+    // Set background fetch interval - when set to "Minimum", it's enabled.
+    [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
     
     return YES;
 }
@@ -83,6 +118,7 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    application.applicationIconBadgeNumber = 0;
 }
 
 
@@ -154,6 +190,52 @@
         self.memoryCache = [[MemCache alloc] init];
     }
     return self.memoryCache;
+}
+
+#pragma mark - BACKGROUND REFRESH NOTIFICATION DATA
+
+- (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
+{
+    switch (application.applicationState) {
+        case UIApplicationStateActive:
+            NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"ACTIVE");
+            break;
+        case UIApplicationStateInactive:
+            NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"INACTIVE");
+            break;
+        case UIApplicationStateBackground:
+            NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"BACKGROUND");
+            break;
+        default:
+            break;
+    }
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateStyle = NSDateFormatterMediumStyle;
+    dateFormatter.timeStyle = NSDateFormatterShortStyle;
+    NSString *dateStr = [dateFormatter stringFromDate:[NSDate date]];
+    [Preferences actualDateOfBackgroundRefresh:dateStr];
+    
+    [[UNUserNotificationCenter currentNotificationCenter] getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
+        BOOL badge = NO;
+        
+        switch (settings.authorizationStatus) {
+            case UNAuthorizationStatusAuthorized:
+                badge = YES;
+                break;
+            default:
+                break;
+        }
+        
+        if (badge) {
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                [self.mainScreen getNewNyxNotifications];
+            });
+            completionHandler(UIBackgroundFetchResultNewData);
+        } else {
+            completionHandler(UIBackgroundFetchResultNoData);
+        }
+    }];
 }
 
 @end

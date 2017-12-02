@@ -33,6 +33,8 @@
 + (NSArray *)messagesForDiscussion:(NSMutableArray *)value;
 // Current status bar
 + (CGFloat)statusBarHeigh:(CGFloat)value;
+// Save / Load time of background refresh
++ (NSString *)actualDateOfBackgroundRefresh:(NSString *)value;
 
 
 @end

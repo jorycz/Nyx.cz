@@ -32,4 +32,7 @@
 @property (nonatomic, strong) SideMenuBottomSection *bottomSection;
 
 
+- (void)showNewMailAlert:(BOOL)mailAlert andNyxNotificationAlert:(BOOL)nyxNotificationAlert;
+
+
 @end

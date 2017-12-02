@@ -20,6 +20,11 @@
     {
         self.backgroundColor = [UIColor clearColor];
         self.textLabel.font = [UIFont boldSystemFontOfSize:20];
+        
+        _alert = [[UILabel alloc] initWithFrame:CGRectZero];
+        _alert.userInteractionEnabled = NO;
+        _alert.backgroundColor = [UIColor redColor];
+        [self addSubview:_alert];
     }
     return self;
 }
@@ -43,6 +48,26 @@
     }
 }
 
+
+#pragma mark - NEW MAIL ALERT
+
+- (void)showNewMailAlert:(BOOL)show
+{
+    if (show) {
+        _alert.frame = CGRectMake(0, 0, 7, self.frame.size.height);
+    } else {
+        _alert.frame = CGRectMake(0, 0, 0, self.frame.size.height);
+    }
+}
+
+- (void)showNewNotificationsAlert:(BOOL)show
+{
+    if (show) {
+        _alert.frame = CGRectMake(0, 0, 7, self.frame.size.height);
+    } else {
+        _alert.frame = CGRectMake(0, 0, 0, self.frame.size.height);
+    }
+}
 
 
 @end

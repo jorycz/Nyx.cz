@@ -597,6 +597,11 @@
 					2B0D5D8B1FBC40F20052D63C = {
 						CreatedOnToolsVersion = 9.1;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					2B0D5DA61FBC40F30052D63C = {
 						CreatedOnToolsVersion = 9.1;

@@ -85,7 +85,6 @@
     }
     cell.tag = (int)indexPath.row;
     [cell updateMenuLabel:[self.menuEntries objectAtIndex:indexPath.row]];
-    cell.newPosts = (int)indexPath.row;
     return cell;
 }
 
@@ -102,6 +101,16 @@
     for (SideMenuCell *c in cells) {
         [c updateLabelColor];
     }
+}
+
+#pragma mark - NYX NOTIFICATION
+
+- (void)showNewMailAlert:(BOOL)mailAlert andNyxNotificationAlert:(BOOL)nyxNotificationAlert
+{
+    SideMenuCell *cMail = [self.table cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
+    [cMail showNewMailAlert:mailAlert];
+    SideMenuCell *cNotification = [self.table cellForRowAtIndexPath:[NSIndexPath indexPathForRow:5 inSection:0]];
+    [cNotification showNewNotificationsAlert:nyxNotificationAlert];
 }
 
 @end

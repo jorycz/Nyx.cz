@@ -25,6 +25,7 @@
     if (self) {
         self.title = @"Nyx";
         _firstShow = YES;
+        _gettingNewNotifications = NO;
     }
     return self;
 }
@@ -132,6 +133,7 @@
 {
     if (!self.closeCoverView)
     {
+        [self getNewNyxNotifications];
         self.navigationItem.rightBarButtonItem.enabled = NO;
         self.navigationItem.leftBarButtonItem.enabled = NO;
         [UIView animateWithDuration:.3 animations:^{
@@ -249,6 +251,104 @@
     UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:settings];
     [self presentViewController:nc animated:YES completion:^{}];
 }
+
+#pragma mark - NYX NOTIFICATIONS CHECK
+
+- (void)getNewNyxNotifications
+{
+    if (!_gettingNewNotifications) {
+        _gettingNewNotifications = YES;
+        if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive ||
+            [[UIApplication sharedApplication] applicationState] == UIApplicationStateInactive)
+            [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+        NSString *apiRequest = [ApiBuilder apiFeedNoticesAndKeepNew:YES];
+        ServerConnector *sc = [[ServerConnector alloc] init];
+        sc.delegate = self;
+        [sc downloadDataForApiRequest:apiRequest];
+    }
+}
+
+- (void)downloadFinishedWithData:(NSData *)data withIdentification:(NSString *)identification
+{
+    if (!data)
+    {
+//        [self presentErrorWithTitle:@"Žádná data" andMessage:@"Nelze se připojit na server."];
+    }
+    else
+    {
+        JSONParser *jp = [[JSONParser alloc] initWithData:data];
+        if (!jp.jsonDictionary)
+        {
+            NSLog(@"%@ - %@ : ERROR [%@]", self, NSStringFromSelector(_cmd), jp.jsonErrorString);
+            NSLog(@"%@ - %@ : ERROR [%@]", self, NSStringFromSelector(_cmd), jp.jsonErrorDataString);
+//            [self presentErrorWithTitle:@"Chyba při parsování" andMessage:jp.jsonErrorString];
+        }
+        else
+        {
+            if ([[jp.jsonDictionary objectForKey:@"result"] isEqualToString:@"error"])
+            {
+//                [self presentErrorWithTitle:@"Chyba ze serveru:" andMessage:[jp.jsonDictionary objectForKey:@"error"]];
+            }
+            else
+            {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self notifcationData:jp.jsonDictionary];
+                });
+            }
+        }
+    }
+}
+
+- (void)notifcationData:(NSDictionary *)data
+{
+    BOOL mail = NO;
+    BOOL notification = NO;
+    
+    NSString *mailData = [[[data objectForKey:@"data"] objectForKey:@"system"] objectForKey:@"unread_post"];
+    if (mailData && [mailData length] > 0) {
+        mail = YES;
+    }
+    
+    NSInteger lastVisit = [[[data objectForKey:@"data"] objectForKey:@"notice_last_visit"] integerValue];
+    NSArray *notices = [[data objectForKey:@"data"] objectForKey:@"items"];
+    for (NSDictionary *n in notices) {
+        NSInteger nTime = [[n objectForKey:@"time"] integerValue];
+        if (nTime > lastVisit) {
+            notification = YES;
+            break;
+        }
+    }
+    
+    switch ([[UIApplication sharedApplication] applicationState]) {
+        case UIApplicationStateActive:
+        {
+            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+            [self.sideMenu showNewMailAlert:mail andNyxNotificationAlert:notification];
+        }
+            break;
+        case UIApplicationStateInactive:
+        {
+            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+            [self.sideMenu showNewMailAlert:mail andNyxNotificationAlert:notification];
+        }
+            break;
+        case UIApplicationStateBackground:
+        {
+            if (mail || notification)
+            {
+                [[UIApplication sharedApplication] setApplicationIconBadgeNumber:1];
+            } else {
+                [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
+            }
+        }
+            break;
+        default:
+            break;
+    }
+    
+    _gettingNewNotifications = NO;
+}
+
 
 
 @end
