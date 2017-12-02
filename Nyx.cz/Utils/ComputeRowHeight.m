@@ -75,7 +75,7 @@
              } else {
              }
          }];
-        
+                
         CGSize constraintSize = CGSizeMake(currentWidth, MAXFLOAT);
         CGRect rect = [self.attributedText boundingRectWithSize:constraintSize options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) context:nil];
         CGFloat finalHeight = rect.size.height < minHeight ? minHeight : rect.size.height;

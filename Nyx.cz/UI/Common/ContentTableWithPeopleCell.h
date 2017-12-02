@@ -25,6 +25,7 @@
 
 @property (nonatomic, strong) NSString *nick;
 @property (nonatomic, strong) NSAttributedString *bodyText;
+
 // Not used inside cell but used for copy in ActionShareSheet
 @property (nonatomic, strong) NSString *bodyTextSource;
 

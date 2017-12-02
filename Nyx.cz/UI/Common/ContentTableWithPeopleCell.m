@@ -56,6 +56,11 @@
         _bodyView.textContainer.lineFragmentPadding = 0;
         [self addSubview:_bodyView];
         
+        NSDictionary *linkAttributes = @{NSForegroundColorAttributeName: [UIColor blueColor],
+                                         NSUnderlineColorAttributeName: [UIColor clearColor],
+                                         NSUnderlineStyleAttributeName: @(NSUnderlineStyleNone)};
+        _bodyView.linkTextAttributes = linkAttributes;
+        
         _separator = [[UIView alloc] init];
         _separator.backgroundColor = [UIColor colorWithWhite:.5 alpha:.5];
         [self addSubview:_separator];
@@ -110,7 +115,9 @@
 - (void)configureCellForIndexPath:(NSIndexPath *)idxPath
 {
     _nickLabel.text = self.nick;
+    
     _bodyView.attributedText = self.bodyText;
+    
     _avatarView.alpha = 1;
     _nickLabel.alpha = 1;
     _bodyView.alpha = 1;

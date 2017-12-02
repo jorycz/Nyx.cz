@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "CacheManager.h"
 #import "ServerConnector.h"
 #import "JSONParser.h"
 #import "ApiBuilder.h"
@@ -15,7 +14,7 @@
 #import "ContentTableWithPeople.h"
 
 
-@interface PeopleRespondVC : UIViewController <CacheManagerDelegate, ServerConnectorDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIGestureRecognizerDelegate>
+@interface PeopleRespondVC : UIViewController <ServerConnectorDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIGestureRecognizerDelegate>
 {
     CGFloat _widthForTableCellBodyTextView;
     CGSize _keyboardSize;

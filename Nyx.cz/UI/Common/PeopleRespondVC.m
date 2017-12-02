@@ -208,7 +208,6 @@
     [super viewWillAppear:animated];
     if ([self.peopleRespondMode isEqualToString:kPeopleTableModeFeed]) {
         [self placeLoadingView];
-        [self getAvatar];
         [self getFeedDetailPostData];
     }
     if ([self.peopleRespondMode isEqualToString:kPeopleTableModeMailbox] ||
@@ -226,13 +225,6 @@
 }
 
 #pragma mark - DATA
-
-- (void)getAvatar
-{
-    CacheManager *cm = [[CacheManager alloc] init];
-    cm.delegate = self;
-    [cm getAvatarForNick:self.nick];
-}
 
 - (void)getFeedDetailPostData
 {
@@ -258,16 +250,6 @@
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         [[self.view viewWithTag:kLoadingCoverViewTag] removeFromSuperview];
-    });
-}
-
-#pragma mark - CACHE DELEGATE
-
-- (void)cacheComplete:(NSData *)cache
-{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        // TODO ?
-//        _avatarView.image = [UIImage imageWithData:cache];
     });
 }
 

@@ -32,7 +32,6 @@
 
 - (void)dealloc
 {
-    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"");
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 

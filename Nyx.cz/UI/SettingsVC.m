@@ -188,7 +188,8 @@
             UIAlertAction *delete = [UIAlertAction actionWithTitle:@"Smazat" style:(UIAlertActionStyleDestructive) handler:^(UIAlertAction * _Nonnull action) {
                 [Preferences messagesForDiscussion:(NSMutableArray *)@[]];
             }];
-            [a addAction:delete];
+            if ([[[[Preferences messagesForDiscussion:nil] firstObject] objectForKey:@"text"] length] > 0)
+                [a addAction:delete];
             [a addAction:ok];
             [self presentViewController:a animated:YES completion:^{}];
         }

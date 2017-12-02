@@ -668,7 +668,7 @@
 
 - (void)showActionSheetForURLs:(NSArray *)httpUrls forText:(NSAttributedString *)attrText withSource:(NSString *)sourceText
 {
-    // Remove duplicates [NSSet] if any and filter arrays for images.
+    // Remove duplicates [NSSet] if any and filter arrays for images. // TODO TO DO
     NSArray *urlsWithoutImages = [[NSArray alloc] initWithArray:[self urlsWithoutImages:httpUrls] copyItems:YES];
     
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Volby příspěvku"
