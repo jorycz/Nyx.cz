@@ -243,6 +243,7 @@
         [self.peopleTableMode isEqualToString:kPeopleTableModeFriends] ||
         [self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion])
     {
+        // TODO TO DO
         // Zobrazovat v pripade ze existuji predesle reakce na prispevek?
 //        ContentTableWithPeopleCell *cell = [tableView cellForRowAtIndexPath:indexPath];
 //        NSArray *recipientNames = [self getRecipientNamesFromSourceHtml:cell.bodyTextSource];

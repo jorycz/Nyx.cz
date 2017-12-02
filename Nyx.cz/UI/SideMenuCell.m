@@ -24,6 +24,12 @@
         _alert = [[UILabel alloc] initWithFrame:CGRectZero];
         _alert.userInteractionEnabled = NO;
         _alert.backgroundColor = [UIColor redColor];
+        _alert.layer.cornerRadius = 15;
+        _alert.clipsToBounds = YES;
+        _alert.alpha = 0;
+        _alert.textColor = [UIColor whiteColor];
+        _alert.textAlignment = NSTextAlignmentCenter;
+        _alert.font = [UIFont boldSystemFontOfSize:15];
         [self addSubview:_alert];
     }
     return self;
@@ -48,24 +54,33 @@
     }
 }
 
-
-#pragma mark - NEW MAIL ALERT
-
-- (void)showNewMailAlert:(BOOL)show
+- (void)layoutSubviews
 {
-    if (show) {
-        _alert.frame = CGRectMake(0, 0, 7, self.frame.size.height);
-    } else {
-        _alert.frame = CGRectMake(0, 0, 0, self.frame.size.height);
-    }
+    [super layoutSubviews];
+    
+    NSInteger xPos = 0;
+    if ([self.textLabel.text isEqualToString:kMenuMail])
+        xPos = 81;
+    if ([self.textLabel.text isEqualToString:kMenuNotifications])
+        xPos = 137;
+    _alert.frame = CGRectMake(xPos, 5, self.frame.size.height - 10, self.frame.size.height - 10);
 }
 
-- (void)showNewNotificationsAlert:(BOOL)show
+
+#pragma mark - NEW NOTIFICATION ALERT
+
+- (void)showNewNotificationAlert:(NSInteger)show
 {
-    if (show) {
-        _alert.frame = CGRectMake(0, 0, 7, self.frame.size.height);
+    if (show > 0) {
+        _alert.text = show > 99 ? @"99" : [@(show) stringValue] ;
+        [UIView animateWithDuration:.5 animations:^{
+            _alert.alpha = .8;
+        }];
     } else {
-        _alert.frame = CGRectMake(0, 0, 0, self.frame.size.height);
+        [UIView animateWithDuration:.5 animations:^{
+            _alert.alpha = 0;
+            _alert.text = @"";
+        }];
     }
 }
 

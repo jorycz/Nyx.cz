@@ -77,11 +77,11 @@
     }
     
     self.bottomView = [[UIView alloc] init];
-    self.bottomView.backgroundColor = [UIColor colorWithWhite:.8 alpha:1];
+    self.bottomView.backgroundColor = [UIColor colorWithWhite:.95 alpha:1];
     
     self.responseView = [[UITextView alloc] init];
 //    [self.responseView setTextContainerInset:(UIEdgeInsetsZero)];
-    self.responseView.backgroundColor = [UIColor colorWithWhite:.95 alpha:1];
+    self.responseView.backgroundColor = [UIColor whiteColor];
     self.responseView.clipsToBounds = YES;
     self.responseView.font = [UIFont systemFontOfSize:13];
     self.responseView.layer.cornerRadius = 6.0f;
@@ -166,7 +166,7 @@
         // - 65 is there because there is big avatar left of table cell body text view.
         _widthForTableCellBodyTextView = f.size.width - kWidthForTableCellBodyTextViewSubstract;
         
-        CGFloat bottomBarHeight = f.size.height / 4;
+        CGFloat bottomBarHeight = f.size.height / 3.5;
         CGFloat edgeInsect = 10;
         CGFloat maxButtonSize = 70;
         

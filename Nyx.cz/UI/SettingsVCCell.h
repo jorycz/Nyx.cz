@@ -9,7 +9,9 @@
 #import <UIKit/UIKit.h>
 
 @interface SettingsVCCell : UITableViewCell
-
+{
+    UIView *_separator;
+}
 
 @property (nonatomic, strong) UISwitch *settingsSwitch;
 

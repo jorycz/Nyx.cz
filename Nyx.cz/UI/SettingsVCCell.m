@@ -17,6 +17,10 @@
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])
     {
         self.backgroundColor = [UIColor whiteColor];
+        
+        _separator = [[UIView alloc] init];
+        _separator.backgroundColor = [UIColor colorWithWhite:.5 alpha:.5];
+        [self addSubview:_separator];
     }
     return self;
 }
@@ -24,11 +28,13 @@
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
 {
     [super setSelected:selected animated:animated];
+    _separator.backgroundColor = [UIColor colorWithWhite:.5 alpha:.5];
 }
 
 - (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated
 {
     [super setHighlighted:highlighted animated:animated];
+    _separator.backgroundColor = [UIColor colorWithWhite:.5 alpha:.5];
 }
 
 - (void)layoutSubviews
@@ -44,6 +50,9 @@
         [self addSubview:self.settingsSwitch];
         self.settingsSwitch.frame = CGRectMake(f.size.width - sf.size.width - 15, (f.size.height / 2) - (sf.size.height / 2) , 0, 0);
     }
+    
+    CGRect f = self.frame;
+    _separator.frame = CGRectMake(10, f.size.height - 1, f.size.width - 20, 1);
 }
 
 

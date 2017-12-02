@@ -299,14 +299,21 @@
     }
 }
 
+- (void)presentErrorWithTitle:(NSString *)title andMessage:(NSString *)message
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        PRESENT_ERROR(title, message)
+    });
+}
+
 - (void)notifcationData:(NSDictionary *)data
 {
-    BOOL mail = NO;
-    BOOL notification = NO;
+    NSInteger mail = 0;
+    NSInteger notification = 0;
     
     NSString *mailData = [[[data objectForKey:@"data"] objectForKey:@"system"] objectForKey:@"unread_post"];
     if (mailData && [mailData length] > 0) {
-        mail = YES;
+        mail = [mailData integerValue];
     }
     
     NSInteger lastVisit = [[[data objectForKey:@"data"] objectForKey:@"notice_last_visit"] integerValue];
@@ -314,8 +321,7 @@
     for (NSDictionary *n in notices) {
         NSInteger nTime = [[n objectForKey:@"time"] integerValue];
         if (nTime > lastVisit) {
-            notification = YES;
-            break;
+            notification++;
         }
     }
     

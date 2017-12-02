@@ -43,7 +43,7 @@
     
     _tv = [[UITextView alloc] init];
     //    [self.responseView setTextContainerInset:(UIEdgeInsetsZero)];
-    _tv.backgroundColor = [UIColor lightGrayColor];
+    _tv.backgroundColor = [UIColor whiteColor];
     _tv.clipsToBounds = YES;
     _tv.layer.cornerRadius = 8.0f;
     [self.view addSubview:_tv];
@@ -54,7 +54,7 @@
     [_button addTarget:self action:@selector(post) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_button];
     
-    UIBarButtonItem *dismissButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+    UIBarButtonItem *dismissButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop
                                                                                    target:self
                                                                                    action:@selector(dismiss)];
     self.navigationItem.rightBarButtonItem = dismissButton;
@@ -70,8 +70,8 @@
     [super viewDidLayoutSubviews];
     
     CGRect f = self.view.frame;
-    _tv.frame = CGRectMake(10, 64 + 10, f.size.width - 20, f.size.height * 0.3);
-    _button.frame = CGRectMake(f.size.width - 80, 64 + 10 + f.size.height * 0.3 + 10, 60, 60);
+    _tv.frame = CGRectMake(10, 64 + 10, f.size.width - 20, f.size.height / 3.3);
+    _button.frame = CGRectMake(f.size.width - 80, _tv.frame.size.height + _tv.frame.origin.y + 10, 60, 60);
 }
 
 - (void)dismiss

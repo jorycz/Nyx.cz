@@ -27,13 +27,17 @@
                              @"Počáteční lokace",
                              @"Smazat nastavení",
                              @"Zobrazovat obrázky",
-                             @"Otevřít v Safari"
+                             @"Otevřít v Safari",
+                             @"Obnova dat na pozadí",
+                             @"Uložená zpráva"
                              ];
         self.menuSubtitles = @[@"Spočítá a případně umožní vymazat obsah mezipaměti.",
                                @"",
                                @"Smaže veškeré nastavení kromě autorizace.",
                                @"Zobrazovat v postech obrázky nebo URL.",
-                               @"Otevře URL linky v Safari místo v aplikaci."
+                               @"Otevře URL linky v Safari místo v aplikaci.",
+                               @"",
+                               @"Zobrazí uloženou zprávu, pokud existuje."
                                ];
     }
     return self;
@@ -61,9 +65,8 @@
     [self.table setDelegate:self];
     [self.table setDataSource:self];
     [self.table setBackgroundColor:[UIColor clearColor]];
-    [self.table setSeparatorStyle:UITableViewCellSeparatorStyleSingleLine];
+    [self.table setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     [self.table setRowHeight:80];
-    self.table.scrollEnabled = NO;
     [self.view addSubview:self.table];
 }
 
@@ -137,6 +140,11 @@
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     
+    if (indexPath.row == 5) {
+        NSString *lastBackgroundRefresh = [Preferences actualDateOfBackgroundRefresh:nil];
+        (lastBackgroundRefresh && [lastBackgroundRefresh length] > 0) ? [cell.detailTextLabel setText:lastBackgroundRefresh] : [cell.detailTextLabel setText:@"Natím nenačtena žádná data na pozadí."];
+    }
+    
     return cell;
 }
 
@@ -153,9 +161,37 @@
         case 2:
             [self deleteSettings];
             break;
-        case 3:
+        case 5:
+        {
+            NSString *lastBackgroundRefresh = [Preferences actualDateOfBackgroundRefresh:nil];
+            UIAlertController *a = [UIAlertController alertControllerWithTitle:@"Poslední obnova dat na pozadí"
+                                                                       message:lastBackgroundRefresh
+                                                                preferredStyle:(UIAlertControllerStyleAlert)];
+            UIAlertAction *ok = [UIAlertAction actionWithTitle:@"OK" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {}];
+            [a addAction:ok];
+            [self presentViewController:a animated:YES completion:^{}];
+        }
             break;
-        case 4:
+        case 6:
+        {
+            NSString *storedMessage;
+            if ([[[[Preferences messagesForDiscussion:nil] firstObject] objectForKey:@"text"] length] > 0) {
+                storedMessage = [[[Preferences messagesForDiscussion:nil] firstObject] objectForKey:@"text"];
+            } else {
+                storedMessage = @"Žádná uložená zpráva neexistuje.";
+            }
+            
+            UIAlertController *a = [UIAlertController alertControllerWithTitle:@"Uložená zpráva"
+                                                                       message:storedMessage
+                                                                preferredStyle:(UIAlertControllerStyleAlert)];
+            UIAlertAction *ok = [UIAlertAction actionWithTitle:@"OK" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {}];
+            UIAlertAction *delete = [UIAlertAction actionWithTitle:@"Smazat" style:(UIAlertActionStyleDestructive) handler:^(UIAlertAction * _Nonnull action) {
+                [Preferences messagesForDiscussion:(NSMutableArray *)@[]];
+            }];
+            [a addAction:delete];
+            [a addAction:ok];
+            [self presentViewController:a animated:YES completion:^{}];
+        }
             break;
         default:
             break;

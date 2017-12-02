@@ -105,12 +105,13 @@
 
 #pragma mark - NYX NOTIFICATION
 
-- (void)showNewMailAlert:(BOOL)mailAlert andNyxNotificationAlert:(BOOL)nyxNotificationAlert
+- (void)showNewMailAlert:(NSInteger)mailAlert andNyxNotificationAlert:(NSInteger)nyxNotificationAlert
 {
     SideMenuCell *cMail = [self.table cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
-    [cMail showNewMailAlert:mailAlert];
+    [cMail showNewNotificationAlert:mailAlert];
+    
     SideMenuCell *cNotification = [self.table cellForRowAtIndexPath:[NSIndexPath indexPathForRow:5 inSection:0]];
-    [cNotification showNewNotificationsAlert:nyxNotificationAlert];
+    [cNotification showNewNotificationAlert:nyxNotificationAlert];
 }
 
 @end

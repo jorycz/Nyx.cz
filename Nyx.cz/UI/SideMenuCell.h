@@ -17,8 +17,7 @@
 - (void)updateMenuLabel:(NSString *)l;
 - (void)updateLabelColor;
 
-- (void)showNewMailAlert:(BOOL)show;
-- (void)showNewNotificationsAlert:(BOOL)show;
+- (void)showNewNotificationAlert:(NSInteger)show;
 
 
 @end
