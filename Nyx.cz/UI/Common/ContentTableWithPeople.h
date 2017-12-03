@@ -37,6 +37,8 @@
 
 @property (nonatomic, strong) NSDictionary *disscussionClubData;
 
+@property (nonatomic, strong) NSString *noticesLastVisitTimestamp;
+
 
 - (id)initWithRowHeight:(CGFloat)rowHeight;
 - (void)reloadTableData;

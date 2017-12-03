@@ -12,7 +12,7 @@
 
 @interface ContentTableWithPeopleCell : UITableViewCell <CacheManagerDelegate>
 {
-    UIImageView *_avatarView;
+    UIImageView *_avatarView, *_disclosure;
     UILabel *_nickLabel, *_timeLabel, *_ratingLabel;
     UITextView *_bodyView;
     UIView *_separator;
@@ -40,6 +40,9 @@
 @property (nonatomic, strong) NSString *rating;
 
 @property (nonatomic, strong) NSMutableString *ratingGiven;
+
+@property (nonatomic, strong) NSString *noticesLastVisit;
+@property (nonatomic, strong) NSDictionary *notice;
 
 
 - (void)configureCellForIndexPath:(NSIndexPath *)idxPath;

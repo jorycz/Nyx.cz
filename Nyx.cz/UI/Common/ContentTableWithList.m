@@ -292,7 +292,6 @@
     
     if ([postDictionaries count] > 0)
     {
-        // Add FEED post as first cell here also.
         [self.discussionTable.nyxSections removeAllObjects];
         [self.discussionTable.nyxSections addObjectsFromArray:@[kDisableTableSections]];
         

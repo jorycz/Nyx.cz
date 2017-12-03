@@ -172,6 +172,14 @@
             cell.rating = [cellData objectForKey:@"wu_rating"];
             cell.bodyTextSource = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"content"];
         }
+        if ([self.peopleTableMode isEqualToString:kPeopleTableModeNotices] || [self.peopleTableMode isEqualToString:kPeopleTableModeNoticesDetail])
+        {
+            nick = [cellData objectForKey:@"nick"];
+            cell.rating = [cellData objectForKey:@"wu_rating"];
+            cell.bodyTextSource = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"content"];
+            cell.noticesLastVisit = self.noticesLastVisitTimestamp;
+            cell.notice = cellData;
+        }
         cell.nick = nick;
         Timestamp *ts = [[Timestamp alloc] initWithTimestamp:[cellData objectForKey:@"time"]];
         cell.time = [ts getTimeWithDate];
@@ -234,28 +242,60 @@
         postId = [userPostData objectForKey:@"id_wu"];
         f = [[[self.nyxPostsRowHeights objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] floatValue];
     }
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeNotices] || [self.peopleTableMode isEqualToString:kPeopleTableModeNoticesDetail]) {
+        nick = [userPostData objectForKey:@"nick"];
+        postId = [userPostData objectForKey:@"id_wu"];
+        f = [[[self.nyxPostsRowHeights objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] floatValue];
+    }
+    
     NSString *firstPostId = [[[self.nyxRowsForSections objectAtIndex:0] objectAtIndex:0] objectForKey:@"id_wu"];
     NSAttributedString *str = [[self.nyxPostsRowBodyTexts objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
     
     // RESPOND VIEW --------
+    NSString *discussionId;
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeed] ||
         [self.peopleTableMode isEqualToString:kPeopleTableModeMailbox] ||
         [self.peopleTableMode isEqualToString:kPeopleTableModeFriends] ||
-        [self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion])
+        [self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion] ||
+        [self.peopleTableMode isEqualToString:kPeopleTableModeNotices])
     {
-        // Previous reactions ID (wu) to this POST.
-        ContentTableWithPeopleCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-        NSArray *recipientNames = [self getRecipientNamesFromSourceHtml:cell.bodyTextSource];
-        NSArray *recipientLinks = [self getRelativeOnlyUrls:[self getAllURLsFromAttributedAndSourceText:cell.bodyText]];
+        discussionId = [self.disscussionClubData objectForKey:@"id_klub"];
         NSMutableArray *previousResponses = [[NSMutableArray alloc] init];
-        if ([recipientNames count] == [recipientLinks count]) {
-            for (NSInteger index = 0; index < [recipientNames count] ; index++)
-            {
-                NSString *name = [recipientNames objectAtIndex:index];
-                NSString *reactionId = [[[recipientLinks objectAtIndex:index] componentsSeparatedByString:@"="] lastObject];
-                [previousResponses addObject:@{@"name": name, @"reactionId": reactionId}];
+        if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion])
+        {
+            // Previous reactions ID (wu) to this POST in DISCUSSION.
+            ContentTableWithPeopleCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+            NSArray *recipientNames = [self getRecipientNamesFromSourceHtml:cell.bodyTextSource];
+            NSArray *recipientLinks = [self getRelativeOnlyUrls:[self getAllURLsFromAttributedAndSourceText:cell.bodyText]];
+            if ([recipientNames count] == [recipientLinks count]) {
+                for (NSInteger index = 0; index < [recipientNames count] ; index++)
+                {
+                    NSString *name = [recipientNames objectAtIndex:index];
+                    NSString *reactionId = [[[recipientLinks objectAtIndex:index] componentsSeparatedByString:@"="] lastObject];
+                    [previousResponses addObject:@{@"name": name, @"reactionId": reactionId}];
+                }
             }
         }
+        if ([self.peopleTableMode isEqualToString:kPeopleTableModeNotices])
+        {
+            // Previous reactions ID (wu) to this POST in NOTICES.
+            discussionId = [userPostData objectForKey:@"id_klub"];
+            NSArray *replies = [userPostData objectForKey:@"replies"];
+            if (replies && [replies count] > 0) {
+                for (NSDictionary *r in replies) {
+                    NSString *wu = [r objectForKey:@"id_wu"];
+                    NSString *name = [r objectForKey:@"nick"];
+                    if (wu && [wu length] > 0 && name && [name length] > 0) {
+                        [previousResponses addObject:@{@"name": name, @"reactionId": wu}];
+                    }
+                }
+            }
+            if (!previousResponses || [previousResponses count] < 1) {
+                // DO NOT continue to DETAIL if NONE replies in NOTICES TABLE.
+                return;
+            }
+        }
+        
 //        NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), previousResponses);
         
         [self showRespondViewWithNick:nick
@@ -265,6 +305,7 @@
                          userPostData:userPostData
                refreshFromFirstPostId:firstPostId
                 previousReactionPosts:(NSArray *)previousResponses
+                         discussionId:discussionId
          ];
     }
     // ---------------------
@@ -443,6 +484,7 @@
                      userPostData:@{@"content": clubDescription}
            refreshFromFirstPostId:(NSString *)firstPostId
             previousReactionPosts:nil
+                     discussionId:[self.disscussionClubData objectForKey:@"id_klub"]
      ];
 }
 
@@ -455,16 +497,19 @@
                    userPostData:(NSDictionary *)userPostData
          refreshFromFirstPostId:(NSString *)firstPostId
           previousReactionPosts:(NSArray *)previousReactionPostIds
+                   discussionId:(NSString *)dId
 {
     PeopleRespondVC *response = [[PeopleRespondVC alloc] init];
     response.nick = nick;
     response.bodyText = bodyText;
     response.bodyHeight = f;
     response.postId = postId;
-    // --- Needed only for discussion club -------
-    response.discussionId = [self.disscussionClubData objectForKey:@"id_klub"];
+    // --- Needed for discussion club or notices table mode -------
+    response.discussionId = dId;
     response.firstDiscussionPostId = firstPostId;
     response.previousReactions = previousReactionPostIds;
+    if (self.noticesLastVisitTimestamp && [self.noticesLastVisitTimestamp length] > 0)
+        response.table.noticesLastVisitTimestamp = self.noticesLastVisitTimestamp;
     // -------------------------------------------
     response.postData = userPostData;
     response.nController = self.nController;

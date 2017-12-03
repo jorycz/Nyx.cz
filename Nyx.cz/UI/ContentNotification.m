@@ -31,7 +31,6 @@
 
 - (void)dealloc
 {
-    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"");
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -47,7 +46,7 @@
         self.table = [[ContentTableWithPeople alloc] initWithRowHeight:70];
         self.table.nController = self.nController;
         self.table.allowsSelection = YES;
-        self.table.peopleTableMode = kPeopleTableModeFeed;
+        self.table.peopleTableMode = kPeopleTableModeNotices;
         [self addSubview:self.table.view];
         
         [self adjustFrameForCurrentStatusBar];
@@ -148,60 +147,52 @@
 
 - (void)configureTableWithJson:(NSDictionary *)nyxDictionary
 {
-//    NSMutableArray *_dateSections = [[NSMutableArray alloc] init];
-//    NSMutableArray *_datePosts = [[NSMutableArray alloc] init];
-//    NSMutableArray *_postsRowHeights = [[NSMutableArray alloc] init];
-//    NSMutableArray *_postsRowBodyTexts = [[NSMutableArray alloc] init];
-//
-//    // Search for unique dates.
-//    for (NSDictionary *d in [nyxDictionary objectForKey:@"data"])
-//    {
-//        Timestamp *ts = [[Timestamp alloc] initWithTimestamp:[d objectForKey:@"time"]];
-//        NSString *date = [ts getDayDate];
-//        if ([_dateSections indexOfObject:date] == NSNotFound)
-//        {
-//            [_dateSections addObject:date];
-//
-//            // Assign object with same day to temp array and then insert this temp array to array which will be DS for rows (in section).
-//            NSMutableArray *tempArrayForPosts = [[NSMutableArray alloc] init];
-//            NSMutableArray *tempArrayForRowHeights = [[NSMutableArray alloc] init];
-//            NSMutableArray *tempArrayForRowBodyText = [[NSMutableArray alloc] init];
-//            for (NSDictionary *d in [nyxDictionary objectForKey:@"data"])
-//            {
-//                Timestamp *tsForAll = [[Timestamp alloc] initWithTimestamp:[d objectForKey:@"time"]];
-//                NSString *dateForAll = [tsForAll getDayDate];
-//                if ([dateForAll isEqualToString:date]) {
-//                    [tempArrayForPosts addObject:d];
-//
-//                    // Calculate heights and create array with same structure just only for row height.
-//                    // 60 is minimum height - table ROW height is initialized to 70 below ( 70 - nick name )
-//                    ComputeRowHeight *rowHeight = [[ComputeRowHeight alloc] initWithText:[d objectForKey:@"text"] forWidth:_widthForTableCellBodyTextView minHeight:40 inlineImages:nil];
-//                    [tempArrayForRowHeights addObject:[NSNumber numberWithFloat:rowHeight.heightForRow]];
-//                    [tempArrayForRowBodyText addObject:rowHeight.attributedText];
-//                }
-//            }
-//            [_datePosts addObject:tempArrayForPosts];
-//            [_postsRowHeights addObject:tempArrayForRowHeights];
-//            [_postsRowBodyTexts addObject:tempArrayForRowBodyText];
-//        }
-//    }
-//
-//    dispatch_async(dispatch_get_main_queue(), ^{
-//        // SECTIONS - dates in this case
-//        [self.table.nyxSections removeAllObjects];
-//        [self.table.nyxSections addObjectsFromArray:_dateSections];
-//        // WHOLE dictionaries with all data
-//        [self.table.nyxRowsForSections removeAllObjects];
-//        [self.table.nyxRowsForSections addObjectsFromArray:_datePosts];
-//        // Heights computed by attributed texts for rows
-//        [self.table.nyxPostsRowHeights removeAllObjects];
-//        [self.table.nyxPostsRowHeights addObjectsFromArray:_postsRowHeights];
-//        // Formated attributed texts
-//        [self.table.nyxPostsRowBodyTexts removeAllObjects];
-//        [self.table.nyxPostsRowBodyTexts addObjectsFromArray:_postsRowBodyTexts];
-//
-//        [self.table reloadTableData];
-//    });
+    // To forward last visit information. NEEDED ONLY FOR NOTICES TABLE.
+    self.table.noticesLastVisitTimestamp = [[nyxDictionary objectForKey:@"data"] objectForKey:@"notice_last_visit"];
+    
+    NSMutableArray *postDictionaries = [[NSMutableArray alloc] init];
+    [postDictionaries addObjectsFromArray:[[nyxDictionary objectForKey:@"data"] objectForKey:@"items"]];
+    
+    if ([postDictionaries count] > 0)
+    {
+        [self.table.nyxSections removeAllObjects];
+        [self.table.nyxSections addObjectsFromArray:@[kDisableTableSections]];
+        
+        NSMutableArray *tempArrayForRowSections = [[NSMutableArray alloc] init];
+        NSMutableArray *tempArrayForRowHeights = [[NSMutableArray alloc] init];
+        NSMutableArray *tempArrayForRowBodyText = [[NSMutableArray alloc] init];
+        
+        for (NSDictionary *d in postDictionaries)
+        {
+            [tempArrayForRowSections addObject:d];
+            // Calculate heights and create array with same structure just only for row height.
+            // 60 is minimum height - table ROW height is initialized to 70 below ( 70 - nick name )
+            ComputeRowHeight *rowHeight = [[ComputeRowHeight alloc] initWithText:[d objectForKey:@"content"]
+                                                                        forWidth:_widthForTableCellBodyTextView
+                                                                       minHeight:40
+                                                                    inlineImages:[Preferences showImagesInlineInPost:nil]];
+            [tempArrayForRowHeights addObject:[NSNumber numberWithFloat:rowHeight.heightForRow]];
+            [tempArrayForRowBodyText addObject:rowHeight.attributedText];
+        }
+        
+        // First discussion load - remove all data and start again
+        [self.table.nyxRowsForSections removeAllObjects];
+        [self.table.nyxRowsForSections addObjectsFromArray:@[tempArrayForRowSections]];
+        
+        [self.table.nyxPostsRowHeights removeAllObjects];
+        [self.table.nyxPostsRowHeights addObjectsFromArray:@[tempArrayForRowHeights]];
+        
+        [self.table.nyxPostsRowBodyTexts removeAllObjects];
+        [self.table.nyxPostsRowBodyTexts addObjectsFromArray:@[tempArrayForRowBodyText]];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.nController.topViewController.navigationItem.rightBarButtonItem setEnabled:YES];
+            [self.table reloadTableData];
+        });
+    } else {
+        PRESENT_ERROR(@"Error", @"No data from server.")
+    }
+
     [self removeLoadingView];
 }
 

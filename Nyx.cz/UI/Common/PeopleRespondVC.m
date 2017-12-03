@@ -42,6 +42,11 @@
         _nyxRowsForSection = [[NSMutableArray alloc] init];
         _nyxRowHeights = [[NSMutableArray alloc] init];
         _nyxTexts = [[NSMutableArray alloc] init];
+        
+        self.table = [[ContentTableWithPeople alloc] initWithRowHeight:70];
+        self.table.allowsSelection = YES;
+        self.table.canEditFirstRow = NO;
+        self.table.nController = self.nController;
     }
     return self;
 }
@@ -62,11 +67,6 @@
 {
     [super viewDidLoad];
     
-    self.table = [[ContentTableWithPeople alloc] initWithRowHeight:70];
-    self.table.allowsSelection = YES;
-    self.table.canEditFirstRow = NO;
-    self.table.nController = self.nController;
-    
     // Set content to "DETAIL" - ignore cell tap in nested table (otherwise it would be infinite loop)
     if ([self.peopleRespondMode isEqualToString:kPeopleTableModeFeed]) {
         self.table.peopleTableMode = kPeopleTableModeFeedDetail;
@@ -80,6 +80,9 @@
     }
     if ([self.peopleRespondMode isEqualToString:kPeopleTableModeDiscussion]) {
         self.table.peopleTableMode = kPeopleTableModeDiscussionDetail;
+    }
+    if ([self.peopleRespondMode isEqualToString:kPeopleTableModeNotices]) {
+        self.table.peopleTableMode = kPeopleTableModeNoticesDetail;
     }
     
     self.bottomView = [[UIView alloc] init];
@@ -179,9 +182,15 @@
         // - 65 is there because there is big avatar left of table cell body text view.
         _widthForTableCellBodyTextView = f.size.width - kWidthForTableCellBodyTextViewSubstract;
         
-        CGFloat bottomBarHeight = f.size.height / 3.5;
-        CGFloat edgeInsect = 10;
-        CGFloat maxButtonSize = 70;
+        CGFloat bottomBarHeight = 0;
+        CGFloat edgeInsect = 0;
+        CGFloat maxButtonSize = 0;
+        if (![self.peopleRespondMode isEqualToString:kPeopleTableModeNotices])
+        {
+            bottomBarHeight = f.size.height / 3.5;
+            edgeInsect = 10;
+            maxButtonSize = 70;
+        }
         
         self.bottomView.frame = CGRectMake(0, f.size.height - bottomBarHeight, f.size.width, bottomBarHeight);
         _bottomFrame = self.bottomView.frame;
@@ -212,7 +221,8 @@
     }
     if ([self.peopleRespondMode isEqualToString:kPeopleTableModeMailbox] ||
         [self.peopleRespondMode isEqualToString:kPeopleTableModeFriends] ||
-        [self.peopleRespondMode isEqualToString:kPeopleTableModeDiscussion]) {
+        [self.peopleRespondMode isEqualToString:kPeopleTableModeDiscussion] ||
+        [self.peopleRespondMode isEqualToString:kPeopleTableModeNotices]) {
         // All data required is already in properties. No loading needed to respond someone to mail.
         [self configureTableWithJson:nil];
     }
@@ -440,7 +450,8 @@
     // Response VC for Mailbox response.
     if ([self.peopleRespondMode isEqualToString:kPeopleTableModeMailbox] ||
         [self.peopleRespondMode isEqualToString:kPeopleTableModeFriends] ||
-        [self.peopleRespondMode isEqualToString:kPeopleTableModeDiscussion])
+        [self.peopleRespondMode isEqualToString:kPeopleTableModeDiscussion] ||
+        [self.peopleRespondMode isEqualToString:kPeopleTableModeNotices])
     {
         [self.table.nyxSections removeAllObjects];
         [self.table.nyxRowsForSections removeAllObjects];

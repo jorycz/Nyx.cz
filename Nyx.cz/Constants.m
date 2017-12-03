@@ -38,6 +38,8 @@ NSString* const kPeopleTableModeFriends = @"kPeopleTableModeFriends";
 NSString* const kPeopleTableModeFriendsDetail = @"kPeopleTableModeFriendsDetail";
 NSString* const kPeopleTableModeDiscussion = @"kPeopleTableModeDiscussion";
 NSString* const kPeopleTableModeDiscussionDetail = @"kPeopleTableModeDiscussionDetail";
+NSString* const kPeopleTableModeNotices = @"kPeopleTableModeNotices";
+NSString* const kPeopleTableModeNoticesDetail = @"kPeopleTableModeNoticesDetail";
 
 CGFloat const kLongPressMinimumDuration = 0.4f;
 

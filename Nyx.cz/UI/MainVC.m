@@ -11,6 +11,7 @@
 
 #import "SettingsVC.h"
 #import "ContactVC.h"
+#import "NewNoticesForPost.h"
 
 
 @interface MainVC ()
@@ -316,12 +317,23 @@
         mail = [mailData integerValue];
     }
     
-    NSInteger lastVisit = [[[data objectForKey:@"data"] objectForKey:@"notice_last_visit"] integerValue];
+    NSString *lastVisit = [[data objectForKey:@"data"] objectForKey:@"notice_last_visit"];
+    NSInteger last = [lastVisit integerValue];
     NSArray *notices = [[data objectForKey:@"data"] objectForKey:@"items"];
     for (NSDictionary *n in notices) {
         NSInteger nTime = [[n objectForKey:@"time"] integerValue];
-        if (nTime > lastVisit) {
+        if (nTime > last) {
             notification++;
+        }
+        NewNoticesForPost *np = [[NewNoticesForPost alloc] initWithPost:n forLastVisit:lastVisit];
+        if (np.nPosts && [np.nPosts count] > 0) {
+            notification += [np.nPosts count];
+        }
+        if (np.nThumbup && [np.nThumbup count] > 0) {
+            notification += [np.nThumbup count];
+        }
+        if (np.nThumbsdown && [np.nThumbsdown count] > 0) {
+            notification += [np.nThumbsdown count];
         }
     }
     

@@ -9,6 +9,7 @@
 #import "ContentTableWithPeopleCell.h"
 #import "ComputeRowHeight.h"
 #import "Constants.h"
+#import "NewNoticesForPost.h"
 
 
 @implementation ContentTableWithPeopleCell
@@ -70,6 +71,11 @@
         tapRecognizer.numberOfTouchesRequired = 1;
         [_avatarView addGestureRecognizer:tapRecognizer];
         
+        _disclosure = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"disclosure"]];
+        _disclosure.contentMode = UIViewContentModeCenter;
+        _disclosure.backgroundColor = [UIColor clearColor];
+        [self addSubview:_disclosure];
+        
         self.ratingGiven = [[NSMutableString alloc] init];
     }
     return self;
@@ -110,7 +116,11 @@
     if (self.nick) {
         _separator.frame = CGRectMake(10, f.size.height - 1, f.size.width - 20, 1);
     }
+    
+    _disclosure.frame = CGRectMake(f.size.width - 12, 0, 12, f.size.height);
 }
+
+#pragma mark - CONFIG
 
 - (void)configureCellForIndexPath:(NSIndexPath *)idxPath
 {
@@ -172,6 +182,12 @@
         [self setNeedsLayout];
         [self setNeedsDisplay];
     }
+    
+    _disclosure.alpha = 0;
+    if (self.noticesLastVisit && [self.noticesLastVisit length] > 0) {
+        [self checkNewsForPost:self.notice];
+    }
+    
     [self getAvatar];
 }
 
@@ -202,8 +218,6 @@
     });
 }
 
-
-
 #pragma mark - TAP
 
 - (void)tapped:(UITapGestureRecognizer *)sender
@@ -211,6 +225,37 @@
     NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"AVATAR TAPPED.");
 }
 
+#pragma mark - NOTICES NEWS CHECK
+
+- (void)checkNewsForPost:(NSDictionary *)post
+{
+    NewNoticesForPost *np = [[NewNoticesForPost alloc] initWithPost:post forLastVisit:self.noticesLastVisit];
+    if (np.nPosts && [np.nPosts count] > 0) {
+        self.backgroundColor = COLOR_SYSTEM_TURQUOISE_LIGHT;
+        _disclosure.alpha = 1;
+    }
+    if (np.nThumbup && [np.nThumbup count] > 0) {
+        self.backgroundColor = COLOR_SYSTEM_TURQUOISE_LIGHT;
+    }
+    if (np.nThumbsdown && [np.nThumbsdown count] > 0) {
+        self.backgroundColor = COLOR_SYSTEM_TURQUOISE_LIGHT;
+    }
+    
+    // IF content of POST itself in NOTICES TABLE DETAIL is REPLY, there shoud be time tag on first level.
+    NSString *replyTime = [post objectForKey:@"time"];
+    if (replyTime && [replyTime length] > 0) {
+        NSInteger last = [self.noticesLastVisit integerValue];
+        NSInteger postTime = [replyTime integerValue];
+        if (postTime > last) {
+            self.backgroundColor = COLOR_SYSTEM_TURQUOISE_LIGHT;
+        }
+    }
+}
+
+
 
 @end
+
+
+
 

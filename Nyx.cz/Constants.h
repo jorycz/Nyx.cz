@@ -67,6 +67,9 @@ extern NSString* const kPeopleTableModeFriends;
 extern NSString* const kPeopleTableModeFriendsDetail;
 extern NSString* const kPeopleTableModeDiscussion;
 extern NSString* const kPeopleTableModeDiscussionDetail;
+extern NSString* const kPeopleTableModeNotices;
+extern NSString* const kPeopleTableModeNoticesDetail;
+
 
 extern CGFloat const kLongPressMinimumDuration;
 
