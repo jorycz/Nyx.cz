@@ -44,9 +44,6 @@
         _nyxTexts = [[NSMutableArray alloc] init];
         
         self.table = [[ContentTableWithPeople alloc] initWithRowHeight:70];
-        self.table.allowsSelection = YES;
-        self.table.canEditFirstRow = NO;
-        self.table.nController = self.nController;
     }
     return self;
 }
@@ -66,6 +63,10 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    self.table.allowsSelection = YES;
+    self.table.canEditFirstRow = NO;
+    self.table.nController = self.nController;
     
     // Set content to "DETAIL" - ignore cell tap in nested table (otherwise it would be infinite loop)
     if ([self.peopleRespondMode isEqualToString:kPeopleTableModeFeed]) {

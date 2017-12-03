@@ -499,22 +499,22 @@
           previousReactionPosts:(NSArray *)previousReactionPostIds
                    discussionId:(NSString *)dId
 {
-    PeopleRespondVC *response = [[PeopleRespondVC alloc] init];
-    response.nick = nick;
-    response.bodyText = bodyText;
-    response.bodyHeight = f;
-    response.postId = postId;
+    PeopleRespondVC *respondVC = [[PeopleRespondVC alloc] init];
+    respondVC.nick = nick;
+    respondVC.bodyText = bodyText;
+    respondVC.bodyHeight = f;
+    respondVC.postId = postId;
     // --- Needed for discussion club or notices table mode -------
-    response.discussionId = dId;
-    response.firstDiscussionPostId = firstPostId;
-    response.previousReactions = previousReactionPostIds;
+    respondVC.discussionId = dId;
+    respondVC.firstDiscussionPostId = firstPostId;
+    respondVC.previousReactions = previousReactionPostIds;
     if (self.noticesLastVisitTimestamp && [self.noticesLastVisitTimestamp length] > 0)
-        response.table.noticesLastVisitTimestamp = self.noticesLastVisitTimestamp;
+        respondVC.table.noticesLastVisitTimestamp = self.noticesLastVisitTimestamp;
     // -------------------------------------------
-    response.postData = userPostData;
-    response.nController = self.nController;
-    response.peopleRespondMode = self.peopleTableMode;
-    [self.nController pushViewController:response animated:YES];
+    respondVC.postData = userPostData;
+    respondVC.nController = self.nController;
+    respondVC.peopleRespondMode = self.peopleTableMode;
+    [self.nController pushViewController:respondVC animated:YES];
 }
 
 #pragma mark - TABLE ACTIONS when SCROLL REACH END (mailbox, discussion) - LOAD MORE

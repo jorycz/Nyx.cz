@@ -312,15 +312,18 @@
     NSInteger mail = 0;
     NSInteger notification = 0;
     
-    NSString *mailData = [[[data objectForKey:@"data"] objectForKey:@"system"] objectForKey:@"unread_post"];
+    NSString *mailData = [[data objectForKey:@"system"] objectForKey:@"unread_post"];
     if (mailData && [mailData length] > 0) {
         mail = [mailData integerValue];
     }
     
     NSString *lastVisit = [[data objectForKey:@"data"] objectForKey:@"notice_last_visit"];
     NSInteger last = [lastVisit integerValue];
+    
     NSArray *notices = [[data objectForKey:@"data"] objectForKey:@"items"];
-    for (NSDictionary *n in notices) {
+    
+    for (NSDictionary *n in notices)
+    {
         NSInteger nTime = [[n objectForKey:@"time"] integerValue];
         if (nTime > last) {
             notification++;
