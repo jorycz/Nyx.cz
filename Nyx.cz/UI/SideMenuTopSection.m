@@ -8,6 +8,7 @@
 
 #import "SideMenuTopSection.h"
 #import "Preferences.h"
+#import <QuartzCore/QuartzCore.h>
 
 
 @implementation SideMenuTopSection
@@ -20,8 +21,10 @@
         
         _userAvatarView = [[UIImageView alloc] init];
         _userAvatarView.contentMode = UIViewContentModeCenter;
-        _userAvatarView.backgroundColor = [UIColor clearColor];
+        _userAvatarView.backgroundColor = [UIColor greenColor];
         _userAvatarView.userInteractionEnabled = YES;
+        _userAvatarView.layer.cornerRadius = 5;
+        _userAvatarView.layer.masksToBounds = YES;
         [self addSubview:_userAvatarView];
         
         _userName = [[UITextField alloc] init];
@@ -47,10 +50,14 @@
 {
     [super layoutSubviews];
     CGRect f = self.frame;
-    CGFloat avatarWidth = (f.size.width / 3.5) - 5;
-    CGFloat avatarHeight = f.size.height - 10;
-    _userAvatarView.frame = CGRectMake(5, 5, avatarWidth, avatarHeight);
-    _userName.frame = CGRectMake(avatarWidth + 10, f.size.height / 4, f.size.width - avatarWidth - 30, f.size.height / 2);
+    
+    CGFloat avatarWidth = 40;
+    CGFloat avatarHeight = 50;
+    NSInteger y = (f.size.height / 2) - (avatarHeight / 2);
+    
+    _userAvatarView.frame = CGRectMake(y, y, 40, 50);
+    
+    _userName.frame = CGRectMake(y + avatarWidth + y, f.size.height / 4, f.size.width - avatarWidth - 30, f.size.height / 2);
 }
 
 - (void)didMoveToWindow
