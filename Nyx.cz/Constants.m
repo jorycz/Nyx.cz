@@ -40,6 +40,7 @@ NSString* const kPeopleTableModeDiscussion = @"kPeopleTableModeDiscussion";
 NSString* const kPeopleTableModeDiscussionDetail = @"kPeopleTableModeDiscussionDetail";
 NSString* const kPeopleTableModeNotices = @"kPeopleTableModeNotices";
 NSString* const kPeopleTableModeNoticesDetail = @"kPeopleTableModeNoticesDetail";
+NSString* const kPeopleTableModeSearch = @"kPeopleTableModeSearch";
 
 CGFloat const kLongPressMinimumDuration = 0.4f;
 
@@ -82,6 +83,9 @@ NSString* const kApiPeople = @"people";
 NSString* const kApiPeopleStatus = @"status";
 NSString* const kApiPeopleAutocomplete = @"autocomplete";
 NSString* const kApiPeopleFriends = @"friends";
+
+NSString* const kApiSearch = @"search";
+NSString* const kApiSearchWriteups = @"writeups";
 
 
 // Menu constants

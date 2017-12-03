@@ -25,7 +25,6 @@
     self = [super init];
     if (self)
     {
-        self.title = @"Detail";
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
         _firstInit = YES;
@@ -77,7 +76,6 @@
     }
     if ([self.peopleRespondMode isEqualToString:kPeopleTableModeFriends]) {
         self.table.peopleTableMode = kPeopleTableModeFriendsDetail;
-        self.title = @"Napsat zprávu";
     }
     if ([self.peopleRespondMode isEqualToString:kPeopleTableModeDiscussion]) {
         self.table.peopleTableMode = kPeopleTableModeDiscussionDetail;
@@ -233,6 +231,11 @@
 {
     [super viewWillDisappear:animated];
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
 }
 
 #pragma mark - DATA

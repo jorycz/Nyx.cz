@@ -232,13 +232,19 @@
     NewNoticesForPost *np = [[NewNoticesForPost alloc] initWithPost:post forLastVisit:self.noticesLastVisit];
     if (np.nPosts && [np.nPosts count] > 0) {
         self.backgroundColor = COLOR_SYSTEM_TURQUOISE_LIGHT;
-        _disclosure.alpha = 1;
+        if ([self.peopleCellMode isEqualToString:kPeopleTableModeNotices])
+            _disclosure.alpha = 1;
     }
     if (np.nThumbup && [np.nThumbup count] > 0) {
         self.backgroundColor = COLOR_SYSTEM_TURQUOISE_LIGHT;
     }
     if (np.nThumbsdown && [np.nThumbsdown count] > 0) {
         self.backgroundColor = COLOR_SYSTEM_TURQUOISE_LIGHT;
+    }
+    // Show disclosure indicator even for old posts.
+    if (np.oPosts && [np.oPosts count] > 0) {
+        if ([self.peopleCellMode isEqualToString:kPeopleTableModeNotices])
+            _disclosure.alpha = 1;
     }
     
     // IF content of POST itself in NOTICES TABLE DETAIL is REPLY, there shoud be time tag on first level.

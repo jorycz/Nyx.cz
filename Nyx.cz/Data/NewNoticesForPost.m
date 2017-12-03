@@ -17,6 +17,7 @@
     {
         if (d && [[d allKeys] count] > 0)
         {
+            _oldPosts = [[NSMutableArray alloc] init];
             _newPosts = [[NSMutableArray alloc] init];
             _newThumbup = [[NSMutableArray alloc] init];
             _newThumbsdown = [[NSMutableArray alloc] init];
@@ -47,12 +48,21 @@
                                     [_newThumbsdown addObject:[a objectAtIndex:index]];
                                 }
                             }
+                            else
+                            {
+                                // Check for any OLD replies.
+                                NSString *key = [[d allKeysForObject:a] firstObject];
+                                if ([key isEqualToString:@"replies"] && [[d objectForKey:@"replies"] count] > 0) {
+                                    [_oldPosts addObject:[a objectAtIndex:index]];
+                                }
+                            }
                         }
                     }
                 }
             }
         }
         
+        self.oPosts = (NSArray *)_oldPosts;
         self.nPosts = (NSArray *)_newPosts;
         self.nThumbup = (NSArray *)_newThumbup;
         self.nThumbsdown = (NSArray *)_newThumbsdown;

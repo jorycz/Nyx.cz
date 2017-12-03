@@ -7,11 +7,21 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ContentTableWithPeople.h"
+#import "ServerConnector.h"
 
-@interface ContentSearch : UIView
+
+@interface ContentSearch : UIView <ServerConnectorDelegate>
+{
+    CGFloat _widthForTableCellBodyTextView;
+    BOOL _firstInit;
+    
+    NSMutableString *_nickToSearch, *_textToSearch;
+}
 
 
 @property (nonatomic , strong) UINavigationController *nController;
+@property (nonatomic, strong) ContentTableWithPeople *table;
 
 
 @end

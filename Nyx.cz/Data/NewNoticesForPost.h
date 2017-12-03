@@ -10,12 +10,14 @@
 
 @interface NewNoticesForPost : NSObject
 {
+    NSMutableArray *_oldPosts;
     NSMutableArray *_newPosts;
     NSMutableArray *_newThumbup;
     NSMutableArray *_newThumbsdown;
 }
 
 
+@property (nonatomic, strong) NSArray *oPosts;
 @property (nonatomic, strong) NSArray *nPosts;
 @property (nonatomic, strong) NSArray *nThumbup;
 @property (nonatomic, strong) NSArray *nThumbsdown;

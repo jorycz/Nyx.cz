@@ -100,7 +100,7 @@
 
 - (void)getFreshData
 {
-    NSString *apiRequest = [ApiBuilder apiFeedNoticesAndKeepNew:YES];
+    NSString *apiRequest = [ApiBuilder apiFeedNoticesAndKeepNew:NO];
     ServerConnector *sc = [[ServerConnector alloc] init];
     sc.delegate = self;
     [sc downloadDataForApiRequest:apiRequest];

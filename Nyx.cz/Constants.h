@@ -69,6 +69,7 @@ extern NSString* const kPeopleTableModeDiscussion;
 extern NSString* const kPeopleTableModeDiscussionDetail;
 extern NSString* const kPeopleTableModeNotices;
 extern NSString* const kPeopleTableModeNoticesDetail;
+extern NSString* const kPeopleTableModeSearch;
 
 
 extern CGFloat const kLongPressMinimumDuration;
@@ -112,6 +113,9 @@ extern NSString* const kApiPeople;
 extern NSString* const kApiPeopleStatus;
 extern NSString* const kApiPeopleAutocomplete;
 extern NSString* const kApiPeopleFriends;
+
+extern NSString* const kApiSearch;
+extern NSString* const kApiSearchWriteups;
 
 
 // Menu constants

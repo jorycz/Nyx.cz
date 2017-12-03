@@ -215,6 +215,14 @@
     return [NSString stringWithFormat:@"%@&id=%@&filter_user=%@&filter_text=%@", [self defaultApiRequestWithL:kApiDiscussion andL2:kApiDiscussionMessages], discussionId, nickId, text];
 }
 
+#pragma mark - GLOBAL SEARCH
+
++ (NSString *)apiSearchFor:(NSString *)nick andText:(NSString *)text forPosition:(NSString *)position
+{
+    return [NSString stringWithFormat:@"%@&filter_user=%@&filter_text=%@&position=%@", [self defaultApiRequestWithL:kApiSearch andL2:kApiSearchWriteups], nick, text, position];
+}
+
+
 
 
 @end

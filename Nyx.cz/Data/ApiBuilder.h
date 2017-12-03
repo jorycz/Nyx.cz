@@ -48,5 +48,7 @@
 + (NSString *)apiDiscussionGetRatingInDiscussion:(NSString *)discussionId forPost:(NSString *)postId;
 + (NSString *)apiDiscussionSearchInDiscussion:(NSString *)discussionId forNick:(NSString *)nickId withText:(NSString *)text;
 
++ (NSString *)apiSearchFor:(NSString *)nick andText:(NSString *)text forPosition:(NSString *)position;
+
 
 @end

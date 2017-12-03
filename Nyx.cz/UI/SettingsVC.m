@@ -163,7 +163,12 @@
             break;
         case 5:
         {
-            NSString *lastBackgroundRefresh = [Preferences actualDateOfBackgroundRefresh:nil];
+            NSString *lastBackgroundRefresh;
+            if ([[Preferences actualDateOfBackgroundRefresh:nil] length] > 0) {
+                lastBackgroundRefresh = [Preferences actualDateOfBackgroundRefresh:nil];
+            } else {
+                lastBackgroundRefresh = @"Zatím neproběhla žádná aktualizace dat na pozadí.";
+            }
             UIAlertController *a = [UIAlertController alertControllerWithTitle:@"Poslední obnova dat na pozadí"
                                                                        message:lastBackgroundRefresh
                                                                 preferredStyle:(UIAlertControllerStyleAlert)];

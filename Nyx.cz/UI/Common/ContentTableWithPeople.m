@@ -73,6 +73,8 @@
     [_table setRowHeight:_rh];
     _table.allowsSelection = self.allowsSelection;
     
+    self.nController.topViewController.navigationItem.rightBarButtonItem = nil;
+    
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion]) {
         self.nController.topViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
                                                                                                                              target:self
@@ -155,7 +157,7 @@
         {
             nick = [cellData objectForKey:@"nick"];
             cell.commentsCount = [cellData objectForKey:@"comments_count"];
-            cell.bodyTextSource = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"text"];
+            cell.bodyTextSource = [cellData objectForKey:@"text"];
         }
         if ([self.peopleTableMode isEqualToString:kPeopleTableModeMailbox] || [self.peopleTableMode isEqualToString:kPeopleTableModeMailboxDetail])
         {
@@ -163,26 +165,33 @@
             cell.mailboxDirection = [cellData objectForKey:@"direction"];
             cell.mailboxMailStatus = [cellData objectForKey:@"message_status"];
             cell.discussionNewPost = [cellData objectForKey:@"new"];
-            cell.bodyTextSource = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"content"];
+            cell.bodyTextSource = [cellData objectForKey:@"content"];
         }
         if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion] || [self.peopleTableMode isEqualToString:kPeopleTableModeDiscussionDetail])
         {
             nick = [cellData objectForKey:@"nick"];
             cell.discussionNewPost = [cellData objectForKey:@"new"];
             cell.rating = [cellData objectForKey:@"wu_rating"];
-            cell.bodyTextSource = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"content"];
+            cell.bodyTextSource = [cellData objectForKey:@"content"];
         }
         if ([self.peopleTableMode isEqualToString:kPeopleTableModeNotices] || [self.peopleTableMode isEqualToString:kPeopleTableModeNoticesDetail])
         {
             nick = [cellData objectForKey:@"nick"];
             cell.rating = [cellData objectForKey:@"wu_rating"];
-            cell.bodyTextSource = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"content"];
+            cell.bodyTextSource = [cellData objectForKey:@"content"];
             cell.noticesLastVisit = self.noticesLastVisitTimestamp;
             cell.notice = cellData;
+        }
+        if ([self.peopleTableMode isEqualToString:kPeopleTableModeSearch])
+        {
+            nick = [cellData objectForKey:@"nick"];
+            cell.rating = [cellData objectForKey:@"wu_rating"];
+            cell.bodyTextSource = [cellData objectForKey:@"content"];
         }
         cell.nick = nick;
         Timestamp *ts = [[Timestamp alloc] initWithTimestamp:[cellData objectForKey:@"time"]];
         cell.time = [ts getTimeWithDate];
+        cell.peopleCellMode = self.peopleTableMode;
         
         // Must be always set!
         cell.bodyText = [[self.nyxPostsRowBodyTexts objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
@@ -246,6 +255,14 @@
         nick = [userPostData objectForKey:@"nick"];
         postId = [userPostData objectForKey:@"id_wu"];
         f = [[[self.nyxPostsRowHeights objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] floatValue];
+    }
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeSearch]) {
+        UIAlertController *a = [UIAlertController alertControllerWithTitle:@"Klub"
+                                                                   message:[userPostData objectForKey:@"klub_jmeno"]
+                                                            preferredStyle:(UIAlertControllerStyleAlert)];
+        UIAlertAction *ok = [UIAlertAction actionWithTitle:@"OK" style:(UIAlertActionStyleCancel) handler:^(UIAlertAction * _Nonnull action) {}];
+        [a addAction:ok];
+        [self presentViewController:a animated:YES completion:^{}];
     }
     
     NSString *firstPostId = [[[self.nyxRowsForSections objectAtIndex:0] objectAtIndex:0] objectForKey:@"id_wu"];
