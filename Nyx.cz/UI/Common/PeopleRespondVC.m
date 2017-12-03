@@ -380,22 +380,13 @@
                 }
                 if ([identification isEqualToString:_postIdentificationPostReaction]) {
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        NSArray *reactionsForUser = [jp.jsonDictionary objectForKey:@"data"];
-                        for (NSDictionary *post in reactionsForUser)
-                        {
-                            NSString *id_wu = [post objectForKey:@"id_wu"];
-                            NSString *reaction_id_wu = [[_reactionsToDownload firstObject] objectForKey:@"reactionId"];
-                            if ([id_wu isEqualToString:reaction_id_wu])
-                            {
-                                [_nyxRowsForSection addObject:post];
-                                ComputeRowHeight *rowHeight = [[ComputeRowHeight alloc] initWithText:[post objectForKey:@"content"] forWidth:_widthForTableCellBodyTextView minHeight:40 inlineImages:nil];
-                                [_nyxRowHeights addObject:[NSNumber numberWithFloat:rowHeight.heightForRow]];
-                                [_nyxTexts addObject:rowHeight.attributedText];
-                                
-                                [_reactionsToDownload removeObjectAtIndex:0];
-                                [self configureTableWithJson:nil];
-                            }
-                        }
+                        NSDictionary *post = [[jp.jsonDictionary objectForKey:@"data"] firstObject];
+                        [_nyxRowsForSection addObject:post];
+                        ComputeRowHeight *rowHeight = [[ComputeRowHeight alloc] initWithText:[post objectForKey:@"content"] forWidth:_widthForTableCellBodyTextView minHeight:40 inlineImages:nil];
+                        [_nyxRowHeights addObject:[NSNumber numberWithFloat:rowHeight.heightForRow]];
+                        [_nyxTexts addObject:rowHeight.attributedText];
+                        [_reactionsToDownload removeObjectAtIndex:0];
+                        [self configureTableWithJson:nil];
                     });
                 }
             }
@@ -690,10 +681,11 @@
 {
     if (_reactionsToDownload && [_reactionsToDownload count] > 0)
     {
-        NSString *nickname = [[_reactionsToDownload firstObject] objectForKey:@"name"];
+        // Loading post from ID doesn't download post ID itself.
+        NSInteger postIdPlusJedna = [[[_reactionsToDownload firstObject] objectForKey:@"reactionId"] integerValue] + 1;
         
         [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-        NSString *apiRequest = [ApiBuilder apiDiscussionSearchInDiscussion:self.discussionId forNick:nickname withText:@""];
+        NSString *apiRequest = [ApiBuilder apiMessagesForDiscussion:self.discussionId loadMoreFromId:[@(postIdPlusJedna) stringValue]];
         ServerConnector *sc = [[ServerConnector alloc] init];
         sc.delegate = self;
         sc.identifitaion = _postIdentificationPostReaction;

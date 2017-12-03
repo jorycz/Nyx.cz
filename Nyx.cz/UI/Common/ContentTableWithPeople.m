@@ -782,12 +782,15 @@
             NSTextAttachment *attachment = (NSTextAttachment *)value;
             UIImage *image = nil;
             if ([attachment image])
+            {
                 image = [attachment image];
+            }
             else
+            {
                 image = [attachment imageForBounds:[attachment bounds]
                                      textContainer:nil
                                     characterIndex:range.location];
-            
+            }
             if (image)
                 [imagesArray addObject:image];
         }
