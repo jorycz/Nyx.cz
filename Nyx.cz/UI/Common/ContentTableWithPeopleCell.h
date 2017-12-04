@@ -16,8 +16,6 @@
     UILabel *_nickLabel, *_timeLabel, *_ratingLabel;
     UITextView *_bodyView;
     UIView *_separator;
-    
-    CGFloat _ratingWidth;
 }
 
 

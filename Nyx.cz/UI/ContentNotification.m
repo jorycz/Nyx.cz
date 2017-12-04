@@ -169,7 +169,7 @@
             // 60 is minimum height - table ROW height is initialized to 70 below ( 70 - nick name )
             ComputeRowHeight *rowHeight = [[ComputeRowHeight alloc] initWithText:[d objectForKey:@"content"]
                                                                         forWidth:_widthForTableCellBodyTextView
-                                                                       minHeight:40
+                                                                       minHeight:kMinimumPeopleTableCellHeight
                                                                     inlineImages:[Preferences showImagesInlineInPost:nil]];
             [tempArrayForRowHeights addObject:[NSNumber numberWithFloat:rowHeight.heightForRow]];
             [tempArrayForRowBodyText addObject:rowHeight.attributedText];
@@ -187,7 +187,7 @@
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.nController.topViewController.navigationItem.rightBarButtonItem setEnabled:YES];
-            [self.table reloadTableData];
+            [self.table reloadTableDataWithScrollToTop:YES];
         });
     } else {
         PRESENT_ERROR(@"Error", @"No data from server.")

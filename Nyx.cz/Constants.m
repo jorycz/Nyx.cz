@@ -18,6 +18,7 @@ NSInteger const kCacheMaxDays = 31;
 NSInteger const kLoadingCoverViewTag = 666;
 NSString* const kDisableTableSections = @"kDisableTableSections";
 NSInteger const kWidthForTableCellBodyTextViewSubstract = 60;
+NSInteger const kMinimumPeopleTableCellHeight = 45;
 NSInteger const kNavigationBarHeight = 44;
 NSInteger const kStatusBarStandardHeight = 20;
 

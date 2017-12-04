@@ -8,6 +8,7 @@
 
 #import "PostImagesPreview.h"
 #import "Preferences.h"
+#import "Constants.h"
 
 
 @interface PostImagesPreview ()
@@ -20,6 +21,8 @@
 {
     self = [super init];
     if (self) {
+        _toDownload = [[NSMutableArray alloc] init];
+        _downloadTag = 0;
     }
     return self;
 }
@@ -53,66 +56,51 @@
     CGFloat viewWidth = self.view.frame.size.width;
     CGFloat viewHeight = self.view.frame.size.height;
     
-    UIScrollView *pageScrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
-    pageScrollView.opaque = NO;
-    pageScrollView.clipsToBounds = NO;
-    pageScrollView.pagingEnabled = YES;
-    pageScrollView.frame = CGRectMake(0, 75, viewWidth, viewHeight - 80);
-    pageScrollView.showsHorizontalScrollIndicator = NO;
-    pageScrollView.showsVerticalScrollIndicator = NO;
-    [self.view addSubview:pageScrollView];
+    _pageScrollView = [[UIScrollView alloc] init];
+    _pageScrollView.opaque = NO;
+    _pageScrollView.pagingEnabled = YES;
+    _pageScrollView.frame = CGRectMake(0, kNavigationBarHeight + kStatusBarStandardHeight, viewWidth, viewHeight - (kNavigationBarHeight + kStatusBarStandardHeight));
+    _pageScrollView.showsHorizontalScrollIndicator = NO;
+    _pageScrollView.showsVerticalScrollIndicator = NO;
+    _pageScrollView.delegate = self;
+    [self.view addSubview:_pageScrollView];
     
-    if ([Preferences showImagesInlineInPost:nil] && [[Preferences showImagesInlineInPost:nil] length] > 0)
+    // CREATE VIEWS WITH TAG + 1 !!! (to avoid 0)
+    NSInteger countOfViews = MAX([self.images count], [self.imageUrls count]);
+    
+    for (NSInteger index = 0; index < (countOfViews + 1); index++)
     {
-        // If SHOW IMAGES INLINE in the HTML is ENABLED, no images download is needed and URLs array is empty.
-        // No http can be found inside HTML body, because all images are downloaded as NSTextAttachments in ComputeRowHeight class.
-        for(NSInteger i = 0; i < [self.images count]; i++)
-        {
-            UIImageView *view = [self imgvWithTag:i];
-            view.frame = CGRectMake(0 + (i * viewWidth), 0, pageScrollView.frame.size.width, pageScrollView.frame.size.height);
-            if (self.images && [self.images count] > 0)
-                view.image = [self.images objectAtIndex:i];
-            [pageScrollView addSubview:view];
-            pageScrollView.contentSize = CGSizeMake(self.view.frame.size.width * [self.images count], pageScrollView.frame.size.height);
-        }
-        pageScrollView.contentSize = CGSizeMake(self.view.frame.size.width * [self.images count], pageScrollView.frame.size.height);
+        UIImageView *view = [self imgvWithTag:index + 1];
+        view.frame = CGRectMake(0 + (index * viewWidth), 0, _pageScrollView.frame.size.width, _pageScrollView.frame.size.height);
+        [_pageScrollView addSubview:view];
     }
-    else
+    _pageScrollView.contentSize = CGSizeMake(self.view.frame.size.width * countOfViews, _pageScrollView.frame.size.height);
+    
+//    _pageScrollView.minimumZoomScale = 1.0;
+//    _pageScrollView.maximumZoomScale = 1.4;
+    
+    // Place images if there are some in post body.
+    if (self.images)
     {
-        // If no INLINE IMAGES selected in settings - download images from URLs.
-        // There could be small images as previews in HTML post still.
-        for(NSInteger i = 0; i < [self.imageUrls count]; i++)
+        for (NSInteger i = 0; i < [self.images count]; i++)
         {
-            self.title = [NSString stringWithFormat:@"%@ - Nahrávám ...", self.title];
-            UIImageView *view = [self imgvWithTag:i];
-            view.frame = CGRectMake(0 + (i * viewWidth), 0, pageScrollView.frame.size.width, pageScrollView.frame.size.height);
-            
-            // There COULD be some small preview - set it now.
-            if (self.images && [self.images count] > i)
-                view.image = [self.images objectAtIndex:i];
-            
-            [pageScrollView addSubview:view];
-            pageScrollView.contentSize = CGSizeMake(self.view.frame.size.width * [self.imageUrls count], pageScrollView.frame.size.height);
-            
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                NSURL *u = [self.imageUrls objectAtIndex:i];
-                if (u && [[u absoluteString] length] > 0)
-                {
-                    NSData *d = [NSData dataWithContentsOfURL:u];
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        if (d && [d length] > 0)
-                        {
-                            view.image = [[UIImage alloc] initWithData:d];
-                            self.title = @"Obrázky";
-                        } else {
-                            NSLog(@"%@ - %@ : ERROR [%@]", self, NSStringFromSelector(_cmd), @"Malformed data. Can't create UIImage from that data.");
-                        }
-                    });
-                } else {
-                    NSLog(@"%@ - %@ : ERROR [%@]", self, NSStringFromSelector(_cmd), @"Malformed URL.");
-                }
-            });
+            if (self.images && [self.images count] > 0)
+            {
+                UIImageView *imgv = (UIImageView *)[_pageScrollView viewWithTag:i+1];
+                if ([self.images count] > i)
+                    imgv.image = [self.images objectAtIndex:i];
+            }
         }
+    }
+    
+    _actualViewTag = 1;
+    
+    // If there are only previews in post body, download full version if urls exists.
+    if (self.imageUrls)
+    {
+        self.title = [NSString stringWithFormat:@"%@ - Nahrávám ...", self.title];
+        [_toDownload addObjectsFromArray:self.imageUrls];
+        [self downloadImages];
     }
 }
 
@@ -135,5 +123,64 @@
     [self dismissViewControllerAnimated:YES completion:^{}];
 }
 
+#pragma mark - CACHE
+
+- (void)downloadImages
+{
+    _downloadTag += 1;
+    NSURL *u;
+    [self.imageUrls count] > (_downloadTag - 1) ? (u = [_toDownload firstObject]) : (u = nil) ;
+    if (u && [[u absoluteString] length] > 0)
+    {
+//        NSLog(@"%@ - %@ : Downloading from URL [%@]", self, NSStringFromSelector(_cmd), [u absoluteString]);
+//        NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), _toDownload);
+        self.cm = [[CacheManager alloc] init];
+        self.cm.delegate = self;
+        self.cm.cacheTag = _downloadTag;
+        [self.cm getImageFromUrl:u];
+    } else {
+        // Nothing to download.
+        self.title = @"Obrázky";
+    }
+}
+
+- (void)cacheComplete:(CacheManager *)cache
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+//        NSLog(@"%@ - %@ : ------ [%li]", self, NSStringFromSelector(_cmd), (long)cache.cacheTag);
+        NSData *d = cache.cacheData;
+        if (d && [d length] > 0)
+        {
+            UIImageView *imgv = (UIImageView *)[_pageScrollView viewWithTag:cache.cacheTag];
+            imgv.image = [[UIImage alloc] initWithData:d];
+//            NSLog(@"%@ - %@ : ========== [%@]", self, NSStringFromSelector(_cmd), imgv);
+        }
+        [_toDownload removeObjectAtIndex:0];
+        [self downloadImages];
+    });
+}
+
+//#pragma mark - ZOOM
+//
+//- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView
+//{
+//    return [_pageScrollView viewWithTag:_actualViewTag];
+//}
+//
+//- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+//{
+//    for (UIView *v in _pageScrollView.subviews) {
+//        if ([v isKindOfClass:[UIImageView class]]) {
+//            _actualViewTag = v.tag;
+//        }
+//    }
+//}
+//
+//- (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(CGFloat)scale
+//{
+//    [scrollView setZoomScale:1.0 animated:YES];
+//}
 
 @end
+
+

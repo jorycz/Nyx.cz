@@ -184,12 +184,18 @@
 
 #pragma mark - MEMORY CACHE
 
-- (MemCache *)getMemCache
+- (MemCache *)memCache
 {
     if (!self.memoryCache) {
         self.memoryCache = [[MemCache alloc] init];
     }
     return self.memoryCache;
+}
+
+- (void)applicationDidReceiveMemoryWarning:(UIApplication *)application
+{
+    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"Clearing memory cache.");
+    self.memoryCache = nil;
 }
 
 #pragma mark - BACKGROUND REFRESH NOTIFICATION DATA

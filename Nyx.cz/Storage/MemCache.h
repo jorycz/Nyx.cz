@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface MemCache : NSMutableDictionary
+@interface MemCache : NSObject
 {
     NSMutableDictionary *_storage;
 }

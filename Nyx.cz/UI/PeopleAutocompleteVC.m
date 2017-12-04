@@ -227,10 +227,10 @@
 
 #pragma mark - CACHE
 
-- (void)cacheComplete:(NSData *)cache
+- (void)cacheComplete:(CacheManager *)cache
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.avatarImagesByNick setObject:[UIImage imageWithData:cache] forKey:[self.nickAvatarsToDownload objectAtIndex:0]];
+        [self.avatarImagesByNick setObject:[UIImage imageWithData:cache.cacheData] forKey:[self.nickAvatarsToDownload objectAtIndex:0]];
         [self.nickAvatarsToDownload removeObjectAtIndex:0];
     });
     [self downloadAvatar];

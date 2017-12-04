@@ -47,7 +47,7 @@
         _ratingLabel.backgroundColor = [UIColor clearColor];
         _ratingLabel.userInteractionEnabled = NO;
         _ratingLabel.textAlignment = NSTextAlignmentCenter;
-        _ratingLabel.font = [UIFont systemFontOfSize:12];
+        _ratingLabel.font = [UIFont boldSystemFontOfSize:12];
         [self addSubview:_ratingLabel];
         
         _bodyView = [[UITextView alloc] init];
@@ -106,10 +106,10 @@
     CGFloat timeWidth = 115;
     
     _avatarView.frame = CGRectMake(insect, insect, avatarWidth, avatarHeight);
+    _ratingLabel.frame = CGRectMake(insect, _avatarView.frame.origin.y + avatarHeight + 3, avatarWidth, 14);
     
-    _nickLabel.frame = CGRectMake(avatarWidth + 2 * insect, insect, f.size.width - (avatarWidth + 3 * insect) - timeWidth - _ratingWidth - (3 * insect), 15);
+    _nickLabel.frame = CGRectMake(avatarWidth + 2 * insect, insect, f.size.width - (avatarWidth + 3 * insect) - timeWidth - (3 * insect), 15);
     _timeLabel.frame = CGRectMake(_nickLabel.frame.origin.x + _nickLabel.frame.size.width + insect, insect, timeWidth, 13);
-    _ratingLabel.frame = CGRectMake(_timeLabel.frame.origin.x + _timeLabel.frame.size.width + insect, insect, _ratingWidth, 13);
     
     _bodyView.frame = CGRectMake(avatarWidth + 2 * insect, 20, f.size.width - kWidthForTableCellBodyTextViewSubstract, f.size.height - 25);
     
@@ -156,13 +156,12 @@
     if (self.time && [self.time length] > 0) {
         _timeLabel.text = self.time;
     }
-    
+    // RATING
     if (self.ratingGiven && [self.ratingGiven length] > 0) {
         self.rating = (NSString *)self.ratingGiven;
     }
     if (self.rating && [self.rating length] > 0 && ![self.rating isEqualToString:@"0"])
     {
-        _ratingWidth = 25;
         NSInteger r = [self.rating integerValue];
         if (r < 0) {
             _ratingLabel.textColor = [UIColor redColor];
@@ -174,15 +173,14 @@
                 _bodyView.alpha = .3;
             }
         } else {
-            _ratingLabel.textColor = [UIColor greenColor];
+            _ratingLabel.textColor = COLOR_RATING_POSITIVE;
             _ratingLabel.text = [NSString stringWithFormat:@"+%@", self.rating];
         }
     } else {
-        _ratingWidth = 0;
-        [self setNeedsLayout];
-        [self setNeedsDisplay];
+        _ratingLabel.text = @"";
     }
     
+    // NOTICES
     _disclosure.alpha = 0;
     if (self.noticesLastVisit && [self.noticesLastVisit length] > 0) {
         [self checkNewsForPost:self.notice];
@@ -209,10 +207,10 @@
 
 #pragma mark - DELEGATE
 
-- (void)cacheComplete:(NSData *)cache
+- (void)cacheComplete:(CacheManager *)cache
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        _avatarView.image = [UIImage imageWithData:cache];
+        _avatarView.image = [UIImage imageWithData:cache.cacheData];
         self.cache.delegate = nil;
         self.cache = nil;
     });

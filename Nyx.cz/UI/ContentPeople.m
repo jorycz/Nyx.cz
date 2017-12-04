@@ -185,7 +185,7 @@
         [self.table.nyxPostsRowBodyTexts addObjectsFromArray:@[tempArrayForRowBodyText]];
 
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.table reloadTableData];
+            [self.table reloadTableDataWithScrollToTop:YES];
         });
     }
     [self removeLoadingView];

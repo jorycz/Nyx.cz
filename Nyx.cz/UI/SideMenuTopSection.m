@@ -75,10 +75,10 @@
     [self.cache getAvatarForNick:avName];
 }
 
-- (void)cacheComplete:(NSData *)cache
+- (void)cacheComplete:(CacheManager *)cache
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        UIImage *a = [UIImage imageWithData:cache];
+        UIImage *a = [UIImage imageWithData:cache.cacheData];
         _userAvatarView.image = a;
         self.cache.delegate = nil;
         self.cache = nil;

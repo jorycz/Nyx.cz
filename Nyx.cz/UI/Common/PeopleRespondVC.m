@@ -396,7 +396,10 @@
                     dispatch_async(dispatch_get_main_queue(), ^{
                         NSDictionary *post = [[jp.jsonDictionary objectForKey:@"data"] firstObject];
                         [_nyxRowsForSection addObject:post];
-                        ComputeRowHeight *rowHeight = [[ComputeRowHeight alloc] initWithText:[post objectForKey:@"content"] forWidth:_widthForTableCellBodyTextView minHeight:40 inlineImages:nil];
+                        ComputeRowHeight *rowHeight = [[ComputeRowHeight alloc] initWithText:[post objectForKey:@"content"]
+                                                                                    forWidth:_widthForTableCellBodyTextView
+                                                                                   minHeight:kMinimumPeopleTableCellHeight
+                                                                                inlineImages:nil];
                         [_nyxRowHeights addObject:[NSNumber numberWithFloat:rowHeight.heightForRow]];
                         [_nyxTexts addObject:rowHeight.attributedText];
                         [_reactionsToDownload removeObjectAtIndex:0];
@@ -441,7 +444,10 @@
             {
                 // Calculate heights and create array with same structure just only for row height.
                 // 60 is minimum height - table ROW height is initialized to 70 below ( 70 - nick name )
-                ComputeRowHeight *rowHeight = [[ComputeRowHeight alloc] initWithText:[d objectForKey:@"text"] forWidth:_widthForTableCellBodyTextView minHeight:40 inlineImages:nil];
+                ComputeRowHeight *rowHeight = [[ComputeRowHeight alloc] initWithText:[d objectForKey:@"text"]
+                                                                            forWidth:_widthForTableCellBodyTextView
+                                                                           minHeight:kMinimumPeopleTableCellHeight
+                                                                        inlineImages:nil];
                 [tempArrayForRowHeights addObject:[NSNumber numberWithFloat:rowHeight.heightForRow]];
                 [tempArrayForRowBodyText addObject:rowHeight.attributedText];
             }
@@ -473,7 +479,7 @@
     if (!self.table.view.window) {
         [self.view addSubview:self.table.view];
     } else {
-        [self.table reloadTableData];
+        [self.table reloadTableDataWithScrollToTop:YES];
     }
     if (!self.bottomView.window) {
         [self.view addSubview:self.bottomView];

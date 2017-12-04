@@ -13,6 +13,8 @@
 #import "ContactVC.h"
 #import "NewNoticesForPost.h"
 
+#import <UserNotifications/UserNotifications.h>
+
 
 @interface MainVC ()
 
@@ -298,6 +300,7 @@
             }
         }
     }
+    _gettingNewNotifications = NO;
 }
 
 - (void)presentErrorWithTitle:(NSString *)title andMessage:(NSString *)message
@@ -357,19 +360,47 @@
         {
             if (mail || notification)
             {
-                [[UIApplication sharedApplication] setApplicationIconBadgeNumber:1];
+                [self notifyUserWithData:data withMails:mail andNotifications:notification];
             } else {
-                [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
+                [self badge:0];
             }
         }
             break;
         default:
             break;
     }
+}
+
+#pragma mark - BACKGROUND
+
+- (void)notifyUserWithData:(NSDictionary *)data withMails:(NSInteger)m andNotifications:(NSInteger)n
+{
+    [self badge:(m + n)];
+    NSString *body = [NSString stringWithFormat:@"Nové maily (%li) nebo upozornění (%li).", (long)m, (long)n];
     
-    _gettingNewNotifications = NO;
+    UNMutableNotificationContent *content = [UNMutableNotificationContent new];
+    content.title = @"Nyx.cz";
+    content.body = body;
+    content.sound = [UNNotificationSound defaultSound];
+    
+    NSString *identifier = @"UYLLocalNotification";
+    UNNotificationRequest *request = [UNNotificationRequest requestWithIdentifier:identifier
+                                                                          content:content trigger:nil];
+    
+    [[UNUserNotificationCenter currentNotificationCenter] addNotificationRequest:request withCompletionHandler:^(NSError * _Nullable error) {
+        if (error != nil) {
+            NSLog(@"Something went wrong: %@",error);
+        }
+    }];
+}
+
+- (void)badge:(NSInteger)b
+{
+    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:b];
 }
 
 
-
 @end
+
+
+

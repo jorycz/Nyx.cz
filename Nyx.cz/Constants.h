@@ -38,7 +38,9 @@
 
 
 #define COLOR_SYSTEM_TURQUOISE UIColorFromRGB(0x3fbeb8)
-#define COLOR_SYSTEM_TURQUOISE_LIGHT UIColorFromRGB(0xEBFFFE)
+#define COLOR_SYSTEM_TURQUOISE_LIGHT UIColorFromRGB(0xE8F0FF)
+
+#define COLOR_RATING_POSITIVE UIColorFromRGB(0x15D600)
 
 // CONSTANTS
 extern NSString* const kServerAPIURL;
@@ -46,6 +48,7 @@ extern NSInteger const kCacheMaxDays;
 extern NSInteger const kLoadingCoverViewTag;
 extern NSString* const kDisableTableSections;
 extern NSInteger const kWidthForTableCellBodyTextViewSubstract;
+extern NSInteger const kMinimumPeopleTableCellHeight;
 extern NSInteger const kNavigationBarHeight;
 extern NSInteger const kStatusBarStandardHeight;
 

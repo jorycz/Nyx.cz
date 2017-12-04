@@ -34,7 +34,6 @@
         self.nyxPostsRowHeights = [[NSMutableArray alloc] init];
         self.nyxPostsRowBodyTexts = [[NSMutableArray alloc] init];
         self.canEditFirstRow = YES;
-        _scrollToTopAfterDataReload = NO;
         _identificationDelete = @"rowDelete";
         _identificationThumbs = @"thumbs";
         _identificationThumbsAfterRatingGive = @"afterRatingRefresh";
@@ -100,16 +99,17 @@
 
 #pragma mark - Table view data source
 
-- (void)reloadTableData
+- (void)reloadTableDataWithScrollToTop:(BOOL)goToTop
 {
     [_table reloadData];
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion])
         [self removeLoadingView];
     // neposouvat kdyz scrollujeme dolu a nacitaji se dalsi posty !!!
-    if (!_scrollToTopAfterDataReload) {
-        _scrollToTopAfterDataReload = YES;
-    } else {
+    if (goToTop)
+    {
         [_table scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:(UITableViewScrollPositionTop) animated:NO];
+    } else {
+        [_table scrollToRowAtIndexPath:_preserveIndexPathAfterLoadFromId atScrollPosition:(UITableViewScrollPositionBottom) animated:NO];
     }
 }
 
@@ -146,6 +146,7 @@
         cell.commentsCount = nil;
         cell.mailboxDirection = nil;
         cell.mailboxMailStatus = nil;
+        cell.rating = nil;
         
         NSString *nick;
         if ([self.peopleTableMode isEqualToString:kPeopleTableModeFriends] || [self.peopleTableMode isEqualToString:kPeopleTableModeFriendsDetail])
@@ -283,7 +284,7 @@
             // Previous reactions ID (wu) to this POST in DISCUSSION.
             ContentTableWithPeopleCell *cell = [tableView cellForRowAtIndexPath:indexPath];
             NSArray *recipientNames = [self getRecipientNamesFromSourceHtml:cell.bodyTextSource];
-            NSArray *recipientLinks = [self getRelativeOnlyUrls:[self getAllURLsFromAttributedAndSourceText:cell.bodyText]];
+            NSArray *recipientLinks = [self getRelativeOnlyUrls:[self getAllURLsFromAttributedAndSourceText:cell.bodyText withHtmlSource:nil]];
             if ([recipientNames count] == [recipientLinks count]) {
                 for (NSInteger index = 0; index < [recipientNames count] ; index++)
                 {
@@ -542,8 +543,8 @@
         // Load more mails when reach end.
         if (indexPath.row + 1 == [[self.nyxRowsForSections objectAtIndex:0] count])
         {
+            _preserveIndexPathAfterLoadFromId = indexPath;
             NSString *fromID = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"id_mail"];
-            _scrollToTopAfterDataReload = NO;
             POST_NOTIFICATION_MAILBOX_LOAD_FROM(fromID)
         }
     }
@@ -551,8 +552,8 @@
         // Load more posts when reach end.
         if (indexPath.row + 1 == [[self.nyxRowsForSections objectAtIndex:0] count])
         {
+            _preserveIndexPathAfterLoadFromId = indexPath;
             NSString *fromID = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"id_wu"];
-            _scrollToTopAfterDataReload = NO;
             [self placeLoadingView];
             POST_NOTIFICATION_DISCUSSION_LOAD_OLDER_FROM(fromID)
         }
@@ -677,6 +678,9 @@
                         NSInteger currentRating = ([positive integerValue]) - ([negative integerValue]);
                         ContentTableWithPeopleCell *c = [_table cellForRowAtIndexPath:_indexPathToRating];
                         [c.ratingGiven setString:[@(currentRating) stringValue]];
+                        NSMutableDictionary *currentDS = [[self.nyxRowsForSections objectAtIndex:_indexPathToRating.section] objectAtIndex:_indexPathToRating.row];
+                        [currentDS setValue:[@(currentRating) stringValue] forKey:@"wu_rating"];
+                        [[self.nyxRowsForSections objectAtIndex:_indexPathToRating.section] replaceObjectAtIndex:_indexPathToRating.row withObject:currentDS];
                         [c configureCellForIndexPath:_indexPathToRating];
                     });
                 }
@@ -723,7 +727,7 @@
         [self.peopleTableMode isEqualToString:kPeopleTableModeDiscussionDetail])
     {
         // Remove strange links and detect recipient URLs if any
-        NSArray *httpOnlyUrls = [self getHttpOnlyUrls:[self getAllURLsFromAttributedAndSourceText:cell.bodyText]];
+        NSArray *httpOnlyUrls = [self getHttpOnlyUrls:[self getAllURLsFromAttributedAndSourceText:cell.bodyText withHtmlSource:cell.bodyTextSource]];
         [self showActionSheetForURLs:httpOnlyUrls forText:cell.bodyText withSource:cell.bodyTextSource];
     }
 }
@@ -770,6 +774,10 @@
         [alert addAction:showImages];
     }
     
+//    NSLog(@"%@ - %@ : ALL [%@]", self, NSStringFromSelector(_cmd), httpUrls);
+//    NSLog(@"%@ - %@ : NO IMAGES [%@]", self, NSStringFromSelector(_cmd), urlsWithoutImages);
+//    NSLog(@"%@ - %@ : IMAGES ONLY [%@]", self, NSStringFromSelector(_cmd), urlsWithImagesOnly);
+    
     UIAlertAction *copy = [UIAlertAction actionWithTitle:@"Kopírovat" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
         NSMutableDictionary *item = [[NSMutableDictionary alloc] init];
         NSData *rtf = [attrText dataFromRange:NSMakeRange(0, attrText.length)
@@ -801,9 +809,9 @@
 {
     NSMutableArray *a = [[NSMutableArray alloc] init];
     for (NSURL *u in detectedUrl) {
-        if ([[[u absoluteString] lowercaseString] hasSuffix:@"jpeg"] ||
-            [[[u absoluteString] lowercaseString] hasSuffix:@"jpg"] ||
-            [[[u absoluteString] lowercaseString] hasSuffix:@"png"])
+        if ([[[u absoluteString] lowercaseString] containsString:@".jpeg"] ||
+            [[[u absoluteString] lowercaseString] containsString:@".jpg"] ||
+            [[[u absoluteString] lowercaseString] containsString:@".png"])
         {
             continue;
         }
@@ -819,9 +827,9 @@
 {
     NSMutableArray *a = [[NSMutableArray alloc] init];
     for (NSURL *u in detectedUrl) {
-        if ([[[u absoluteString] lowercaseString] hasSuffix:@"jpeg"] ||
-            [[[u absoluteString] lowercaseString] hasSuffix:@"jpg"] ||
-            [[[u absoluteString] lowercaseString] hasSuffix:@"png"])
+        if ([[[u absoluteString] lowercaseString] containsString:@".jpeg"] ||
+            [[[u absoluteString] lowercaseString] containsString:@".jpg"] ||
+            [[[u absoluteString] lowercaseString] containsString:@".png"])
         {
             if (![a containsObject:u]) {
                 [a addObject:u];
@@ -860,7 +868,7 @@
     return imagesArray;
 }
 
-- (NSMutableArray *)getAllURLsFromAttributedAndSourceText:(NSAttributedString *)attrText
+- (NSMutableArray *)getAllURLsFromAttributedAndSourceText:(NSAttributedString *)attrText withHtmlSource:(NSString *)htmlSource
 {
     NSMutableArray *detectedUrls = [[NSMutableArray alloc] init];
     
@@ -875,7 +883,7 @@
                                   }
                               }];
     
-    // Second - there could be URLs in text just in plain text - like https:// ...
+    // Second - there could be URLs in text just in plain text - like https://
     NSArray *words = [[attrText string] componentsSeparatedByString:@" "];
     for (NSString *component in words) {
         if ([component hasPrefix:@"http"]) {
@@ -886,7 +894,29 @@
                 [detectedUrls addObject:u];
         }
     }
-    return detectedUrls;
+    
+    if (htmlSource && [htmlSource length] > 0)
+    {
+        NSArray *a = [htmlSource componentsSeparatedByString:@"\""];
+        for (NSString *u in a) {
+            if ([u hasPrefix:@"http"]) {
+                NSURL *url = [NSURL URLWithString:u];
+                if (url) {
+                    [detectedUrls addObject:url];
+                }
+            }
+        }
+    }
+    
+    // REMOVE "thumbs"
+    NSMutableArray *tmp = [[NSMutableArray alloc] init];
+    for (NSURL *s in detectedUrls) {
+        if (![[[s absoluteString] lowercaseString] containsString:@"thumb"]) {
+            [tmp addObject:s];
+        }
+    }
+    
+    return tmp;
 }
 
 - (NSArray *)getHttpOnlyUrls:(NSArray *)allUrls

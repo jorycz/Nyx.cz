@@ -30,7 +30,7 @@
 
 - (void)saveContext;
 
-- (MemCache *)getMemCache;
+- (MemCache *)memCache;
 
 
 @end

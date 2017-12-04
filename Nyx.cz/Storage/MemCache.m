@@ -10,10 +10,11 @@
 
 @implementation MemCache
 
-- (instancetype)init
+- (id)init
 {
     self = [super init];
-    if (self) {
+    if (self)
+    {
         _storage = [[NSMutableDictionary alloc] init];
     }
     return self;

@@ -306,7 +306,7 @@
             // 60 is minimum height - table ROW height is initialized to 70 below ( 70 - nick name )
             ComputeRowHeight *rowHeight = [[ComputeRowHeight alloc] initWithText:[d objectForKey:@"content"]
                                                                         forWidth:_widthForTableCellBodyTextView
-                                                                       minHeight:40
+                                                                       minHeight:kMinimumPeopleTableCellHeight
                                                                     inlineImages:[Preferences showImagesInlineInPost:nil]];
             [tempArrayForRowHeights addObject:[NSNumber numberWithFloat:rowHeight.heightForRow]];
             [tempArrayForRowBodyText addObject:rowHeight.attributedText];
@@ -360,13 +360,17 @@
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.nController.topViewController.navigationItem.rightBarButtonItem setEnabled:YES];
+            // RELOAD
+            if ([identification isEqualToString:_serverIdentificationDiscussionFromId]) {
+                [self.discussionTable reloadTableDataWithScrollToTop:NO];
+            } else {
+                [self.discussionTable reloadTableDataWithScrollToTop:YES];
+            }
+            // CREATE IF NEEDED
             if ([identification isEqualToString:_serverIdentificationDiscussion])
             {
-                [self.discussionTable reloadTableData];
                 [self.nController pushViewController:self.discussionTable animated:YES];
                 [self removeLoadingView];
-            } else {
-                [self.discussionTable reloadTableData];
             }
         });
     } else {

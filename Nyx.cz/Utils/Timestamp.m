@@ -29,7 +29,7 @@
         [dateformatter setDateFormat:@"dd. MM. yyyy"];
         return [dateformatter stringFromDate:date];
     } else {
-        NSLog(@"%@ - %@ : ERROR [%@]", self, NSStringFromSelector(_cmd), @"No timestamp!");
+//        NSLog(@"%@ - %@ : ERROR [%@]", self, NSStringFromSelector(_cmd), @"No timestamp!");
         return nil;
     }
 }
@@ -44,7 +44,7 @@
         [dateformatter setDateFormat:@"HH:mm:ss"];
         return [dateformatter stringFromDate:date];
     } else {
-        NSLog(@"%@ - %@ : ERROR [%@]", self, NSStringFromSelector(_cmd), @"No timestamp!");
+//        NSLog(@"%@ - %@ : ERROR [%@]", self, NSStringFromSelector(_cmd), @"No timestamp!");
         return nil;
     }
 }
@@ -59,7 +59,7 @@
         [dateformatter setDateFormat:@"dd. MM. yyyy HH:mm"];
         return [dateformatter stringFromDate:date];
     } else {
-        NSLog(@"%@ - %@ : ERROR [%@]", self, NSStringFromSelector(_cmd), @"No timestamp!");
+//        NSLog(@"%@ - %@ : ERROR [%@]", self, NSStringFromSelector(_cmd), @"No timestamp!");
         return nil;
     }
 }

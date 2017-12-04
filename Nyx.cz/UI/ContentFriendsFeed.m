@@ -175,7 +175,10 @@
                     
                     // Calculate heights and create array with same structure just only for row height.
                     // 60 is minimum height - table ROW height is initialized to 70 below ( 70 - nick name )
-                    ComputeRowHeight *rowHeight = [[ComputeRowHeight alloc] initWithText:[d objectForKey:@"text"] forWidth:_widthForTableCellBodyTextView minHeight:40 inlineImages:nil];
+                    ComputeRowHeight *rowHeight = [[ComputeRowHeight alloc] initWithText:[d objectForKey:@"text"]
+                                                                                forWidth:_widthForTableCellBodyTextView
+                                                                               minHeight:kMinimumPeopleTableCellHeight
+                                                                            inlineImages:nil];
                     [tempArrayForRowHeights addObject:[NSNumber numberWithFloat:rowHeight.heightForRow]];
                     [tempArrayForRowBodyText addObject:rowHeight.attributedText];
                 }
@@ -200,7 +203,7 @@
         [self.table.nyxPostsRowBodyTexts removeAllObjects];
         [self.table.nyxPostsRowBodyTexts addObjectsFromArray:_postsRowBodyTexts];
         
-        [self.table reloadTableData];
+        [self.table reloadTableDataWithScrollToTop:YES];
     });
     [self removeLoadingView];
 }

@@ -10,26 +10,33 @@
 #import <UIKit/UIKit.h>
 #import "ServerConnector.h"
 #import "StorageManager.h"
+#import "MemCache.h"
 
+@class CacheManager;
 
 @protocol CacheManagerDelegate
 @optional
-- (void)cacheComplete:(NSData *)cache;
+- (void)cacheComplete:(CacheManager *)cache;
 @end
 
 
 @interface CacheManager : NSObject <ServerConnectorDelegate>
 {
     NSString *_currentCacheObjectName;
+    MemCache *_cache;
 }
 
 
 @property (nonatomic, strong) ServerConnector *serverConnector;
 @property (nonatomic, strong) StorageManager *storageManager;
-@property (nonatomic, strong) id delegate;
+@property (nonatomic, weak) id delegate;
+
+@property (nonatomic, assign) NSInteger cacheTag;
+@property (nonatomic, strong) NSData *cacheData;
 
 
 - (void)getAvatarForNick:(NSString *)nick;
+- (void)getImageFromUrl:(NSURL *)url;
 
 
 @end

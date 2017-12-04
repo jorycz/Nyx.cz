@@ -16,9 +16,11 @@
     UITableView *_table;
     CGFloat _rh;
     NSIndexPath *_indexPathToDelete, *_indexPathToRating;
-    BOOL _scrollToTopAfterDataReload, _tableEditShowDelete, _tableEditShowThumbs;
+    BOOL _tableEditShowDelete, _tableEditShowThumbs;
     
     NSString *_identificationDelete, *_identificationThumbs, *_identificationThumbsAfterRatingGive;
+    
+    NSIndexPath *_preserveIndexPathAfterLoadFromId;
 }
 
 
@@ -41,7 +43,7 @@
 
 
 - (id)initWithRowHeight:(CGFloat)rowHeight;
-- (void)reloadTableData;
+- (void)reloadTableDataWithScrollToTop:(BOOL)goToTop;
 
 
 @end
