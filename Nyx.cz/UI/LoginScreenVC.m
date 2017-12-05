@@ -249,7 +249,15 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [self showHideSpinner];
         PRESENT_ERROR(title, message)
-        [self askForUsername];
+        
+        UIAlertController *a = [UIAlertController alertControllerWithTitle:@"Chyba"
+                                                                   message:@"Zkusit znova?"
+                                                            preferredStyle:(UIAlertControllerStyleAlert)];
+        UIAlertAction *ok = [UIAlertAction actionWithTitle:@"OK" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+            [self tryToLogIn];
+        }];
+        [a addAction:ok];
+        [self presentViewController:a animated:YES completion:^{}];
     });
 }
 
@@ -258,8 +266,7 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         self.userIsLoggedIn = YES;
         [self showHideSpinner];
-        [self dismissViewControllerAnimated:YES completion:^{
-        }];
+        [self dismissViewControllerAnimated:NO completion:^{}];
     });
 }
 

@@ -19,9 +19,6 @@
 
 
 @interface MainContentVC : UIViewController
-{
-    UITextField *_info;
-}
 
 
 @property (nonatomic, strong) NSMutableString *menuKey;

@@ -223,23 +223,19 @@
     [Preferences actualDateOfBackgroundRefresh:dateStr];
     
     [[UNUserNotificationCenter currentNotificationCenter] getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
-        BOOL badge = NO;
         
         switch (settings.authorizationStatus) {
             case UNAuthorizationStatusAuthorized:
-                badge = YES;
+            {
+                dispatch_sync(dispatch_get_main_queue(), ^{
+                    [self.mainScreen getNewNyxNotifications];
+                });
+                completionHandler(UIBackgroundFetchResultNewData);
+            }
                 break;
             default:
+                completionHandler(UIBackgroundFetchResultNoData);
                 break;
-        }
-        
-        if (badge) {
-            dispatch_sync(dispatch_get_main_queue(), ^{
-                [self.mainScreen getNewNyxNotifications];
-            });
-            completionHandler(UIBackgroundFetchResultNewData);
-        } else {
-            completionHandler(UIBackgroundFetchResultNoData);
         }
     }];
 }

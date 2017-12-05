@@ -14,7 +14,7 @@
 #import "ContentTableWithPeople.h"
 
 
-@interface PeopleRespondVC : UIViewController <ServerConnectorDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIGestureRecognizerDelegate>
+@interface PeopleRespondVC : UIViewController <ServerConnectorDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIGestureRecognizerDelegate, UITextViewDelegate>
 {
     CGFloat _widthForTableCellBodyTextView;
     CGSize _keyboardSize;

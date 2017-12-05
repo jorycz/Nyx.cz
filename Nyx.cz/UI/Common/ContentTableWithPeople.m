@@ -283,14 +283,14 @@
         {
             // Previous reactions ID (wu) to this POST in DISCUSSION.
             ContentTableWithPeopleCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-            NSArray *recipientNames = [self getRecipientNamesFromSourceHtml:cell.bodyTextSource];
+//            NSArray *recipientNames = [self getRecipientNamesFromSourceHtml:cell.bodyTextSource];
             NSArray *recipientLinks = [self getRelativeOnlyUrls:[self getAllURLsFromAttributedAndSourceText:cell.bodyText withHtmlSource:nil]];
-            if ([recipientNames count] == [recipientLinks count]) {
-                for (NSInteger index = 0; index < [recipientNames count] ; index++)
+            if ([recipientLinks count] > 0) {
+                for (NSInteger index = 0; index < [recipientLinks count] ; index++)
                 {
-                    NSString *name = [recipientNames objectAtIndex:index];
+//                    NSString *name = [recipientNames objectAtIndex:index];
                     NSString *reactionId = [[[recipientLinks objectAtIndex:index] componentsSeparatedByString:@"="] lastObject];
-                    [previousResponses addObject:@{@"name": name, @"reactionId": reactionId}];
+                    [previousResponses addObject:@{@"name": @"getRecipientNamesFromSourceHtml:", @"reactionId": reactionId}];
                 }
             }
         }
@@ -532,6 +532,7 @@
     respondVC.postData = userPostData;
     respondVC.nController = self.nController;
     respondVC.peopleRespondMode = self.peopleTableMode;
+//    respondVC.title = [self.disscussionClubData objectForKey:@"name"];
     [self.nController pushViewController:respondVC animated:YES];
 }
 
@@ -800,7 +801,7 @@
     
     UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Zrušit" style:(UIAlertActionStyleCancel) handler:^(UIAlertAction * _Nonnull action) {}];
     [alert addAction:cancel];
-    [self presentViewController:alert animated:YES completion:nil];
+    [self.nController presentViewController:alert animated:YES completion:nil];
 }
 
 #pragma mark - TEXT BODY PARSING FOR URLs
@@ -943,18 +944,18 @@
     return (NSArray *)urls;
 }
 
-- (NSArray *)getRecipientNamesFromSourceHtml:(NSString *)sourceText
-{
-    NSArray *recNames = [sourceText componentsSeparatedByString:@"\""];
-    NSMutableArray *recipientNames = [NSMutableArray array];
-    for (NSString *name in recNames) {
-        if ([name hasPrefix:@"replyto"])
-        {
-            [recipientNames addObject:[name substringFromIndex:7]];
-        }
-    }
-    return (NSArray *)recipientNames;
-}
+//- (NSArray *)getRecipientNamesFromSourceHtml:(NSString *)sourceText
+//{
+//    NSArray *recNames = [sourceText componentsSeparatedByString:@"\""];
+//    NSMutableArray *recipientNames = [NSMutableArray array];
+//    for (NSString *name in recNames) {
+//        if ([name hasPrefix:@"replyto"])
+//        {
+//            [recipientNames addObject:[name substringFromIndex:7]];
+//        }
+//    }
+//    return (NSArray *)recipientNames;
+//}
 
 #pragma mark - LOADING VIEW
 

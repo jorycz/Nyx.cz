@@ -83,11 +83,6 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    if (!self.loginScreen.userIsLoggedIn)
-    {
-        // Always on first start.
-        [self presentViewController:self.loginScreen animated:NO completion:^{}];
-    }
 }
 
 - (void)viewDidLayoutSubviews
@@ -101,6 +96,12 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+    
+    if (!self.loginScreen.userIsLoggedIn)
+    {
+        // Always on first start.
+        [self presentViewController:self.loginScreen animated:NO completion:^{}];
+    }
     
     if (self.loginScreen.userIsLoggedIn && _firstShow) {
         _firstShow = NO;
@@ -383,7 +384,7 @@
     content.body = body;
     content.sound = [UNNotificationSound defaultSound];
     
-    NSString *identifier = @"UYLLocalNotification";
+    NSString *identifier = @"NYXLocalNotification";
     UNNotificationRequest *request = [UNNotificationRequest requestWithIdentifier:identifier
                                                                           content:content trigger:nil];
     

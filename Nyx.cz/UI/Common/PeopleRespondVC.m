@@ -188,7 +188,7 @@
         {
             bottomBarHeight = f.size.height / 3.5;
             edgeInsect = 10;
-            maxButtonSize = 70;
+            maxButtonSize = 50;
         }
         
         self.bottomView.frame = CGRectMake(0, f.size.height - bottomBarHeight, f.size.width, bottomBarHeight);

@@ -34,28 +34,11 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    _info = [[UITextField alloc] init];
-    _info.text = @"...";
-    _info.userInteractionEnabled = NO;
-    _info.textAlignment = NSTextAlignmentCenter;
-    [self.view addSubview:_info];
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-}
-
-- (void)viewWillLayoutSubviews
-{
-    [super viewWillLayoutSubviews];
-    _info.frame = self.view.bounds;
 }
 
 - (void)loadContentWithNavigationController:(UINavigationController *)navController
