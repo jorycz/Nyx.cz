@@ -17,7 +17,7 @@
 {
     self = [super init];
     if (self) {
-        self.backgroundColor = [UIColor clearColor];
+        self.backgroundColor = [UIColor whiteColor];
         
         _userAvatarView = [[UIImageView alloc] init];
         _userAvatarView.contentMode = UIViewContentModeCenter;
@@ -29,7 +29,7 @@
         
         _userName = [[UITextField alloc] init];
         _userName.userInteractionEnabled = NO;
-        _userName.backgroundColor = [UIColor clearColor];
+        _userName.backgroundColor = [UIColor whiteColor];
         _userName.textColor = [UIColor blackColor];
         _userName.textAlignment = NSTextAlignmentLeft;
         _userName.font = [UIFont boldSystemFontOfSize:18];

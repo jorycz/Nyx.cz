@@ -64,7 +64,7 @@
     self.table = [[UITableView alloc] init];
     [self.table setDelegate:self];
     [self.table setDataSource:self];
-    [self.table setBackgroundColor:[UIColor clearColor]];
+    [self.table setBackgroundColor:[UIColor whiteColor]];
     [self.table setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     [self.table setRowHeight:80];
     [self.view addSubview:self.table];
@@ -110,7 +110,7 @@
     if (cell == nil)
     {
         cell = [[SettingsVCCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdForReuse];
-        cell.backgroundColor = [UIColor clearColor];
+        cell.backgroundColor = [UIColor whiteColor];
         cell.textLabel.font = [UIFont boldSystemFontOfSize:22];
     }
     

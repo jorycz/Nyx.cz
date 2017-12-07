@@ -52,7 +52,7 @@
     _table = [[UITableView alloc] init];
     [self.view addSubview:_table];
     
-    [_table setBackgroundColor:[UIColor clearColor]];
+    [_table setBackgroundColor:[UIColor whiteColor]];
     [_table setSeparatorStyle:(UITableViewCellSeparatorStyleNone)];
     [_table setDataSource:self];
     [_table setDelegate:self];

@@ -23,6 +23,8 @@
     CGFloat _sideMenuMaxShift, _sideMenuBreakingPoint;
     CGFloat _alphaMenuIncrement;
     BOOL _firstShow, _gettingNewNotifications;
+    
+    NSString *_identificationDataRefresh, *_identificationRemoveAuth, *_identificationLogout;
 }
 
 @property (nonatomic, strong) LoginScreenVC *loginScreen;

@@ -7,7 +7,7 @@
 //
 
 #import "SettingsVCCell.h"
-#import "Constants.h"
+#import "Colors.h"
 
 
 @implementation SettingsVCCell

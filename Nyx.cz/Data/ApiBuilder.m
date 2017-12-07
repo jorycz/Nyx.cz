@@ -222,7 +222,17 @@
     return [NSString stringWithFormat:@"%@&filter_user=%@&filter_text=%@&position=%@", [self defaultApiRequestWithL:kApiSearch andL2:kApiSearchWriteups], nick, text, position];
 }
 
+#pragma mark - UTIL
 
++ (NSString *)apiUtilMakeInactive
+{
+    return [NSString stringWithFormat:@"%@", [self defaultApiRequestWithL:kApiUtil andL2:kApiUtilMakeInactive]];
+}
+
++ (NSString *)apiUtilRemoveAuthorization
+{
+    return [NSString stringWithFormat:@"%@", [self defaultApiRequestWithL:kApiUtil andL2:kApiUtilRemoveAuthorization]];
+}
 
 
 @end

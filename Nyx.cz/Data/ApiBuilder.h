@@ -50,5 +50,8 @@
 
 + (NSString *)apiSearchFor:(NSString *)nick andText:(NSString *)text forPosition:(NSString *)position;
 
++ (NSString *)apiUtilMakeInactive;
++ (NSString *)apiUtilRemoveAuthorization;
+
 
 @end

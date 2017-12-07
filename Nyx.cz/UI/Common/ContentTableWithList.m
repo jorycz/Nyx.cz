@@ -66,13 +66,19 @@
     _table = [[UITableView alloc] init];
     [self.view addSubview:_table];
     
-    [_table setBackgroundColor:[UIColor clearColor]];
+    [_table setBackgroundColor:[UIColor whiteColor]];
     [_table setSeparatorStyle:(UITableViewCellSeparatorStyleNone)];
     [_table setDataSource:self];
     [_table setDelegate:self];
     [_table setRowHeight:_rh];
     
     self.nController.topViewController.navigationItem.rightBarButtonItem = nil;
+    
+    UIRefreshControl *refreshControll = [[UIRefreshControl alloc] init];
+    [refreshControll addTarget:self action:@selector(pullToRefresh:) forControlEvents:UIControlEventValueChanged];
+    [self setRefreshControl:refreshControll];
+    [_table insertSubview:refreshControll atIndex:0];
+    refreshControll.layer.zPosition = -1;
 }
 
 - (void)viewWillLayoutSubviews
@@ -232,6 +238,13 @@
     [sc downloadDataForApiRequest:apiRequest];
 }
 
+- (void)pullToRefresh:(id)sender
+{
+    [_table setScrollEnabled:NO];
+    [_table setScrollEnabled:YES];
+    POST_NOTIFICATION_LIST_TABLE_CHANGED
+    [(UIRefreshControl *)sender endRefreshing];
+}
 
 #pragma mark - SERVER DELEGATE
 

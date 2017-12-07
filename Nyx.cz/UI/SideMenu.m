@@ -23,7 +23,7 @@
         self.table = [[UITableView alloc] init];
         [self.table setDelegate:self];
         [self.table setDataSource:self];
-        [self.table setBackgroundColor:[UIColor clearColor]];
+        [self.table setBackgroundColor:[UIColor whiteColor]];
         [self.table setSeparatorStyle:UITableViewCellSeparatorStyleNone];
         [self.table setRowHeight:40];
         [self addSubview:self.table];

@@ -17,7 +17,7 @@
 {
     self = [super init];
     if (self) {
-        self.backgroundColor = [UIColor clearColor];
+        self.backgroundColor = [UIColor whiteColor];
         
         // https://www.iconfinder.com/iconsets/glyphs
         _logoutButton = [[UIButton alloc] init];

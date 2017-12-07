@@ -29,6 +29,10 @@
         self.title = @"Nyx";
         _firstShow = YES;
         _gettingNewNotifications = NO;
+        
+        _identificationDataRefresh = @"dataRefresh";
+        _identificationRemoveAuth = @"removeAuth";
+        _identificationLogout = @"loGout";
     }
     return self;
 }
@@ -224,20 +228,34 @@
 
 - (void)mainButtonPressedLogout
 {
-    NSString *m = @"Opravdu chceš zrušit autorizaci?\nPro novou autorizaci bude nutné smazat součastný kód z účtu na nyxu přes web a zadat nový jako při prvním spuštění aplikace.";
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Zrušit autorizaci"
+    NSString *m = @"Zrušení autorizace odstraní z nyxu autorizační token a bude nutné zadat nový a aplikaci znovu autorizovat jako při prvním spuštění aplikace!\n\nOdhlášení pouze zneaktivní nyní přihlášenou session.";
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Zrušit autorizaci nebo odhlásit"
                                                                    message:m
                                                             preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *ok = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * action) {
-        [Preferences auth_nick:@""];
-        [Preferences auth_token:@""];
-        [self.closeCoverView viewTapped];
-        self.loginScreen.userIsLoggedIn = NO;
-        [self presentViewController:self.loginScreen animated:YES completion:^{}];
+    UIAlertAction *remove = [UIAlertAction actionWithTitle:@"Zrušit autorizaci"
+                                                 style:UIAlertActionStyleDestructive
+                                               handler:^(UIAlertAction * action) {
+        NSString *api = [ApiBuilder apiUtilRemoveAuthorization];
+        ServerConnector *sc = [[ServerConnector alloc] init];
+        sc.identifitaion = _identificationRemoveAuth;
+        sc.delegate = self;
+        [sc downloadDataForApiRequest:api];
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    }];
+    UIAlertAction *logout = [UIAlertAction actionWithTitle:@"Odhlásit"
+                                                     style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction * action) {
+        NSString *api = [ApiBuilder apiUtilMakeInactive];
+        ServerConnector *sc = [[ServerConnector alloc] init];
+        sc.identifitaion = _identificationLogout;
+        sc.delegate = self;
+        [sc downloadDataForApiRequest:api];
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     }];
     UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Zrušit" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
     }];
-    [alert addAction:ok];
+    [alert addAction:remove];
+    [alert addAction:logout];
     [alert addAction:cancel];
     [self presentViewController:alert animated:YES completion:^{}];
 }
@@ -256,6 +274,24 @@
     [self presentViewController:nc animated:YES completion:^{}];
 }
 
+#pragma mark - REMOVE AUTH
+
+- (void)authorizationRemoved
+{
+    [Preferences auth_nick:@""];
+    [Preferences auth_token:@""];
+    [self.closeCoverView viewTapped];
+    self.loginScreen.userIsLoggedIn = NO;
+    [self presentViewController:self.loginScreen animated:YES completion:^{}];
+}
+
+#pragma mark - LOGOUT
+
+- (void)logoutDone
+{
+    PRESENT_ERROR(@"Odhlášení úspěšné", @"Aktivita tě zpět přihlásí.")
+}
+
 #pragma mark - NYX NOTIFICATIONS CHECK
 
 - (void)getNewNyxNotifications
@@ -267,6 +303,7 @@
             [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
         NSString *apiRequest = [ApiBuilder apiFeedNoticesAndKeepNew:YES];
         ServerConnector *sc = [[ServerConnector alloc] init];
+        sc.identifitaion = _identificationDataRefresh;
         sc.delegate = self;
         [sc downloadDataForApiRequest:apiRequest];
     }
@@ -291,17 +328,34 @@
         {
             if ([[jp.jsonDictionary objectForKey:@"result"] isEqualToString:@"error"])
             {
-//                [self presentErrorWithTitle:@"Chyba ze serveru:" andMessage:[jp.jsonDictionary objectForKey:@"error"]];
+                if ([identification isEqualToString:_identificationRemoveAuth]) {
+                    [self presentErrorWithTitle:@"Chyba ze serveru:" andMessage:[jp.jsonDictionary objectForKey:@"error"]];
+                }
             }
             else
             {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self notifcationData:jp.jsonDictionary];
-                });
+                if ([identification isEqualToString:_identificationDataRefresh]) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self notifcationData:jp.jsonDictionary];
+                    });
+                }
+                if ([identification isEqualToString:_identificationRemoveAuth]) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self authorizationRemoved];
+                    });
+                }
+                if ([identification isEqualToString:_identificationLogout]) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self logoutDone];
+                    });
+                }
             }
         }
     }
     _gettingNewNotifications = NO;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    });
 }
 
 - (void)presentErrorWithTitle:(NSString *)title andMessage:(NSString *)message

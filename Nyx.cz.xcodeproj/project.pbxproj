@@ -17,7 +17,6 @@
 		2B1D59491FCB06CF009E4A88 /* SettingsVCCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B1D59481FCB06CF009E4A88 /* SettingsVCCell.m */; };
 		2B1D594F1FCB4EAD009E4A88 /* ComputeRowHeightTextAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B1D594E1FCB4EAD009E4A88 /* ComputeRowHeightTextAttachment.m */; };
 		2B1D59551FCCB3DD009E4A88 /* WebVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B1D59541FCCB3DD009E4A88 /* WebVC.m */; };
-		2B1D59581FCCC9DF009E4A88 /* PostImagesPreview.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B1D59571FCCC9DF009E4A88 /* PostImagesPreview.m */; };
 		2B1D595F1FD016FD009E4A88 /* email@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B1D595E1FD016FA009E4A88 /* email@2x.png */; };
 		2B1D59611FD079C3009E4A88 /* chat@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B1D59601FD079C3009E4A88 /* chat@2x.png */; };
 		2B2303721FBC59DC00286062 /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B2303711FBC59DC00286062 /* logo.png */; };
@@ -83,6 +82,9 @@
 		2B6736061FBCE8F500DA728E /* SideMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B6736051FBCE8F500DA728E /* SideMenu.m */; };
 		2B6736091FBCED2100DA728E /* MainVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B6736081FBCED2100DA728E /* MainVC.m */; };
 		2B67360C1FBCFAEF00DA728E /* SideMenuCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B67360B1FBCFAEF00DA728E /* SideMenuCell.m */; };
+		2B8FECCE1FD8226A004CCED8 /* Colors.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B8FECCD1FD8226A004CCED8 /* Colors.m */; };
+		2B8FECD11FD848F6004CCED8 /* ImagePreviewVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B8FECD01FD848F6004CCED8 /* ImagePreviewVC.m */; };
+		2B8FECD41FD8495A004CCED8 /* ImageVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B8FECD31FD8495A004CCED8 /* ImageVC.m */; };
 		2BD251C21FC0CBFB00BE6272 /* CloseCoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BD251C11FC0CBFB00BE6272 /* CloseCoverView.m */; };
 		2BD251C51FC0D28600BE6272 /* MainContentVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BD251C41FC0D28600BE6272 /* MainContentVC.m */; };
 		2BD251CB1FC0ECBD00BE6272 /* SideMenuTopSection.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BD251CA1FC0ECBD00BE6272 /* SideMenuTopSection.m */; };
@@ -134,8 +136,6 @@
 		2B1D594E1FCB4EAD009E4A88 /* ComputeRowHeightTextAttachment.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ComputeRowHeightTextAttachment.m; sourceTree = "<group>"; };
 		2B1D59531FCCB3DD009E4A88 /* WebVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WebVC.h; sourceTree = "<group>"; };
 		2B1D59541FCCB3DD009E4A88 /* WebVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WebVC.m; sourceTree = "<group>"; };
-		2B1D59561FCCC9DF009E4A88 /* PostImagesPreview.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PostImagesPreview.h; sourceTree = "<group>"; };
-		2B1D59571FCCC9DF009E4A88 /* PostImagesPreview.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PostImagesPreview.m; sourceTree = "<group>"; };
 		2B1D595E1FD016FA009E4A88 /* email@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "email@2x.png"; sourceTree = "<group>"; };
 		2B1D59601FD079C3009E4A88 /* chat@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "chat@2x.png"; sourceTree = "<group>"; };
 		2B2303711FBC59DC00286062 /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logo.png; path = Nyx.cz/Images/logo.png; sourceTree = SOURCE_ROOT; };
@@ -239,6 +239,12 @@
 		2B6736081FBCED2100DA728E /* MainVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainVC.m; sourceTree = "<group>"; };
 		2B67360A1FBCFAEF00DA728E /* SideMenuCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SideMenuCell.h; sourceTree = "<group>"; };
 		2B67360B1FBCFAEF00DA728E /* SideMenuCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SideMenuCell.m; sourceTree = "<group>"; };
+		2B8FECCC1FD8226A004CCED8 /* Colors.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Colors.h; sourceTree = "<group>"; };
+		2B8FECCD1FD8226A004CCED8 /* Colors.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Colors.m; sourceTree = "<group>"; };
+		2B8FECCF1FD848F6004CCED8 /* ImagePreviewVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImagePreviewVC.h; sourceTree = "<group>"; };
+		2B8FECD01FD848F6004CCED8 /* ImagePreviewVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ImagePreviewVC.m; sourceTree = "<group>"; };
+		2B8FECD21FD8495A004CCED8 /* ImageVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImageVC.h; sourceTree = "<group>"; };
+		2B8FECD31FD8495A004CCED8 /* ImageVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ImageVC.m; sourceTree = "<group>"; };
 		2BD251C01FC0CBFB00BE6272 /* CloseCoverView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CloseCoverView.h; sourceTree = "<group>"; };
 		2BD251C11FC0CBFB00BE6272 /* CloseCoverView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CloseCoverView.m; sourceTree = "<group>"; };
 		2BD251C31FC0D28600BE6272 /* MainContentVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainContentVC.h; sourceTree = "<group>"; };
@@ -322,6 +328,8 @@
 				2B0D5D981FBC40F30052D63C /* Nyx_cz.xcdatamodeld */,
 				2B2303811FBC5CE200286062 /* Constants.h */,
 				2B2303821FBC5CE200286062 /* Constants.m */,
+				2B8FECCC1FD8226A004CCED8 /* Colors.h */,
+				2B8FECCD1FD8226A004CCED8 /* Colors.m */,
 			);
 			path = Nyx.cz;
 			sourceTree = "<group>";
@@ -531,8 +539,10 @@
 				2B42D44D1FCA27B9009F751D /* ContentTableWithListCell.m */,
 				2B1D59531FCCB3DD009E4A88 /* WebVC.h */,
 				2B1D59541FCCB3DD009E4A88 /* WebVC.m */,
-				2B1D59561FCCC9DF009E4A88 /* PostImagesPreview.h */,
-				2B1D59571FCCC9DF009E4A88 /* PostImagesPreview.m */,
+				2B8FECCF1FD848F6004CCED8 /* ImagePreviewVC.h */,
+				2B8FECD01FD848F6004CCED8 /* ImagePreviewVC.m */,
+				2B8FECD21FD8495A004CCED8 /* ImageVC.h */,
+				2B8FECD31FD8495A004CCED8 /* ImageVC.m */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -710,6 +720,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2B8FECD41FD8495A004CCED8 /* ImageVC.m in Sources */,
 				2B2303971FBC943400286062 /* UserNotification.m in Sources */,
 				2B3180251FC5B65C0063B9EE /* PeopleAutocompleteVC.m in Sources */,
 				2B31800E1FC347DB0063B9EE /* ComputeRowHeight.m in Sources */,
@@ -729,7 +740,6 @@
 				2B2303871FBC60C300286062 /* StorageManager.m in Sources */,
 				2B0D5DA21FBC40F30052D63C /* main.m in Sources */,
 				2B0D5D9A1FBC40F30052D63C /* Nyx_cz.xcdatamodeld in Sources */,
-				2B1D59581FCCC9DF009E4A88 /* PostImagesPreview.m in Sources */,
 				2B2303831FBC5CE200286062 /* Constants.m in Sources */,
 				2B2303911FBC65CA00286062 /* LoginScreenVC.m in Sources */,
 				2B42D44E1FCA27B9009F751D /* ContentTableWithListCell.m in Sources */,
@@ -746,7 +756,9 @@
 				2B3180091FC33AB20063B9EE /* MemCache.m in Sources */,
 				2BD251C21FC0CBFB00BE6272 /* CloseCoverView.m in Sources */,
 				2B23037A1FBC5BE700286062 /* Post.m in Sources */,
+				2B8FECD11FD848F6004CCED8 /* ImagePreviewVC.m in Sources */,
 				2B23038D1FBC633900286062 /* Preferences.m in Sources */,
+				2B8FECCE1FD8226A004CCED8 /* Colors.m in Sources */,
 				2B317FE41FC21F1D0063B9EE /* ContentFriendsFeed.m in Sources */,
 				2B23039A1FBC945100286062 /* NotificationTopBar.m in Sources */,
 				2BD251CB1FC0ECBD00BE6272 /* SideMenuTopSection.m in Sources */,

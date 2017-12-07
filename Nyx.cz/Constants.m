@@ -88,6 +88,10 @@ NSString* const kApiPeopleFriends = @"friends";
 NSString* const kApiSearch = @"search";
 NSString* const kApiSearchWriteups = @"writeups";
 
+NSString* const kApiUtil = @"util";
+NSString* const kApiUtilMakeInactive = @"make_inactive";
+NSString* const kApiUtilRemoveAuthorization = @"remove_authorization";
+
 
 // Menu constants
 NSString* const kMenuOverview = @"Přehled";

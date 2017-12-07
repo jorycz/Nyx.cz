@@ -7,7 +7,7 @@
 //
 
 #import "ContentTableWithListCell.h"
-#import "Constants.h"
+#import "Colors.h"
 #import <QuartzCore/QuartzCore.h>
 
 
@@ -30,7 +30,7 @@
         [self addSubview:_unreadLabel];
         
         _boardNameLabel = [[UILabel alloc] init];
-        _boardNameLabel.backgroundColor = [UIColor clearColor];
+        _boardNameLabel.backgroundColor = [UIColor whiteColor];
         _boardNameLabel.userInteractionEnabled = NO;
         _boardNameLabel.textAlignment = NSTextAlignmentLeft;
         _boardNameLabel.font = [UIFont systemFontOfSize:12];

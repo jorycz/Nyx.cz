@@ -15,7 +15,6 @@
 
 // DEFINES
 #define PRESENT_ERROR(s,ss) [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationShowError object:nil userInfo:@{@"title" : (s), @"error" : (ss)}];
-#define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 #define NOTIFICATION_MAIN_BUTTON_PRESSED(s) [[NSNotificationCenter defaultCenter] postNotificationName:kMainButtonNotification object:nil userInfo:@{@"button" : (s)}];
 
 #define POST_NOTIFICATION_FRIENDS_FEED_CHANGED [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationFriendsFeedChanged object:nil userInfo:nil];
@@ -36,11 +35,6 @@
 #define PERFSTART2 NSDate *now2 = [NSDate date];
 #define PERFSTOP2 NSLog(@"%@ / %@: TIME 2 : %f", [self class], NSStringFromSelector(_cmd), [[NSDate date] timeIntervalSinceDate:now2]);
 
-
-#define COLOR_SYSTEM_TURQUOISE UIColorFromRGB(0x3fbeb8)
-#define COLOR_SYSTEM_TURQUOISE_LIGHT UIColorFromRGB(0xE8F0FF)
-
-#define COLOR_RATING_POSITIVE UIColorFromRGB(0x15D600)
 
 // CONSTANTS
 extern NSString* const kServerAPIURL;
@@ -119,6 +113,10 @@ extern NSString* const kApiPeopleFriends;
 
 extern NSString* const kApiSearch;
 extern NSString* const kApiSearchWriteups;
+
+extern NSString* const kApiUtil;
+extern NSString* const kApiUtilMakeInactive;
+extern NSString* const kApiUtilRemoveAuthorization;
 
 
 // Menu constants

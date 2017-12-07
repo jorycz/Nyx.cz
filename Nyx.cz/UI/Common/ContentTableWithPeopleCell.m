@@ -10,6 +10,7 @@
 #import "ComputeRowHeight.h"
 #import "Constants.h"
 #import "NewNoticesForPost.h"
+#import "Colors.h"
 
 
 @implementation ContentTableWithPeopleCell
@@ -73,7 +74,7 @@
         
         _disclosure = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"disclosure"]];
         _disclosure.contentMode = UIViewContentModeCenter;
-        _disclosure.backgroundColor = [UIColor clearColor];
+        _disclosure.backgroundColor = [UIColor whiteColor];
         [self addSubview:_disclosure];
         
         self.ratingGiven = [[NSMutableString alloc] init];
@@ -140,7 +141,7 @@
         _avatarView.alpha = 1;
     }
     if (self.mailboxMailStatus && [self.mailboxMailStatus isEqualToString:@"read"]) {
-        self.backgroundColor = [UIColor colorWithWhite:.95 alpha:1];
+        self.backgroundColor = COLOR_MAIL_READ;
     } else {
         self.backgroundColor = [UIColor whiteColor];
     }

@@ -12,9 +12,10 @@
 #import "LoadingView.h"
 // Post content
 #import "WebVC.h"
-#import "PostImagesPreview.h"
+#import "ImagePreviewVC.h"
 // Pasteboard
 #import <MobileCoreServices/MobileCoreServices.h>
+#import "Colors.h"
 
 
 @interface ContentTableWithPeople ()
@@ -65,19 +66,30 @@
     _table = [[UITableView alloc] init];
     [self.view addSubview:_table];
 
-    [_table setBackgroundColor:[UIColor clearColor]];
+    [_table setBackgroundColor:[UIColor whiteColor]];
     [_table setSeparatorStyle:(UITableViewCellSeparatorStyleNone)];
     [_table setDataSource:self];
     [_table setDelegate:self];
     [_table setRowHeight:_rh];
     _table.allowsSelection = self.allowsSelection;
     
-    self.nController.topViewController.navigationItem.rightBarButtonItem = nil;
+//    self.nController.topViewController.navigationItem.rightBarButtonItem = nil;
     
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion]) {
         self.nController.topViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
                                                                                                                              target:self
                                                                                                                              action:@selector(createNewPostToDiscussion)];
+    }
+    
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeMailbox] ||
+        [self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion] ||
+        [self.peopleTableMode isEqualToString:kPeopleTableModeFeed])
+    {
+        UIRefreshControl *refreshControll = [[UIRefreshControl alloc] init];
+        [refreshControll addTarget:self action:@selector(pullToRefresh:) forControlEvents:UIControlEventValueChanged];
+        [self setRefreshControl:refreshControll];
+        [_table insertSubview:refreshControll atIndex:0];
+        refreshControll.layer.zPosition = -1;
     }
 }
 
@@ -285,11 +297,12 @@
             ContentTableWithPeopleCell *cell = [tableView cellForRowAtIndexPath:indexPath];
 //            NSArray *recipientNames = [self getRecipientNamesFromSourceHtml:cell.bodyTextSource];
             NSArray *recipientLinks = [self getRelativeOnlyUrls:[self getAllURLsFromAttributedAndSourceText:cell.bodyText withHtmlSource:nil]];
-            if ([recipientLinks count] > 0) {
-                for (NSInteger index = 0; index < [recipientLinks count] ; index++)
+            NSArray *wuOnlyRecipients = [recipientLinks filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF contains %@", @"wu="]];
+            if ([wuOnlyRecipients count] > 0) {
+                for (NSInteger index = 0; index < [wuOnlyRecipients count] ; index++)
                 {
 //                    NSString *name = [recipientNames objectAtIndex:index];
-                    NSString *reactionId = [[[recipientLinks objectAtIndex:index] componentsSeparatedByString:@"="] lastObject];
+                    NSString *reactionId = [[[wuOnlyRecipients objectAtIndex:index] componentsSeparatedByString:@"="] lastObject];
                     [previousResponses addObject:@{@"name": @"getRecipientNamesFromSourceHtml:", @"reactionId": reactionId}];
                 }
             }
@@ -614,7 +627,7 @@
     [self postPostWithApiCall:api andIdentification:_identificationThumbsAfterRatingGive];
 }
 
-#pragma mark - SERVER CONNECTOR API CALL
+#pragma mark - DATA
 
 - (void)postPostWithApiCall:(NSString *)api andIdentification:(NSString *)identification
 {
@@ -622,6 +635,24 @@
     sc.identifitaion = identification;
     sc.delegate = self;
     [sc downloadDataForApiRequest:api];
+}
+
+- (void)pullToRefresh:(id)sender
+{
+    [_table setScrollEnabled:NO];
+    [_table setScrollEnabled:YES];
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeMailbox]) {
+        POST_NOTIFICATION_MAILBOX_CHANGED
+    }
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion])
+    {
+        POST_NOTIFICATION_DISCUSSION_LOAD_NEWER_FROM([[[self.nyxRowsForSections objectAtIndex:0] objectAtIndex:0] objectForKey:@"id_wu"])
+    }
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeed])
+    {
+        POST_NOTIFICATION_FRIENDS_FEED_CHANGED
+    }
+    [(UIRefreshControl *)sender endRefreshing];
 }
 
 #pragma mark - SERVER DELEGATE
@@ -764,11 +795,14 @@
     NSArray *i = [self detectImageAttachmentsInsideAttribudetText:attrText];
     if ((i && [i count] > 0) || [urlsWithImagesOnly count] > 0)
     {
-        UIAlertAction *showImages = [UIAlertAction actionWithTitle:@"Zobrazit obrázky" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
-            PostImagesPreview *pip = [[PostImagesPreview alloc] init];
-            UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:pip];
-            pip.images = i;
-            pip.imageUrls = urlsWithImagesOnly;
+        UIAlertAction *showImages = [UIAlertAction actionWithTitle:@"Zobrazit obrázky" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action)
+        {
+//            NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), i);
+//            NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), urlsWithImagesOnly);
+            ImagePreviewVC *ip = [[ImagePreviewVC alloc] init];
+//            ip.images = i;
+            ip.imageUrls = urlsWithImagesOnly;
+            UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:ip];
             nc.modalPresentationStyle = UIModalPresentationCustom;
             [self presentViewController:nc animated:YES completion:^{}];
         }];

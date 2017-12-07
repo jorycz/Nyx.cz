@@ -70,7 +70,7 @@
     }
     else
     {
-        NSLog(@"%@ - %@ : ERROR READING IMAGE [%@]", self, NSStringFromSelector(_cmd), [error localizedDescription]);
+//        NSLog(@"%@ - %@ : ERROR READING IMAGE [%@]", self, NSStringFromSelector(_cmd), [error localizedDescription]);
         return nil;
     }
 }

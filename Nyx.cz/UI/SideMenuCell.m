@@ -8,8 +8,9 @@
 
 #import "SideMenuCell.h"
 #import "Preferences.h"
-#import "Constants.h"
+#import "Colors.h"
 #import <QuartzCore/QuartzCore.h>
+#import "Constants.h"
 
 
 @implementation SideMenuCell
@@ -18,7 +19,7 @@
 {
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])
     {
-        self.backgroundColor = [UIColor clearColor];
+        self.backgroundColor = [UIColor whiteColor];
         self.textLabel.font = [UIFont boldSystemFontOfSize:20];
         
         _alert = [[UILabel alloc] initWithFrame:CGRectZero];
