@@ -237,6 +237,11 @@
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
+    // DENY SELECT FIRST ROW IN DETAIL VIEW - load same content doesn't make sense
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussionDetail] && indexPath.section == 0 && indexPath.row == 0) {
+        return;
+    }
+    
     NSDictionary *userPostData = [[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
 //    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), userPostData);
     
@@ -282,16 +287,17 @@
     NSAttributedString *str = [[self.nyxPostsRowBodyTexts objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
     
     // RESPOND VIEW --------
-    NSString *discussionId;
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeed] ||
         [self.peopleTableMode isEqualToString:kPeopleTableModeMailbox] ||
         [self.peopleTableMode isEqualToString:kPeopleTableModeFriends] ||
         [self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion] ||
-        [self.peopleTableMode isEqualToString:kPeopleTableModeNotices])
+        [self.peopleTableMode isEqualToString:kPeopleTableModeNotices] ||
+        [self.peopleTableMode isEqualToString:kPeopleTableModeDiscussionDetail])
     {
-        discussionId = [self.disscussionClubData objectForKey:@"id_klub"];
         NSMutableArray *previousResponses = [[NSMutableArray alloc] init];
-        if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion])
+        
+        if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion] ||
+            [self.peopleTableMode isEqualToString:kPeopleTableModeDiscussionDetail])
         {
             // Previous reactions ID (wu) to this POST in DISCUSSION.
             ContentTableWithPeopleCell *cell = [tableView cellForRowAtIndexPath:indexPath];
@@ -307,10 +313,10 @@
                 }
             }
         }
+        
         if ([self.peopleTableMode isEqualToString:kPeopleTableModeNotices])
         {
             // Previous reactions ID (wu) to this POST in NOTICES.
-            discussionId = [userPostData objectForKey:@"id_klub"];
             NSArray *replies = [userPostData objectForKey:@"replies"];
             if (replies && [replies count] > 0) {
                 for (NSDictionary *r in replies) {
@@ -336,13 +342,11 @@
                          userPostData:userPostData
                refreshFromFirstPostId:firstPostId
                 previousReactionPosts:(NSArray *)previousResponses
-                         discussionId:discussionId
          ];
     }
     // ---------------------
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeedDetail]  ||
-        [self.peopleTableMode isEqualToString:kPeopleTableModeMailboxDetail] ||
-        [self.peopleTableMode isEqualToString:kPeopleTableModeDiscussionDetail]) {
+        [self.peopleTableMode isEqualToString:kPeopleTableModeMailboxDetail]) {
         ContentTableWithPeopleCell *cell = [tableView cellForRowAtIndexPath:indexPath];
         [self cellClickedForMoreActions:cell];
     }
@@ -508,6 +512,7 @@
                                  [self.disscussionClubData objectForKey:@"name_main"],
                                  [self.disscussionClubData objectForKey:@"name_sub"]];
     NSAttributedString *club = [[NSAttributedString alloc] initWithString:clubDescription];
+    
     [self showRespondViewWithNick:@""
                          bodyText:club
                        bodyHeight:45
@@ -515,7 +520,6 @@
                      userPostData:@{@"content": clubDescription}
            refreshFromFirstPostId:(NSString *)firstPostId
             previousReactionPosts:nil
-                     discussionId:[self.disscussionClubData objectForKey:@"id_klub"]
      ];
 }
 
@@ -528,7 +532,6 @@
                    userPostData:(NSDictionary *)userPostData
          refreshFromFirstPostId:(NSString *)firstPostId
           previousReactionPosts:(NSArray *)previousReactionPostIds
-                   discussionId:(NSString *)dId
 {
     PeopleRespondVC *respondVC = [[PeopleRespondVC alloc] init];
     respondVC.nick = nick;
@@ -536,11 +539,18 @@
     respondVC.bodyHeight = f;
     respondVC.postId = postId;
     // --- Needed for discussion club or notices table mode -------
-    respondVC.discussionId = dId;
     respondVC.firstDiscussionPostId = firstPostId;
     respondVC.previousReactions = previousReactionPostIds;
     if (self.noticesLastVisitTimestamp && [self.noticesLastVisitTimestamp length] > 0)
         respondVC.table.noticesLastVisitTimestamp = self.noticesLastVisitTimestamp;
+    if (self.disscussionClubData && [[self.disscussionClubData allKeys] count] > 0)
+    {
+        // DISCUSSION
+        respondVC.disscussionClubData = self.disscussionClubData;
+    } else {
+        // FEED
+        respondVC.disscussionClubData = userPostData;
+    }
     // -------------------------------------------
     respondVC.postData = userPostData;
     respondVC.nController = self.nController;

@@ -29,7 +29,6 @@
         _rh = rowHeight;
         self.nyxSections = [[NSMutableArray alloc] init];
         self.nyxRowsForSections = [[NSMutableArray alloc] init];
-        _firstInit = YES;
         _currentDiscussionId = [[NSMutableString alloc] init];
         _serverIdentificationDiscussion = @"discussion";
         _serverIdentificationDiscussionFromId = @"discussionFromId";
@@ -85,21 +84,6 @@
 {
     [super viewWillLayoutSubviews];
     [_table setFrame:self.view.bounds];
-    
-    if (_firstInit) {
-        _firstInit = NO;
-        
-        // DISCUSSION TABLE INIT !
-        // Is allocated and going to be present - one time only.
-        self.discussionTable = [[ContentTableWithPeople alloc] initWithRowHeight:70];
-        self.discussionTable.nController = self.nController;
-        self.discussionTable.allowsSelection = YES;
-        self.discussionTable.canEditFirstRow = YES;
-        self.discussionTable.peopleTableMode = kPeopleTableModeDiscussion;
-    }
-    
-    // - 65 is there because there is big avatar left of table cell body text view.
-    _widthForTableCellBodyTextView = self.view.frame.size.width - kWidthForTableCellBodyTextViewSubstract;
 }
 
 - (void)didReceiveMemoryWarning
@@ -179,6 +163,16 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    // DISCUSSION TABLE INIT !
+    self.discussionTable = [[ContentTableWithPeople alloc] initWithRowHeight:70];
+    self.discussionTable.nController = self.nController;
+    self.discussionTable.allowsSelection = YES;
+    self.discussionTable.canEditFirstRow = YES;
+    self.discussionTable.peopleTableMode = kPeopleTableModeDiscussion;
+    
+    // - 65 is there because there is big avatar left of table cell body text view.
+    _widthForTableCellBodyTextView = self.view.frame.size.width - kWidthForTableCellBodyTextViewSubstract;
     
     NSDictionary *userPostData = [[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
 //    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), userPostData);

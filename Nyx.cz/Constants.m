@@ -43,7 +43,7 @@ NSString* const kPeopleTableModeNotices = @"kPeopleTableModeNotices";
 NSString* const kPeopleTableModeNoticesDetail = @"kPeopleTableModeNoticesDetail";
 NSString* const kPeopleTableModeSearch = @"kPeopleTableModeSearch";
 
-CGFloat const kLongPressMinimumDuration = 0.4f;
+CGFloat const kLongPressMinimumDuration = 0.3f;
 
 // API
 NSString* const kApiLoguser = @"loguser";

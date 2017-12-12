@@ -20,7 +20,6 @@
     
     // For next controller - discussion table
     CGFloat _widthForTableCellBodyTextView;
-    BOOL _firstInit;
     
     NSMutableString *_currentDiscussionId;
     

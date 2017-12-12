@@ -26,6 +26,7 @@
     NSString *_postIdentificationTable, *_postIdentificationPostFeedMessage, *_postIdentificationPostMailboxMessage, *_postIdentificationPostDiscussionMessage, *_postIdentificationPostReaction;
     NSString *_currentAttachmentName;
     NSString *_respondTo;
+    NSString *_discussionId;
     
     NSMutableArray *_reactionsToDownload, *_nyxRowsForSection, *_nyxRowHeights, *_nyxTexts;
 }
@@ -44,7 +45,6 @@
 @property (nonatomic, strong) NSString *bodyTextSource;
 @property (nonatomic, assign) CGFloat bodyHeight;
 @property (nonatomic, strong) NSString *postId;
-@property (nonatomic, strong) NSString *discussionId;
 @property (nonatomic, strong) NSString *firstDiscussionPostId;
 @property (nonatomic, strong) NSArray *previousReactions;
 
@@ -55,5 +55,8 @@
 @property (nonatomic, strong) NSString *peopleRespondMode;
 
 @property (nonatomic, strong) NSMutableArray *attachmentNames;
+
+@property (nonatomic, strong) NSDictionary *disscussionClubData;
+
 
 @end

@@ -63,6 +63,8 @@
 {
     [super viewDidLoad];
     
+    _discussionId = [self.disscussionClubData objectForKey:@"id_klub"];
+    
     self.table.allowsSelection = YES;
     self.table.canEditFirstRow = NO;
     self.table.nController = self.nController;
@@ -79,9 +81,14 @@
     }
     if ([self.peopleRespondMode isEqualToString:kPeopleTableModeDiscussion]) {
         self.table.peopleTableMode = kPeopleTableModeDiscussionDetail;
+        self.table.disscussionClubData = self.disscussionClubData;
     }
     if ([self.peopleRespondMode isEqualToString:kPeopleTableModeNotices]) {
         self.table.peopleTableMode = kPeopleTableModeNoticesDetail;
+    }
+    if ([self.peopleRespondMode isEqualToString:kPeopleTableModeDiscussionDetail]) {
+        self.table.peopleTableMode = kPeopleTableModeDiscussionDetail;
+        self.table.disscussionClubData = self.disscussionClubData;
     }
     
     self.bottomView = [[UIView alloc] init];
@@ -184,7 +191,7 @@
         CGFloat bottomBarHeight = 0;
         CGFloat edgeInsect = 0;
         CGFloat maxButtonSize = 0;
-        if (![self.peopleRespondMode isEqualToString:kPeopleTableModeNotices])
+        if (![self.peopleRespondMode isEqualToString:kPeopleTableModeNotices] && ![self.peopleRespondMode isEqualToString:kPeopleTableModeDiscussionDetail])
         {
             bottomBarHeight = f.size.height / 3.5;
             edgeInsect = 10;
@@ -221,7 +228,8 @@
     if ([self.peopleRespondMode isEqualToString:kPeopleTableModeMailbox] ||
         [self.peopleRespondMode isEqualToString:kPeopleTableModeFriends] ||
         [self.peopleRespondMode isEqualToString:kPeopleTableModeDiscussion] ||
-        [self.peopleRespondMode isEqualToString:kPeopleTableModeNotices]) {
+        [self.peopleRespondMode isEqualToString:kPeopleTableModeNotices] ||
+        [self.peopleRespondMode isEqualToString:kPeopleTableModeDiscussionDetail]) {
         // All data required is already in properties. No loading needed to respond someone to mail.
         [self configureTableWithJson:nil];
     }
@@ -328,7 +336,7 @@
     if ([self.peopleRespondMode isEqualToString:kPeopleTableModeDiscussion])
     {
         sc.identifitaion = _postIdentificationPostDiscussionMessage;
-        NSDictionary *apiRequest = [ApiBuilder apiDiscussionSendWithAttachment:self.discussionId message:self.responseView.text];
+        NSDictionary *apiRequest = [ApiBuilder apiDiscussionSendWithAttachment:_discussionId message:self.responseView.text];
         // self.attachmentNames can be nil.
         [sc downloadDataForApiRequestWithParameters:apiRequest andAttachmentName:self.attachmentNames];
     }
@@ -461,7 +469,8 @@
     if ([self.peopleRespondMode isEqualToString:kPeopleTableModeMailbox] ||
         [self.peopleRespondMode isEqualToString:kPeopleTableModeFriends] ||
         [self.peopleRespondMode isEqualToString:kPeopleTableModeDiscussion] ||
-        [self.peopleRespondMode isEqualToString:kPeopleTableModeNotices])
+        [self.peopleRespondMode isEqualToString:kPeopleTableModeNotices] ||
+        [self.peopleRespondMode isEqualToString:kPeopleTableModeDiscussionDetail])
     {
         [self.table.nyxSections removeAllObjects];
         [self.table.nyxRowsForSections removeAllObjects];
@@ -706,7 +715,7 @@
         NSInteger postIdPlusJedna = [[[_reactionsToDownload firstObject] objectForKey:@"reactionId"] integerValue] + 1;
         
         [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-        NSString *apiRequest = [ApiBuilder apiMessagesForDiscussion:self.discussionId loadMoreFromId:[@(postIdPlusJedna) stringValue]];
+        NSString *apiRequest = [ApiBuilder apiMessagesForDiscussion:_discussionId loadMoreFromId:[@(postIdPlusJedna) stringValue]];
         ServerConnector *sc = [[ServerConnector alloc] init];
         sc.delegate = self;
         sc.identifitaion = _postIdentificationPostReaction;
