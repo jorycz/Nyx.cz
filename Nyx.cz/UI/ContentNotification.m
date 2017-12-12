@@ -23,7 +23,7 @@
     {
         self.backgroundColor = [UIColor whiteColor];
         _firstInit = YES;
-//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshDataForMainContent) name:kNotificationFriendsFeedChanged object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshDataForMainContent) name:kNotificationNoticesChanged object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(adjustFrameForCurrentStatusBar) name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
     }
     return self;

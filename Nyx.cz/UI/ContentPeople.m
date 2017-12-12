@@ -25,6 +25,7 @@
     if (self)
     {
         self.backgroundColor = [UIColor whiteColor];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshDataForMainContent) name:kNotificationPeopleChanged object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(adjustFrameForCurrentStatusBar) name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
         _firstInit = YES;
     }
@@ -56,9 +57,9 @@
         // - 65 is there because there is big avatar left of table cell body text view.
         _widthForTableCellBodyTextView = self.frame.size.width - kWidthForTableCellBodyTextViewSubstract;
         
-        self.nController.topViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
-                                                                                                                             target:self
-                                                                                                                             action:@selector(refreshDataForMainContent)];
+//        self.nController.topViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
+//                                                                                                                             target:self
+//                                                                                                                             action:@selector(refreshDataForMainContent)];
         
         [self refreshDataForMainContent];
     }

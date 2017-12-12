@@ -10,12 +10,12 @@
 #import "PeopleRespondVC.h"
 #import "ApiBuilder.h"
 #import "LoadingView.h"
+#import "Colors.h"
 // Post content
 #import "WebVC.h"
 #import "ImagePreviewVC.h"
 // Pasteboard
 #import <MobileCoreServices/MobileCoreServices.h>
-#import "Colors.h"
 
 
 @interface ContentTableWithPeople ()
@@ -83,7 +83,9 @@
     
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeMailbox] ||
         [self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion] ||
-        [self.peopleTableMode isEqualToString:kPeopleTableModeFeed])
+        [self.peopleTableMode isEqualToString:kPeopleTableModeFeed] ||
+        [self.peopleTableMode isEqualToString:kPeopleTableModeFriends] ||
+        [self.peopleTableMode isEqualToString:kPeopleTableModeNotices])
     {
         UIRefreshControl *refreshControll = [[UIRefreshControl alloc] init];
         [refreshControll addTarget:self action:@selector(pullToRefresh:) forControlEvents:UIControlEventValueChanged];
@@ -661,6 +663,14 @@
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeed])
     {
         POST_NOTIFICATION_FRIENDS_FEED_CHANGED
+    }
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeFriends])
+    {
+        POST_NOTIFICATION_PEOPLE_TABLE_CHANGED
+    }
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeNotices])
+    {
+        POST_NOTIFICATION_NOTICES_TABLE_CHANGED
     }
     [(UIRefreshControl *)sender endRefreshing];
 }

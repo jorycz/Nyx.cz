@@ -18,6 +18,8 @@
 #define NOTIFICATION_MAIN_BUTTON_PRESSED(s) [[NSNotificationCenter defaultCenter] postNotificationName:kMainButtonNotification object:nil userInfo:@{@"button" : (s)}];
 
 #define POST_NOTIFICATION_FRIENDS_FEED_CHANGED [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationFriendsFeedChanged object:nil userInfo:nil];
+#define POST_NOTIFICATION_PEOPLE_TABLE_CHANGED [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationPeopleChanged object:nil userInfo:nil];
+#define POST_NOTIFICATION_NOTICES_TABLE_CHANGED [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationNoticesChanged object:nil userInfo:nil];
 
 #define POST_NOTIFICATION_MAILBOX_CHANGED [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMailboxChanged object:nil userInfo:nil];
 #define POST_NOTIFICATION_MAILBOX_LOAD_FROM(s) [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMailboxLoadFrom object:nil userInfo:@{@"nKey" : (s)}];
@@ -55,6 +57,9 @@ extern NSString* const kNotificationMailboxNewMessageFor;
 extern NSString* const kNotificationDiscussionLoadOlderFrom;
 extern NSString* const kNotificationDiscussionLoadNewerFrom;
 extern NSString* const kNotificationListTableChanged;
+extern NSString* const kNotificationPeopleChanged;
+extern NSString* const kNotificationNoticesChanged;
+
 
 extern NSString* const kPeopleTableModeFeed;
 extern NSString* const kPeopleTableModeFeedDetail;

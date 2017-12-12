@@ -49,9 +49,9 @@
         
         [self adjustFrameForCurrentStatusBar];
         
-        self.nController.topViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
-                                                                                                                             target:self
-                                                                                                                             action:@selector(refreshDataForMainContent)];
+//        self.nController.topViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
+//                                                                                                                             target:self
+//                                                                                                                             action:@selector(refreshDataForMainContent)];
         [self refreshDataForMainContent];
     }
 }
