@@ -8,6 +8,7 @@
 
 #import "ImageVC.h"
 #import "CacheManager.h"
+#import "Constants.h"
 
 
 @interface ImageVC ()
@@ -44,6 +45,10 @@
     tapToZoom.numberOfTapsRequired = 2;
     [tapToZoom addTarget:self action:@selector(toggleZoom)];
     [_zoomView addGestureRecognizer:tapToZoom];
+    
+    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(shareImage:)];
+    longPress.minimumPressDuration = kLongPressMinimumDuration;
+    [_zoomView addGestureRecognizer:longPress];
 }
 
 - (void)didReceiveMemoryWarning
@@ -87,9 +92,9 @@
             
             if (max < 1)
             {
-                NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"Image is smaller than display. Zoom disabled.");
+//                NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"Image is smaller than display. Zoom disabled.");
+                _imageView.contentMode = UIViewContentModeCenter;
                 _zoomView.userInteractionEnabled = NO;
-                _imageView.alpha = .8;
             }
         }
     });
@@ -128,6 +133,47 @@
         [_zoomView setZoomScale:_zoomView.maximumZoomScale animated:YES];
     }
 }
+
+#pragma mark - SHARING
+
+- (void)shareImage:(UILongPressGestureRecognizer *)sender
+{
+    if (sender.state == UIGestureRecognizerStateBegan)
+    {
+        NSArray *items = @[_imageView.image];
+        UIActivityViewController *controller = [[UIActivityViewController alloc]initWithActivityItems:items applicationActivities:nil];
+        [self presentActivityController:controller];
+    }
+}
+
+- (void)presentActivityController:(UIActivityViewController *)controller {
+    
+    // for iPad: make the presentation a Popover
+    controller.modalPresentationStyle = UIModalPresentationPopover;
+    [self presentViewController:controller animated:YES completion:nil];
+    
+    UIPopoverPresentationController *popController = [controller popoverPresentationController];
+    popController.permittedArrowDirections = UIPopoverArrowDirectionAny;
+    popController.barButtonItem = self.navigationItem.leftBarButtonItem;
+    
+    controller.completionWithItemsHandler = ^(NSString *activityType,
+                                              BOOL completed,
+                                              NSArray *returnedItems,
+                                              NSError *error){
+        if (completed)
+        {
+            // user shared an item
+        } else {
+            // user cancelled
+        }
+        
+        if (error) {
+            NSString *e = [NSString stringWithFormat:@"%@, %@", error.localizedDescription, error.localizedFailureReason];
+            NSLog(@"%@ - %@ : ERROR [%@]", self, NSStringFromSelector(_cmd), e);
+        }
+    };
+}
+
 
 
 @end

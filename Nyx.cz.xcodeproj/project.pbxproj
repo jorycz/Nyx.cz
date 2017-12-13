@@ -54,6 +54,8 @@
 		2B3180251FC5B65C0063B9EE /* PeopleAutocompleteVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B3180241FC5B65C0063B9EE /* PeopleAutocompleteVC.m */; };
 		2B3180271FC70C5B0063B9EE /* attachment@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B3180261FC70C5A0063B9EE /* attachment@2x.png */; };
 		2B3180291FC76B680063B9EE /* burger@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B3180281FC76B680063B9EE /* burger@2x.png */; };
+		2B38C3091FE1631F0099D2FF /* ShareItemProviderText.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B38C3081FE1631F0099D2FF /* ShareItemProviderText.m */; };
+		2B38C30C1FE17E7A0099D2FF /* ShareItemProviderImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B38C30B1FE17E7A0099D2FF /* ShareItemProviderImage.m */; };
 		2B42D4101FC8CD3E009F751D /* 10.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B42D3F91FC8CD3C009F751D /* 10.png */; };
 		2B42D4111FC8CD3E009F751D /* 19.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B42D3FA1FC8CD3C009F751D /* 19.png */; };
 		2B42D4121FC8CD3E009F751D /* 1.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B42D3FB1FC8CD3C009F751D /* 1.png */; };
@@ -206,6 +208,10 @@
 		2B31810B1FC7807A0063B9EE /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		2B31810C1FC780870063B9EE /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		2B31810D1FC780950063B9EE /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		2B38C3071FE1631F0099D2FF /* ShareItemProviderText.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShareItemProviderText.h; sourceTree = "<group>"; };
+		2B38C3081FE1631F0099D2FF /* ShareItemProviderText.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShareItemProviderText.m; sourceTree = "<group>"; };
+		2B38C30A1FE17E7A0099D2FF /* ShareItemProviderImage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShareItemProviderImage.h; sourceTree = "<group>"; };
+		2B38C30B1FE17E7A0099D2FF /* ShareItemProviderImage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShareItemProviderImage.m; sourceTree = "<group>"; };
 		2B42D3F91FC8CD3C009F751D /* 10.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = 10.png; path = Nyx.cz/Images/LoadingAnimation/10.png; sourceTree = SOURCE_ROOT; };
 		2B42D3FA1FC8CD3C009F751D /* 19.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = 19.png; path = Nyx.cz/Images/LoadingAnimation/19.png; sourceTree = SOURCE_ROOT; };
 		2B42D3FB1FC8CD3C009F751D /* 1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = 1.png; path = Nyx.cz/Images/LoadingAnimation/1.png; sourceTree = SOURCE_ROOT; };
@@ -314,6 +320,7 @@
 		2B0D5D8E1FBC40F20052D63C /* Nyx.cz */ = {
 			isa = PBXGroup;
 			children = (
+				2B38C3061FE162D60099D2FF /* Share */,
 				2B2303701FBC59C400286062 /* Images */,
 				2B317FD81FC21B8F0063B9EE /* Utils */,
 				2B2303841FBC609600286062 /* Storage */,
@@ -490,6 +497,17 @@
 				2B3181091FC780430063B9EE /* libxml2.tbd */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		2B38C3061FE162D60099D2FF /* Share */ = {
+			isa = PBXGroup;
+			children = (
+				2B38C3071FE1631F0099D2FF /* ShareItemProviderText.h */,
+				2B38C3081FE1631F0099D2FF /* ShareItemProviderText.m */,
+				2B38C30A1FE17E7A0099D2FF /* ShareItemProviderImage.h */,
+				2B38C30B1FE17E7A0099D2FF /* ShareItemProviderImage.m */,
+			);
+			path = Share;
 			sourceTree = "<group>";
 		};
 		2B42D3F81FC8CD24009F751D /* LoadingAnimation */ = {
@@ -732,11 +750,13 @@
 				2B317FF31FC221200063B9EE /* ContentNotification.m in Sources */,
 				2B317FD71FC20AD90063B9EE /* ContactVC.m in Sources */,
 				2B1D59551FCCB3DD009E4A88 /* WebVC.m in Sources */,
+				2B38C3091FE1631F0099D2FF /* ShareItemProviderText.m in Sources */,
 				2BF6504A1FD4293E00A43793 /* NewNoticesForPost.m in Sources */,
 				2BD251C51FC0D28600BE6272 /* MainContentVC.m in Sources */,
 				2B317FFF1FC246A40063B9EE /* ContentTableWithPeople.m in Sources */,
 				2B31801F1FC4DB590063B9EE /* ContentMailbox.m in Sources */,
 				2BD251D11FC0F1F100BE6272 /* CacheManager.m in Sources */,
+				2B38C30C1FE17E7A0099D2FF /* ShareItemProviderImage.m in Sources */,
 				2B2303871FBC60C300286062 /* StorageManager.m in Sources */,
 				2B0D5DA21FBC40F30052D63C /* main.m in Sources */,
 				2B0D5D9A1FBC40F30052D63C /* Nyx_cz.xcdatamodeld in Sources */,

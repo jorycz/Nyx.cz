@@ -16,6 +16,10 @@
 #import "ImagePreviewVC.h"
 // Pasteboard
 #import <MobileCoreServices/MobileCoreServices.h>
+// SHARING
+//#import "ComputeRowHeight.h"
+#import "ShareItemProviderText.h"
+#import "ShareItemProviderImage.h"
 
 
 @interface ContentTableWithPeople ()
@@ -761,7 +765,7 @@
     }
 }
 
-#pragma mark - CELL BODY TEXT DETECTOR
+#pragma mark - CELL BODY TEXT DETECTOR / PROCESSOR
 
 - (void)cellClickedForMoreActions:(ContentTableWithPeopleCell *)cell
 {
@@ -780,11 +784,11 @@
     {
         // Remove strange links and detect recipient URLs if any
         NSArray *httpOnlyUrls = [self getHttpOnlyUrls:[self getAllURLsFromAttributedAndSourceText:cell.bodyText withHtmlSource:cell.bodyTextSource]];
-        [self showActionSheetForURLs:httpOnlyUrls forText:cell.bodyText withSource:cell.bodyTextSource];
+        [self showActionSheetForURLs:httpOnlyUrls forText:cell.bodyText withSource:cell.bodyTextSource insideCell:cell];
     }
 }
 
-- (void)showActionSheetForURLs:(NSArray *)httpUrls forText:(NSAttributedString *)attrText withSource:(NSString *)sourceText
+- (void)showActionSheetForURLs:(NSArray *)httpUrls forText:(NSAttributedString *)attrText withSource:(NSString *)sourceText insideCell:(ContentTableWithPeopleCell *)cell
 {
     // Remove duplicates [NSSet] if any and filter arrays for images. // TODO TO DO
     NSArray *urlsWithoutImages = [[NSArray alloc] initWithArray:[self urlsWithoutImages:httpUrls] copyItems:YES];
@@ -812,15 +816,12 @@
     }
     
     NSArray *urlsWithImagesOnly = [[NSArray alloc] initWithArray:[self urlsWithImagesOnly:httpUrls] copyItems:YES];
-    NSArray *i = [self detectImageAttachmentsInsideAttribudetText:attrText];
-    if ((i && [i count] > 0) || [urlsWithImagesOnly count] > 0)
+    if ([urlsWithImagesOnly count] > 0)
     {
         UIAlertAction *showImages = [UIAlertAction actionWithTitle:@"Zobrazit obrázky" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action)
         {
-//            NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), i);
 //            NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), urlsWithImagesOnly);
             ImagePreviewVC *ip = [[ImagePreviewVC alloc] init];
-//            ip.images = i;
             ip.imageUrls = urlsWithImagesOnly;
             UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:ip];
             nc.modalPresentationStyle = UIModalPresentationCustom;
@@ -833,17 +834,20 @@
 //    NSLog(@"%@ - %@ : NO IMAGES [%@]", self, NSStringFromSelector(_cmd), urlsWithoutImages);
 //    NSLog(@"%@ - %@ : IMAGES ONLY [%@]", self, NSStringFromSelector(_cmd), urlsWithImagesOnly);
     
+    // -------- POST CONTENT -----------
+    NSMutableDictionary *postContent = [[NSMutableDictionary alloc] init];
+    NSData *rtf = [attrText dataFromRange:NSMakeRange(0, attrText.length)
+                       documentAttributes:@{NSDocumentTypeDocumentAttribute: NSRTFDTextDocumentType}
+                                    error:nil];
+    if (rtf)
+        [postContent setObject:rtf forKey:(id)kUTTypeFlatRTFD];
+    // Fallback
+    [postContent setObject:attrText.string forKey:(id)kUTTypeUTF8PlainText];
+    // -------- POST CONTENT -----------
+    
     UIAlertAction *copy = [UIAlertAction actionWithTitle:@"Kopírovat" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
-        NSMutableDictionary *item = [[NSMutableDictionary alloc] init];
-        NSData *rtf = [attrText dataFromRange:NSMakeRange(0, attrText.length)
-                           documentAttributes:@{NSDocumentTypeDocumentAttribute: NSRTFDTextDocumentType}
-                                        error:nil];
-        if (rtf)
-            [item setObject:rtf forKey:(id)kUTTypeFlatRTFD];
-        // Fallback
-        [item setObject:attrText.string forKey:(id)kUTTypeUTF8PlainText];
         UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-        pasteboard.items = @[item];
+        pasteboard.items = @[postContent];
     }];
     [alert addAction:copy];
     
@@ -853,12 +857,17 @@
     }];
     [alert addAction:copySource];
     
+    UIAlertAction *sharePost = [UIAlertAction actionWithTitle:@"Sdílet" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+        [self createSharingDataWithTitle:cell.nick andBody:cell.bodyTextSource andBodyAttributed:cell.bodyText imageUrls:urlsWithImagesOnly];
+    }];
+    [alert addAction:sharePost];
+    
     UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Zrušit" style:(UIAlertActionStyleCancel) handler:^(UIAlertAction * _Nonnull action) {}];
     [alert addAction:cancel];
     [self.nController presentViewController:alert animated:YES completion:nil];
 }
 
-#pragma mark - TEXT BODY PARSING FOR URLs
+#pragma mark - ATTRIBUTED TEXT BODY PARSING and REPLACE
 
 - (NSArray *)urlsWithoutImages:(NSArray *)detectedUrl
 {
@@ -894,6 +903,7 @@
     return (NSArray *)a;
 }
 
+// Detect images inside attributed text and place them in array. NOT USED.
 - (NSArray *)detectImageAttachmentsInsideAttribudetText:(NSAttributedString *)attrText
 {
     NSMutableArray *imagesArray = [[NSMutableArray alloc] init];
@@ -998,18 +1008,31 @@
     return (NSArray *)urls;
 }
 
-//- (NSArray *)getRecipientNamesFromSourceHtml:(NSString *)sourceText
-//{
-//    NSArray *recNames = [sourceText componentsSeparatedByString:@"\""];
-//    NSMutableArray *recipientNames = [NSMutableArray array];
-//    for (NSString *name in recNames) {
-//        if ([name hasPrefix:@"replyto"])
-//        {
-//            [recipientNames addObject:[name substringFromIndex:7]];
-//        }
-//    }
-//    return (NSArray *)recipientNames;
-//}
+- (NSAttributedString *)replaceRelativeNyxUrlsInsidePostWithAbsoluteUrls:(NSAttributedString *)attrText
+{
+    NSMutableAttributedString *newSource = [[NSMutableAttributedString alloc] initWithAttributedString:attrText];
+    
+    [newSource enumerateAttributesInRange:NSMakeRange(0, newSource.length)
+                                 options:NSAttributedStringEnumerationLongestEffectiveRangeNotRequired
+                              usingBlock:^(NSDictionary<NSAttributedStringKey,id> * _Nonnull attrs, NSRange range, BOOL * _Nonnull stop) {
+                                  
+                                  if ([attrs objectForKey:@"NSLink"])
+                                  {
+                                      NSURL *url = [attrs objectForKey:@"NSLink"];
+                                      NSString *urlStr = [url absoluteString];
+                                      if ([urlStr hasPrefix:@"applewebdata"])
+                                      {
+                                          // Replace NSLinkAttributeName
+                                          NSRange rangeToReplace = [urlStr rangeOfString:@"?"];
+                                          NSString *absoluteUrl = [urlStr substringFromIndex:rangeToReplace.location];
+                                          NSString *finalUrl = [NSString stringWithFormat:@"https://www.nyx.cz/index.php%@", absoluteUrl];
+                                          [newSource addAttribute:NSLinkAttributeName value:[NSURL URLWithString:finalUrl] range:range];
+                                      }
+                                  }
+                              }];
+    
+    return (NSAttributedString *)newSource;
+}
 
 #pragma mark - LOADING VIEW
 
@@ -1042,6 +1065,62 @@
         }
     }
 }
+
+#pragma mark - SHARING
+
+- (void)createSharingDataWithTitle:(NSString *)title andBody:(NSString *)bodyText andBodyAttributed:(NSAttributedString *)bodyAttributed imageUrls:(NSArray *)imageUrls
+{
+    NSAttributedString *bodyWithFullUrls = [self replaceRelativeNyxUrlsInsidePostWithAbsoluteUrls:bodyAttributed];
+    
+    NSArray *httpOnlyUrls = [self getHttpOnlyUrls:[self getAllURLsFromAttributedAndSourceText:bodyWithFullUrls withHtmlSource:nil]];
+    
+    NSMutableArray *shareProviders = [[NSMutableArray alloc] init];
+    ShareItemProviderText *textItem = [[ShareItemProviderText alloc] initWithTitle:title andBody:bodyText andBodyAttributed:bodyWithFullUrls andUrls:httpOnlyUrls];
+    [shareProviders addObject:textItem];
+    
+    for (NSURL *u in imageUrls)
+    {
+        ShareItemProviderImage *i = [[ShareItemProviderImage alloc] initWithFileUrl:u];
+        [shareProviders addObject:i];
+    }
+    
+    UIActivityViewController *controller = [[UIActivityViewController alloc]initWithActivityItems:shareProviders applicationActivities:nil];
+    [self presentActivityController:controller];
+}
+
+- (void)presentActivityController:(UIActivityViewController *)controller {
+    
+    // for iPad: make the presentation a Popover
+    controller.modalPresentationStyle = UIModalPresentationPopover;
+    
+    if (self.nController) {
+        [self.nController presentViewController:controller animated:YES completion:nil];
+    } else {
+        [self presentViewController:controller animated:YES completion:nil];
+    }
+    
+    UIPopoverPresentationController *popController = [controller popoverPresentationController];
+    popController.permittedArrowDirections = UIPopoverArrowDirectionAny;
+    popController.barButtonItem = self.navigationItem.leftBarButtonItem;
+    
+    controller.completionWithItemsHandler = ^(NSString *activityType,
+                                              BOOL completed,
+                                              NSArray *returnedItems,
+                                              NSError *error){
+        if (completed)
+        {
+            // user shared an item
+        } else {
+            // user cancelled
+        }
+        
+        if (error) {
+            NSString *e = [NSString stringWithFormat:@"%@, %@", error.localizedDescription, error.localizedFailureReason];
+            NSLog(@"%@ - %@ : ERROR [%@]", self, NSStringFromSelector(_cmd), e);
+        }
+    };
+}
+
 
 
 @end

@@ -21,30 +21,21 @@
     {
         NSData *textData = [text dataUsingEncoding:(NSUTF8StringEncoding)];
         
-        BOOL _useAppleHTMLParsing = YES;
-        
-        if (_useAppleHTMLParsing)
-        {
 //            PERFSTART
-            // HACK !!!
-            // that magical 10 si 2 * textView.textContainer.lineFragmentPadding
-            // read more https://stackoverflow.com/questions/13621084/boundingrectwithsize-for-nsattributedstring-returning-wrong-size
+        // HACK !!!
+        // that magical 10 si 2 * textView.textContainer.lineFragmentPadding
+        // read more https://stackoverflow.com/questions/13621084/boundingrectwithsize-for-nsattributedstring-returning-wrong-size
 //            currentWidth -= 10;
-            
-            NSError *error = nil;
-            self.attributedText = [[NSMutableAttributedString alloc] initWithData:textData options:@{NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
-                                                                                                     NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding)}
-                                                               documentAttributes:nil
-                                                                            error:&error];
-            if (error) {
-                NSLog(@"%@ - %@ ERROR : [%@]", self, NSStringFromSelector(_cmd), [error localizedDescription]);
-            }
+        
+        NSError *error = nil;
+        self.attributedText = [[NSMutableAttributedString alloc] initWithData:textData options:@{NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
+                                                                                                 NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding)}
+                                                           documentAttributes:nil
+                                                                        error:&error];
+        if (error) {
+            NSLog(@"%@ - %@ ERROR : [%@]", self, NSStringFromSelector(_cmd), [error localizedDescription]);
+        }
 //            PERFSTOP
-        }
-        else
-        {
-            
-        }
         
         if (inlineImages && [inlineImages length] > 0)
         {
