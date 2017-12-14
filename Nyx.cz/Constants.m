@@ -9,6 +9,7 @@
 #import "Constants.h"
 
 
+
 @implementation Constants
 
 
@@ -22,16 +23,13 @@ NSInteger const kMinimumPeopleTableCellHeight = 45;
 NSInteger const kNavigationBarHeight = 44;
 NSInteger const kStatusBarStandardHeight = 20;
 
+
 NSString* const kNotificationShowError = @"kNotificationShowError";
 NSString* const kNotificationFriendsFeedChanged = @"kNotificationFriendsFeedChanged";
 NSString* const kNotificationMailboxChanged = @"kNotificationMailboxChanged";
-NSString* const kNotificationMailboxLoadFrom = @"kNotificationMailboxLoadFrom";
 NSString* const kNotificationMailboxNewMessageFor = @"kNotificationMailboxNewMessageFor";
-NSString* const kNotificationDiscussionLoadOlderFrom = @"kNotificationDiscussionLoadOlderFrom";
 NSString* const kNotificationDiscussionLoadNewerFrom = @"kNotificationDiscussionLoadNewerFrom";
 NSString* const kNotificationListTableChanged = @"kNotificationListTableChanged";
-NSString* const kNotificationPeopleChanged = @"kNotificationPeopleChanged";
-NSString* const kNotificationNoticesChanged = @"kNotificationNoticesChanged";
 
 
 NSString* const kPeopleTableModeFeed = @"kPeopleTableModeFeed";
@@ -45,8 +43,29 @@ NSString* const kPeopleTableModeDiscussionDetail = @"kPeopleTableModeDiscussionD
 NSString* const kPeopleTableModeNotices = @"kPeopleTableModeNotices";
 NSString* const kPeopleTableModeNoticesDetail = @"kPeopleTableModeNoticesDetail";
 NSString* const kPeopleTableModeSearch = @"kPeopleTableModeSearch";
+NSString* const kPeopleTableModeRatingInfo = @"kPeopleTableModeRatingInfo";
+
+NSString* const kListTableModeBookmarks = @"kListTableModeBookmarks";
+NSString* const kListTableModeHistory = @"kListTableModeHistory";
 
 CGFloat const kLongPressMinimumDuration = 0.3f;
+
+NSString* const kApiIdentificationDataForFeedOfFriends = @"kApiIdentificationDataForFeedOfFriends";
+NSString* const kApiIdentificationDataForDiscussion = @"kApiIdentificationDataForDiscussion";
+NSString* const kApiIdentificationDataForDiscussionFromID = @"kApiIdentificationDataForDiscussionFromID";
+NSString* const kApiIdentificationDataForDiscussionRefreshAfterPost = @"kApiIdentificationDataForDiscussionRefreshAfterPost";
+NSString* const kApiIdentificationPostDelete = @"kApiIdentificationPostDelete";
+NSString* const kApiIdentificationPostThumbs = @"kApiIdentificationPostThumbs";
+NSString* const kApiIdentificationPostRefreshThumbs = @"kApiIdentificationPostRefreshThumbs";
+NSString* const kApiIdentificationPostGetRatingInfo = @"kApiIdentificationPostGetRatingInfo";
+NSString* const kApiIdentificationDataForMailbox = @"kApiIdentificationDataForMailbox";
+NSString* const kApiIdentificationDataForMailboxOlderMessages = @"kApiIdentificationDataForMailboxOlderMessages";
+NSString* const kApiIdentificationDataForFriendList = @"kApiIdentificationDataForFriendList";
+NSString* const kApiIdentificationDataForNotices = @"kApiIdentificationDataForNotices";
+NSString* const kApiIdentificationDataForSearch = @"kApiIdentificationDataForSearch";
+NSString* const kApiIdentificationDataForBookmarks = @"kApiIdentificationDataForBookmarks";
+NSString* const kApiIdentificationDataForHistory = @"kApiIdentificationDataForHistory";
+
 
 // API
 NSString* const kApiLoguser = @"loguser";
@@ -101,7 +120,7 @@ NSString* const kMenuOverview = @"Přehled";
 NSString* const kMenuMail = @"Pošta";
 NSString* const kMenuBookmarks = @"Sledované";
 NSString* const kMenuHistory = @"Historie";
-NSString* const kMenuPeople = @"Lidé";
+NSString* const kMenuFriendList = @"Lidé";
 NSString* const kMenuNotifications = @"Upozornění";
 NSString* const kMenuSearchPosts = @"Hledání příspěvků";
 

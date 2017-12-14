@@ -11,6 +11,7 @@
 #import "ApiBuilder.h"
 #import "LoadingView.h"
 #import "Colors.h"
+#import "RichTextProcessor.h"
 // Post content
 #import "WebVC.h"
 #import "ImagePreviewVC.h"
@@ -20,6 +21,8 @@
 //#import "ComputeRowHeight.h"
 #import "ShareItemProviderText.h"
 #import "ShareItemProviderImage.h"
+
+#import "TableConfigurator.h"
 
 
 @interface ContentTableWithPeople ()
@@ -39,15 +42,20 @@
         self.nyxPostsRowHeights = [[NSMutableArray alloc] init];
         self.nyxPostsRowBodyTexts = [[NSMutableArray alloc] init];
         self.canEditFirstRow = YES;
-        _identificationDelete = @"rowDelete";
-        _identificationThumbs = @"thumbs";
-        _identificationThumbsAfterRatingGive = @"afterRatingRefresh";
+        
+        // Refresh after new FEED POST.
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getDataForFeedOfFriends) name:kNotificationFriendsFeedChanged object:nil];
+        // Refresh after new mail message is sent.
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getDataForMailbox) name:kNotificationMailboxChanged object:nil];
+        // Refresh and load newer posts after new POST is send to discussion.
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getDataForDiscussionBeforeId:) name:kNotificationDiscussionLoadNewerFrom object:nil];
     }
     return self;
 }
 
 - (void)dealloc
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)loadView
@@ -61,12 +69,6 @@
 {
     [super viewDidLoad];
     
-    // Uncomment the following line to preserve selection between presentations.
-    self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-    
     _table = [[UITableView alloc] init];
     [self.view addSubview:_table];
 
@@ -77,12 +79,16 @@
     [_table setRowHeight:_rh];
     _table.allowsSelection = self.allowsSelection;
     
-//    self.nController.topViewController.navigationItem.rightBarButtonItem = nil;
-    
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion]) {
         self.nController.topViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
                                                                                                                              target:self
                                                                                                                              action:@selector(createNewPostToDiscussion)];
+    }
+    
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeRatingInfo]) {
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop
+                                                                                               target:self
+                                                                                               action:@selector(dismiss)];
     }
     
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeMailbox] ||
@@ -122,7 +128,7 @@
     [_table reloadData];
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion])
         [self removeLoadingView];
-    // neposouvat kdyz scrollujeme dolu a nacitaji se dalsi posty !!!
+    // Neposouvat kdyz scrollujeme dolu a nacitaji se dalsi posty.
     if (goToTop)
     {
         [_table scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:(UITableViewScrollPositionTop) animated:NO];
@@ -160,14 +166,18 @@
     
     NSDictionary *cellData = [[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
     
+//    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), cellData);
+    
     if (cellData)
     {
-        // remove all custom params
+        // Remove all custom params.
         cell.activeFriendStatus = nil;
         cell.commentsCount = nil;
         cell.mailboxDirection = nil;
         cell.mailboxMailStatus = nil;
         cell.rating = nil;
+        
+        cell.peopleCellMode = self.peopleTableMode;
         
         NSString *nick;
         if ([self.peopleTableMode isEqualToString:kPeopleTableModeFriends] || [self.peopleTableMode isEqualToString:kPeopleTableModeFriendsDetail])
@@ -210,12 +220,17 @@
             cell.rating = [cellData objectForKey:@"wu_rating"];
             cell.bodyTextSource = [cellData objectForKey:@"content"];
         }
+        if ([self.peopleTableMode isEqualToString:kPeopleTableModeRatingInfo])
+        {
+            nick = [cellData objectForKey:@"nick"];
+        }
+        
         cell.nick = nick;
+        
         Timestamp *ts = [[Timestamp alloc] initWithTimestamp:[cellData objectForKey:@"time"]];
         cell.time = [ts getTimeWithDate];
-        cell.peopleCellMode = self.peopleTableMode;
         
-        // Must be always set!
+        // Must exist!
         cell.bodyText = [[self.nyxPostsRowBodyTexts objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
         
         [cell configureCellForIndexPath:indexPath];
@@ -225,22 +240,35 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if ([self.peopleTableMode isEqualToString:kPeopleTableModeFriends] || [self.peopleTableMode isEqualToString:kPeopleTableModeFriendsDetail]) {
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeFriends] || [self.peopleTableMode isEqualToString:kPeopleTableModeFriendsDetail])
+    {
         return 70;
-    } else {
+    }
+    else
+    {
         CGFloat f = [[[self.nyxPostsRowHeights objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] floatValue];
-        // + 30 = Nick name at the top of the Cell.
-        return f + 30;
+        return f + 30; // + 30 = Nick name at the top of the Cell.
     }
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    if ([[self.nyxSections firstObject] isEqualToString:kDisableTableSections]) {
+    if ([[self.nyxSections firstObject] isEqualToString:kDisableTableSections])
         return nil;
-    }
     return [self.nyxSections objectAtIndex:section];
 }
+
+- (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section
+{
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeRatingInfo]) {
+        if (section == 0) {
+            view.tintColor = COLOR_RATING_POSITIVE;
+        } else {
+            view.tintColor = [UIColor colorWithRed:1 green:0 blue:0 alpha:.9];
+        }
+    }
+}
+
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -251,9 +279,13 @@
     {
         return;
     }
+    // DENY SELECT ON RATING INFO TABLE
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeRatingInfo])
+        return;
     
     NSDictionary *userPostData = [[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
 //    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), userPostData);
+//    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), self.disscussionClubData);
     
     // -------- SETTINGS FOR RESPOND VIEW --------
     NSString *nick;
@@ -304,7 +336,8 @@
         {
             // Previous reactions ID (wu) to this POST in **** DISCUSSION. ****
             ContentTableWithPeopleCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-            NSArray *recipientLinks = [self getRelativeOnlyUrls:[self getAllURLsFromAttributedAndSourceText:cell.bodyText withHtmlSource:nil]];
+            RichTextProcessor *rtp = [[RichTextProcessor alloc] init];
+            NSArray *recipientLinks = [rtp getRelativeOnlyUrls:[rtp getAllURLsFromAttributedAndSourceText:cell.bodyText withHtmlSource:nil]];
             NSArray *wuOnlyRecipients = [recipientLinks filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF contains %@", @"wu="]];
             if ([wuOnlyRecipients count] > 0) {
                 for (NSInteger index = 0; index < [wuOnlyRecipients count] ; index++)
@@ -354,19 +387,25 @@
         [self presentViewController:a animated:YES completion:^{}];
     }
     
-    if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeedDetail]  ||
-        [self.peopleTableMode isEqualToString:kPeopleTableModeMailboxDetail]) {
-        ContentTableWithPeopleCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-        [self cellClickedForMoreActions:cell];
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeNoticesDetail])
+    {
+        NSString *discussionId = [[[self.nyxRowsForSections objectAtIndex:0] objectAtIndex:0] objectForKey:@"id_klub"];
+        NSString *id_wu = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"id_wu"];
+        // Load even currently clicked POST from NOTICES so fake starting ID here.
+        NSInteger biggerId = [id_wu integerValue] + 1;
+        [self createAnotherDiscussionTableForDiscussionId:discussionId andLoadFromPostId:[@(biggerId) stringValue]];
     }
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeed] ||
-        [self.peopleTableMode isEqualToString:kPeopleTableModeFeedDetail] ||
         [self.peopleTableMode isEqualToString:kPeopleTableModeMailbox] ||
         [self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion])
+    {
+        return YES;
+    }
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeedDetail] && indexPath.row != 0)
     {
         return YES;
     }
@@ -378,23 +417,33 @@
     _tableEditShowDelete = NO;
     _tableEditShowThumbs = NO;
     
+    // SHOW VOTING THUMPS in Discussion Table Mode.
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion])
         _tableEditShowThumbs = YES;
     
+    // SHOW DELETE BUTTON WHEN IT'S OWN POST
     NSString *nickForPost = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"nick"];
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion] &&
         [[[Preferences auth_nick:nil] uppercaseString] isEqualToString:nickForPost])
         _tableEditShowDelete = YES;
-    
-    if ([self.peopleTableMode isEqualToString:kPeopleTableModeMailbox])
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeed] &&
+        [[[Preferences auth_nick:nil] uppercaseString] isEqualToString:nickForPost])
+        _tableEditShowDelete = YES;
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeedDetail] &&
+        [[[Preferences auth_nick:nil] uppercaseString] isEqualToString:nickForPost])
         _tableEditShowDelete = YES;
     
+    // SHOW DELETE BUTTON IN MAIL
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeMailbox])
+        _tableEditShowDelete = YES;
     
     UIContextualAction *thumbup = [UIContextualAction contextualActionWithStyle:UIContextualActionStyleNormal
                                                                           title:@"Ohodnotit"
                                                                         handler:^(UIContextualAction * _Nonnull action, __kindof UIView * _Nonnull sourceView, void (^ _Nonnull completionHandler)(BOOL))
     {
-        if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion]) {
+        // GIVE RATING IN DISCUSSION
+        if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion])
+        {
             _indexPathToRating = indexPath;
             NSString *discussionId = [self.disscussionClubData objectForKey:@"id_klub"];
             NSString *postId = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"id_wu"];
@@ -409,7 +458,9 @@
                                                                             title:@"Ohodnotit"
                                                                           handler:^(UIContextualAction * _Nonnull action, __kindof UIView * _Nonnull sourceView, void (^ _Nonnull completionHandler)(BOOL))
     {
-        if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion]) {
+        // GIVE RATING IN DISCUSSION
+        if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion])
+        {
             _indexPathToRating = indexPath;
             NSString *discussionId = [self.disscussionClubData objectForKey:@"id_klub"];
             NSString *postId = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"id_wu"];
@@ -424,8 +475,10 @@
                                                                          title:@"Smazat"
                                                                        handler:^(UIContextualAction * _Nonnull action, __kindof UIView * _Nonnull sourceView, void (^ _Nonnull completionHandler)(BOOL))
     {
+        // Delete COMMENT for FEED RESPONSE, WHOLE FEED POST, MAILBOX or POST IN DISCUSSION.
+        
         _indexPathToDelete = indexPath;
-        // Try to find if we are going to delete COMMENT under FEED POST or OWN WHOLE FEED POST.
+        
         if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeedDetail]) {
             // Get COMMENT ID under this POST.
             NSString *postId = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"id_comment"];
@@ -452,6 +505,7 @@
     }];
     delete.image = [UIImage imageNamed:@"delete"];
     
+    // SETUP BUTTONS
     NSArray *buttons;
     _tableEditShowThumbs && _tableEditShowDelete ? buttons = @[thumbdown, thumbup, delete] : NULL ;
     _tableEditShowThumbs ? buttons = @[thumbdown, thumbup] : NULL ;
@@ -463,53 +517,9 @@
     return swipeActionConfig;
 }
 
-// NOT USED SINCE trailingSwipeActionsConfigurationForRowAtIndexPath is USED.
+// NOT USED SINCE trailingSwipeActionsConfigurationForRowAtIndexPath is IN USE.
 //- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 //{
-//    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"");
-//    if (editingStyle == UITableViewCellEditingStyleDelete)
-//    {
-//        _indexPathToDelete = indexPath;
-//
-//        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-//        // Try to find if we are going to delete COMMENT under POST or OWN WHOLE POST.
-//
-//        if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeedDetail]) {
-//            // Get COMMENT ID under this POST.
-//            NSString *postToDelete = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"id_comment"];
-//            // User MAIN POST data with MAIN POST id are stored always as first CELL - so get POST MAIN ID here.
-//            NSDictionary *cellData = [[self.nyxRowsForSections objectAtIndex:0] objectAtIndex:0];
-//            NSString *id_update = [cellData objectForKey:@"id_update"];
-//            // Deleting by key id_comment
-//            [self deleteCommentOnFriendFeedFor:[Preferences auth_nick:nil] withId:id_update commentId:postToDelete];
-//        }
-//        if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeed]) {
-//            // Deleting MAIN POST by key id_update
-//            NSString *postToDelete = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"id_update"];
-//            [self deleteFriendFeedPostFor:[Preferences auth_nick:nil] withId:postToDelete];
-//        }
-//        if ([self.peopleTableMode isEqualToString:kPeopleTableModeMailbox]) {
-//            NSString *postToDelete = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"id_mail"];
-//            [self deleteMailMessageWithId:postToDelete];
-//        }
-//        if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion]) {
-//            NSString *discussionId = [self.disscussionClubData objectForKey:@"id_klub"];
-//            NSString *postToDelete = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"id_wu"];
-//            UIAlertController *a = [UIAlertController alertControllerWithTitle:@"Smazat?"
-//                                                                       message:@"Opravdu smazat příspěvek?"
-//                                                                preferredStyle:(UIAlertControllerStyleAlert)];
-//            UIAlertAction *delete = [UIAlertAction actionWithTitle:@"Smazat" style:(UIAlertActionStyleDestructive) handler:^(UIAlertAction * _Nonnull action) {
-//                [self deleteDiscussionPostFrom:discussionId withId:postToDelete];
-//            }];
-//            UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Zrušit" style:(UIAlertActionStyleCancel) handler:^(UIAlertAction * _Nonnull action) {}];
-//            [a addAction:delete];
-//            [a addAction:cancel];
-//            [self presentViewController:a animated:YES completion:^{}];
-//        }
-//
-//    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-//        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-//    }
 //}
 
 #pragma mark - NEW POST TO DISCUSSION
@@ -532,7 +542,7 @@
      ];
 }
 
-#pragma mark - TABLE ACTIONS - RESPOND TO SOMEONE
+#pragma mark - REPLY VIEW
 
 - (void)showRespondViewWithNick:(NSString *)nick
                        bodyText:(NSAttributedString *)bodyText
@@ -568,29 +578,48 @@
     [self.nController pushViewController:respondVC animated:YES];
 }
 
-#pragma mark - TABLE ACTIONS when SCROLL REACH END (mailbox, discussion) - LOAD MORE
+#pragma mark - SCROLL REACH END (mailbox, discussion) - LOAD MORE CELL INTO TABLE
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if ([self.peopleTableMode isEqualToString:kPeopleTableModeMailbox]) {
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeMailbox])
+    {
         // Load more mails when reach end.
         if (indexPath.row + 1 == [[self.nyxRowsForSections objectAtIndex:0] count])
         {
             _preserveIndexPathAfterLoadFromId = indexPath;
             NSString *fromID = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"id_mail"];
-            POST_NOTIFICATION_MAILBOX_LOAD_FROM(fromID)
+            [self getDataForMailboxFromId:fromID];
         }
     }
-    if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion]) {
+    
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion])
+    {
         // Load more posts when reach end.
         if (indexPath.row + 1 == [[self.nyxRowsForSections objectAtIndex:0] count])
         {
             _preserveIndexPathAfterLoadFromId = indexPath;
             NSString *fromID = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"id_wu"];
-            [self placeLoadingView];
-            POST_NOTIFICATION_DISCUSSION_LOAD_OLDER_FROM(fromID)
+            NSString *discussionId = [self.disscussionClubData objectForKey:@"id_klub"];
+            [self getDataForDiscussion:discussionId fromId:fromID];
         }
     }
+}
+
+#pragma mark - SHOW ANOTHER DISCUSSION PEOPLE TABLE - from notices section
+
+- (void)createAnotherDiscussionTableForDiscussionId:(NSString *)dId andLoadFromPostId:(NSString *)postId
+{
+    // DISCUSSION TABLE INIT !
+    self.nestedPeopleTable = [[ContentTableWithPeople alloc] initWithRowHeight:70];
+    self.nestedPeopleTable.nController = self.nController;
+    self.nestedPeopleTable.allowsSelection = YES;
+    self.nestedPeopleTable.canEditFirstRow = YES;
+    self.nestedPeopleTable.widthForTableCellBodyTextView = self.widthForTableCellBodyTextView;
+    self.nestedPeopleTable.peopleTableMode = kPeopleTableModeDiscussion;
+    
+    [self.nController pushViewController:self.nestedPeopleTable animated:YES];
+    [self.nestedPeopleTable getDataForDiscussion:dId fromId:postId];
 }
 
 #pragma mark - DELETING
@@ -598,25 +627,25 @@
 - (void)deleteCommentOnFriendFeedFor:(NSString *)nick withId:(NSString *)postId commentId:(NSString *)commentId
 {
     NSString *api = [ApiBuilder apiFeedOfFriendsDeleteCommentAs:nick withId:postId commentId:commentId];
-    [self postPostWithApiCall:api andIdentification:_identificationDelete];
+    [self serverApiCall:api andIdentification:kApiIdentificationPostDelete];
 }
 
 - (void)deleteFriendFeedPostFor:(NSString *)nick withId:(NSString *)postId
 {
     NSString *api = [ApiBuilder apiFeedOfFriendsDeletePostAs:nick withId:postId];
-    [self postPostWithApiCall:api andIdentification:_identificationDelete];
+    [self serverApiCall:api andIdentification:kApiIdentificationPostDelete];
 }
 
 - (void)deleteMailMessageWithId:(NSString *)messageId
 {
     NSString *api = [ApiBuilder apiMailboxDeleteMessage:messageId];
-    [self postPostWithApiCall:api andIdentification:_identificationDelete];
+    [self serverApiCall:api andIdentification:kApiIdentificationPostDelete];
 }
 
 - (void)deleteDiscussionPostFrom:(NSString *)discussionId withId:(NSString *)postId
 {
     NSString *api = [ApiBuilder apiDiscussionDeleteMessage:discussionId postId:postId];
-    [self postPostWithApiCall:api andIdentification:_identificationDelete];
+    [self serverApiCall:api andIdentification:kApiIdentificationPostDelete];
 }
 
 #pragma mark - THUMBS
@@ -629,60 +658,129 @@
                                                                    message:@"Opravdu udělit/zrušit negativní hodnocení?"
                                                             preferredStyle:(UIAlertControllerStyleAlert)];
         UIAlertAction *delete = [UIAlertAction actionWithTitle:@"Udělit" style:(UIAlertActionStyleDestructive) handler:^(UIAlertAction * _Nonnull action) {
-            [self postPostWithApiCall:api andIdentification:_identificationThumbs];
+            [self serverApiCall:api andIdentification:kApiIdentificationPostThumbs];
         }];
         UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Zrušit" style:(UIAlertActionStyleCancel) handler:^(UIAlertAction * _Nonnull action) {}];
         [a addAction:delete];
         [a addAction:cancel];
         [self presentViewController:a animated:YES completion:^{}];
     } else {
-        [self postPostWithApiCall:api andIdentification:_identificationThumbs];
+        [self serverApiCall:api andIdentification:kApiIdentificationPostThumbs];
     }
 }
 
-- (void)getCurrentRating:(NSString *)dId toPost:(NSString *)postId
+- (void)getCurrentRating:(NSString *)dId forPost:(NSString *)postId
 {
     NSString *api = [ApiBuilder apiDiscussionGetRatingInDiscussion:dId forPost:postId];
-    [self postPostWithApiCall:api andIdentification:_identificationThumbsAfterRatingGive];
+    [self serverApiCall:api andIdentification:kApiIdentificationPostRefreshThumbs];
 }
 
-#pragma mark - DATA
-
-- (void)postPostWithApiCall:(NSString *)api andIdentification:(NSString *)identification
+- (void)getCurrentRatingForPresentation:(NSString *)dId forPost:(NSString *)postId
 {
+    NSString *api = [ApiBuilder apiDiscussionGetRatingInDiscussion:dId forPost:postId];
+    [self serverApiCall:api andIdentification:kApiIdentificationPostGetRatingInfo];
+}
+
+
+#pragma mark - PULL TO REFRESH
+
+- (void)pullToRefresh:(id)sender
+{
+    [_table setScrollEnabled:NO];
+    [_table setScrollEnabled:YES];
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeMailbox])
+    {
+        [self getDataForMailbox];
+    }
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion])
+    {
+        NSString *beforeId = [[[self.nyxRowsForSections objectAtIndex:0] objectAtIndex:0] objectForKey:@"id_wu"];
+        POST_NOTIFICATION_DISCUSSION_LOAD_NEWER_FROM(beforeId)
+    }
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeed])
+    {
+        [self getDataForFeedOfFriends];
+    }
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeFriends])
+    {
+        [self getDataForFriendList];
+    }
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeNotices])
+    {
+        [self getDataForNotices];
+    }
+    [(UIRefreshControl *)sender endRefreshing];
+}
+
+#pragma mark - DATA / API CALL
+
+- (void)serverApiCall:(NSString *)api andIdentification:(NSString *)identification
+{
+    [self placeLoadingView];
+    
     ServerConnector *sc = [[ServerConnector alloc] init];
     sc.identifitaion = identification;
     sc.delegate = self;
     [sc downloadDataForApiRequest:api];
 }
 
-- (void)pullToRefresh:(id)sender
+- (void)getDataForFeedOfFriends
 {
-    [_table setScrollEnabled:NO];
-    [_table setScrollEnabled:YES];
-    if ([self.peopleTableMode isEqualToString:kPeopleTableModeMailbox]) {
-        POST_NOTIFICATION_MAILBOX_CHANGED
-    }
-    if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion])
-    {
-        POST_NOTIFICATION_DISCUSSION_LOAD_NEWER_FROM([[[self.nyxRowsForSections objectAtIndex:0] objectAtIndex:0] objectForKey:@"id_wu"])
-    }
-    if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeed])
-    {
-        POST_NOTIFICATION_FRIENDS_FEED_CHANGED
-    }
-    if ([self.peopleTableMode isEqualToString:kPeopleTableModeFriends])
-    {
-        POST_NOTIFICATION_PEOPLE_TABLE_CHANGED
-    }
-    if ([self.peopleTableMode isEqualToString:kPeopleTableModeNotices])
-    {
-        POST_NOTIFICATION_NOTICES_TABLE_CHANGED
-    }
-    [(UIRefreshControl *)sender endRefreshing];
+    NSString *apiRequest = [ApiBuilder apiFeedOfFriends];
+    [self serverApiCall:apiRequest andIdentification:kApiIdentificationDataForFeedOfFriends];
 }
 
-#pragma mark - SERVER DELEGATE
+- (void)getDataForMailbox
+{
+    NSString *apiRequest = [ApiBuilder apiMailbox];
+    [self serverApiCall:apiRequest andIdentification:kApiIdentificationDataForMailbox];
+}
+
+- (void)getDataForMailboxFromId:(NSString *)fromId
+{
+    NSString *apiRequest = [ApiBuilder apiMailboxLoadOlderMessagesFromId:fromId];
+    [self serverApiCall:apiRequest andIdentification:kApiIdentificationDataForMailboxOlderMessages];
+}
+
+- (void)getDataForFriendList
+{
+    NSString *apiRequest = [ApiBuilder apiPeopleFriends];
+    [self serverApiCall:apiRequest andIdentification:kApiIdentificationDataForFriendList];
+}
+
+- (void)getDataForNotices
+{
+    NSString *apiRequest = [ApiBuilder apiFeedNoticesAndKeepNew:NO];
+    [self serverApiCall:apiRequest andIdentification:kApiIdentificationDataForNotices];
+}
+
+- (void)getDataForSearchNick:(NSString *)nick andText:(NSString *)text
+{
+    NSString *apiRequest = [ApiBuilder apiSearchFor:nick andText:text forPosition:@""];
+    [self serverApiCall:apiRequest andIdentification:kApiIdentificationDataForSearch];
+}
+
+- (void)getDataForDiscussion:(NSString *)disId
+{
+    NSString *apiRequest = [ApiBuilder apiMessagesForDiscussion:disId];
+    [self serverApiCall:apiRequest andIdentification:kApiIdentificationDataForDiscussion];
+}
+
+- (void)getDataForDiscussion:(NSString *)dId fromId:(NSString *)fromId
+{
+    NSString *apiRequest = [ApiBuilder apiMessagesForDiscussion:dId loadMoreFromId:fromId];
+    [self serverApiCall:apiRequest andIdentification:kApiIdentificationDataForDiscussionFromID];
+}
+
+- (void)getDataForDiscussionBeforeId:(NSNotification *)sender
+{
+    NSString *beforeId = [[sender userInfo] objectForKey:@"nKey"];
+    NSString *discussionId = [self.disscussionClubData objectForKey:@"id_klub"];
+    NSString *apiRequest = [ApiBuilder apiMessagesForDiscussion:discussionId loadPreviousFromId:beforeId];
+    [self serverApiCall:apiRequest andIdentification:kApiIdentificationDataForDiscussionRefreshAfterPost];
+}
+
+#pragma mark - SERVER / API DELEGATE RESULT
 
 - (void)downloadFinishedWithData:(NSData *)data withIdentification:(NSString *)identification
 {
@@ -712,7 +810,108 @@
             else
             {
 //                NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), jp.jsonDictionary);
-                if ([identification isEqualToString:_identificationDelete])
+                
+                // TABLE DATA
+                if ([identification isEqualToString:kApiIdentificationDataForFeedOfFriends])
+                {
+                    TableConfigurator *tc = [[TableConfigurator alloc] init];
+                    tc.widthForTableCellBodyTextView = self.widthForTableCellBodyTextView;
+                    [tc configurePeopleTableFriendsFeed:self withData:jp.jsonDictionary];
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self reloadTableDataWithScrollToTop:YES];
+                    });
+                }
+                if ([identification isEqualToString:kApiIdentificationDataForMailbox])
+                {
+                    TableConfigurator *tc = [[TableConfigurator alloc] init];
+                    tc.widthForTableCellBodyTextView = self.widthForTableCellBodyTextView;
+                    [tc configurePeopleTableMailbox:self withData:jp.jsonDictionary addingData:NO];
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self.nController.topViewController.navigationItem.rightBarButtonItem setEnabled:YES];
+                        [self reloadTableDataWithScrollToTop:YES];
+                    });
+                }
+                if ([identification isEqualToString:kApiIdentificationDataForMailboxOlderMessages])
+                {
+                    TableConfigurator *tc = [[TableConfigurator alloc] init];
+                    tc.widthForTableCellBodyTextView = self.widthForTableCellBodyTextView;
+                    [tc configurePeopleTableMailbox:self withData:jp.jsonDictionary addingData:YES];
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self.nController.topViewController.navigationItem.rightBarButtonItem setEnabled:YES];
+                        [self reloadTableDataWithScrollToTop:NO];
+                    });
+                }
+                if ([identification isEqualToString:kApiIdentificationDataForFriendList])
+                {
+                    TableConfigurator *tc = [[TableConfigurator alloc] init];
+                    tc.widthForTableCellBodyTextView = self.widthForTableCellBodyTextView;
+                    [tc configurePeopleTablePeople:self withData:jp.jsonDictionary];
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self reloadTableDataWithScrollToTop:YES];
+                    });
+                }
+                if ([identification isEqualToString:kApiIdentificationDataForNotices])
+                {
+                    TableConfigurator *tc = [[TableConfigurator alloc] init];
+                    tc.widthForTableCellBodyTextView = self.widthForTableCellBodyTextView;
+                    [tc configurePeopleTableNotices:self withData:jp.jsonDictionary];
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self reloadTableDataWithScrollToTop:YES];
+                    });
+                }
+                if ([identification isEqualToString:kApiIdentificationDataForSearch])
+                {
+                    TableConfigurator *tc = [[TableConfigurator alloc] init];
+                    tc.widthForTableCellBodyTextView = self.widthForTableCellBodyTextView;
+                    [tc configurePeopleTableSearch:self withData:jp.jsonDictionary];
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self.nController.topViewController.navigationItem.rightBarButtonItem setEnabled:YES];
+                        [self reloadTableDataWithScrollToTop:YES];
+                    });
+                }
+                if ([identification isEqualToString:kApiIdentificationDataForDiscussion])
+                {
+                    TableConfigurator *tc = [[TableConfigurator alloc] init];
+                    tc.widthForTableCellBodyTextView = self.widthForTableCellBodyTextView;
+                    [tc reconfigurePeopleTableDiscussion:self withData:jp.jsonDictionary withActionIdentification:identification];
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self.nController.topViewController.navigationItem.rightBarButtonItem setEnabled:YES];
+                        [self reloadTableDataWithScrollToTop:YES];
+                    });
+                }
+                if ([identification isEqualToString:kApiIdentificationDataForDiscussionFromID])
+                {
+                    TableConfigurator *tc = [[TableConfigurator alloc] init];
+                    tc.widthForTableCellBodyTextView = self.widthForTableCellBodyTextView;
+                    [tc reconfigurePeopleTableDiscussion:self withData:jp.jsonDictionary withActionIdentification:identification];
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self.nController.topViewController.navigationItem.rightBarButtonItem setEnabled:YES];
+                        [self reloadTableDataWithScrollToTop:NO];
+                    });
+                }
+                if ([identification isEqualToString:kApiIdentificationDataForDiscussionRefreshAfterPost])
+                {
+                    TableConfigurator *tc = [[TableConfigurator alloc] init];
+                    tc.widthForTableCellBodyTextView = self.widthForTableCellBodyTextView;
+                    [tc reconfigurePeopleTableDiscussion:self withData:jp.jsonDictionary withActionIdentification:identification];
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self.nController.topViewController.navigationItem.rightBarButtonItem setEnabled:YES];
+                        [self reloadTableDataWithScrollToTop:YES];
+                    });
+                }
+                
+                
+                // POST DATA
+                if ([identification isEqualToString:kApiIdentificationPostDelete])
                 {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [[self.nyxRowsForSections objectAtIndex:_indexPathToDelete.section] removeObjectAtIndex:_indexPathToDelete.row];
@@ -723,13 +922,13 @@
                         [_table deleteRowsAtIndexPaths:@[_indexPathToDelete] withRowAnimation:UITableViewRowAnimationFade];
                     });
                 }
-                if ([identification isEqualToString:_identificationThumbs])
+                if ([identification isEqualToString:kApiIdentificationPostThumbs])
                 {
                     NSString *discussionId = [self.disscussionClubData objectForKey:@"id_klub"];
                     NSString *postId = [[[self.nyxRowsForSections objectAtIndex:_indexPathToRating.section] objectAtIndex:_indexPathToRating.row] objectForKey:@"id_wu"];
-                    [self getCurrentRating:discussionId toPost:postId];
+                    [self getCurrentRating:discussionId forPost:postId];
                 }
-                if ([identification isEqualToString:_identificationThumbsAfterRatingGive])
+                if ([identification isEqualToString:kApiIdentificationPostRefreshThumbs])
                 {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         NSString *negative = [jp.jsonDictionary objectForKey:@"negative"];
@@ -743,12 +942,32 @@
                         [c configureCellForIndexPath:_indexPathToRating];
                     });
                 }
+                if ([identification isEqualToString:kApiIdentificationPostGetRatingInfo])
+                {
+                    self.nestedPeopleTable = [[ContentTableWithPeople alloc] initWithRowHeight:70];
+                    self.nestedPeopleTable.nController = self.nController;
+                    self.nestedPeopleTable.allowsSelection = YES;
+                    self.nestedPeopleTable.canEditFirstRow = YES;
+                    self.nestedPeopleTable.widthForTableCellBodyTextView = self.widthForTableCellBodyTextView;
+                    self.nestedPeopleTable.peopleTableMode = kPeopleTableModeRatingInfo;
+                    self.nestedPeopleTable.title = @"Hodnocení";
+                    UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:self.nestedPeopleTable];
+                    
+                    [self.nController presentViewController:nc animated:YES completion:^{}];
+                    
+                    TableConfigurator *tc = [[TableConfigurator alloc] init];
+                    [tc configurePeopleTableRatingInfo:self.nestedPeopleTable withData:jp.jsonDictionary];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self.nestedPeopleTable reloadTableDataWithScrollToTop:YES];
+                    });
+                }
             }
         }
     }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self removeLoadingView];
+    });
 }
-
-#pragma mark - RESULT
 
 - (void)presentErrorWithTitle:(NSString *)title andMessage:(NSString *)message
 {
@@ -768,16 +987,15 @@
     }
 }
 
-#pragma mark - CELL BODY TEXT DETECTOR / PROCESSOR
+#pragma mark - CELL MORE ACTIONS - LONG TOUCH
 
 - (void)cellClickedForMoreActions:(ContentTableWithPeopleCell *)cell
 {
     if (!self.nController) {
-        NSLog(@"%@ - %@ : ERROR [%@]", self, NSStringFromSelector(_cmd), @"Navigation controller doesn't exist !!!");
+        NSLog(@"%@ - %@ : ERROR [%@]", self, NSStringFromSelector(_cmd), @"Navigation controller -- MAIN -- doesn't exist !!!");
         return;
     }
-    
-    // ENABLE sharing actions only for some table modes.
+    // ENABLE actions only for some table modes.
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeed] ||
         [self.peopleTableMode isEqualToString:kPeopleTableModeFeedDetail] ||
         [self.peopleTableMode isEqualToString:kPeopleTableModeMailbox] ||
@@ -786,23 +1004,27 @@
         [self.peopleTableMode isEqualToString:kPeopleTableModeDiscussionDetail])
     {
         // Remove strange links and detect recipient URLs if any
-        NSArray *httpOnlyUrls = [self getHttpOnlyUrls:[self getAllURLsFromAttributedAndSourceText:cell.bodyText withHtmlSource:cell.bodyTextSource]];
+        RichTextProcessor *rtp = [[RichTextProcessor alloc] init];
+        NSArray *httpOnlyUrls = [rtp getHttpOnlyUrls:[rtp getAllURLsFromAttributedAndSourceText:cell.bodyText withHtmlSource:cell.bodyTextSource]];
         [self showActionSheetForURLs:httpOnlyUrls forText:cell.bodyText withSource:cell.bodyTextSource insideCell:cell];
     }
 }
 
 - (void)showActionSheetForURLs:(NSArray *)httpUrls forText:(NSAttributedString *)attrText withSource:(NSString *)sourceText insideCell:(ContentTableWithPeopleCell *)cell
 {
-    // Remove duplicates [NSSet] if any and filter arrays for images. // TODO TO DO
-    NSArray *urlsWithoutImages = [[NSArray alloc] initWithArray:[self urlsWithoutImages:httpUrls] copyItems:YES];
+    RichTextProcessor *rtp = [[RichTextProcessor alloc] init];
+    NSArray *urlsWithoutImages = [[NSArray alloc] initWithArray:[rtp urlsWithoutImages:httpUrls] copyItems:YES];
     
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Volby příspěvku"
                                                                    message:nil
                                                             preferredStyle:UIAlertControllerStyleActionSheet];
     
-    if ([urlsWithoutImages count] > 0) {
-        for (NSURL *url in urlsWithoutImages) {
-            UIAlertAction *action = [UIAlertAction actionWithTitle:[url absoluteString] style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+    if ([urlsWithoutImages count] > 0)
+    {
+        for (NSURL *url in urlsWithoutImages)
+        {
+            UIAlertAction *webLink = [UIAlertAction actionWithTitle:[url absoluteString] style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action)
+            {
                 if ([Preferences openUrlsInSafari:nil] && [[Preferences openUrlsInSafari:nil] length] > 0)
                 {
                     [[UIApplication sharedApplication] openURL:url
@@ -814,16 +1036,15 @@
                     [self.nController pushViewController:web animated:YES];
                 }
             }];
-            [alert addAction:action];
+            [alert addAction:webLink];
         }
     }
     
-    NSArray *urlsWithImagesOnly = [[NSArray alloc] initWithArray:[self urlsWithImagesOnly:httpUrls] copyItems:YES];
+    NSArray *urlsWithImagesOnly = [[NSArray alloc] initWithArray:[rtp urlsWithImagesOnly:httpUrls] copyItems:YES];
     if ([urlsWithImagesOnly count] > 0)
     {
         UIAlertAction *showImages = [UIAlertAction actionWithTitle:@"Zobrazit obrázky" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action)
         {
-//            NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), urlsWithImagesOnly);
             ImagePreviewVC *ip = [[ImagePreviewVC alloc] init];
             ip.imageUrls = urlsWithImagesOnly;
             UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:ip];
@@ -844,197 +1065,46 @@
                                     error:nil];
     if (rtf)
         [postContent setObject:rtf forKey:(id)kUTTypeFlatRTFD];
-    // Fallback
+    // Fallback with plain string.
     [postContent setObject:attrText.string forKey:(id)kUTTypeUTF8PlainText];
     // -------- POST CONTENT -----------
     
-    UIAlertAction *copy = [UIAlertAction actionWithTitle:@"Kopírovat" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *copy = [UIAlertAction actionWithTitle:@"Kopírovat" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action)
+    {
         UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
         pasteboard.items = @[postContent];
     }];
     [alert addAction:copy];
     
-    UIAlertAction *copySource = [UIAlertAction actionWithTitle:@"Kopírovat HTML kód" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *copySource = [UIAlertAction actionWithTitle:@"Kopírovat HTML kód" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action)
+    {
         UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
         pasteboard.string = sourceText;
     }];
     [alert addAction:copySource];
     
-    UIAlertAction *sharePost = [UIAlertAction actionWithTitle:@"Sdílet" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *sharePost = [UIAlertAction actionWithTitle:@"Sdílet" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action)
+    {
         [self createSharingDataWithTitle:cell.nick andBody:cell.bodyTextSource andBodyAttributed:cell.bodyText imageUrls:urlsWithImagesOnly];
     }];
     [alert addAction:sharePost];
     
     UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Zrušit" style:(UIAlertActionStyleCancel) handler:^(UIAlertAction * _Nonnull action) {}];
     [alert addAction:cancel];
+    
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion] || [self.peopleTableMode isEqualToString:kPeopleTableModeDiscussionDetail])
+    {
+        UIAlertAction *showRating = [UIAlertAction actionWithTitle:@"Hodnocení" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action)
+        {
+            NSIndexPath *i = [_table indexPathForCell:cell];
+            NSString *discussionId = [self.disscussionClubData objectForKey:@"id_klub"];
+            NSString *postId = [[[self.nyxRowsForSections objectAtIndex:i.section] objectAtIndex:i.row] objectForKey:@"id_wu"];
+            [self getCurrentRatingForPresentation:discussionId forPost:postId];
+        }];
+        [alert addAction:showRating];
+    }
+    
     [self.nController presentViewController:alert animated:YES completion:nil];
-}
-
-#pragma mark - ATTRIBUTED TEXT BODY PARSING and REPLACE
-
-- (NSArray *)urlsWithoutImages:(NSArray *)detectedUrl
-{
-    NSMutableArray *a = [[NSMutableArray alloc] init];
-    for (NSURL *u in detectedUrl) {
-        if ([[[u absoluteString] lowercaseString] containsString:@".jpeg"] ||
-            [[[u absoluteString] lowercaseString] containsString:@".jpg"] ||
-            [[[u absoluteString] lowercaseString] containsString:@".png"])
-        {
-            continue;
-        }
-        if (![a containsObject:u])
-        {
-            [a addObject:u];
-        }
-    }
-    return (NSArray *)a;
-}
-
-- (NSArray *)urlsWithImagesOnly:(NSArray *)detectedUrl
-{
-    NSMutableArray *a = [[NSMutableArray alloc] init];
-    for (NSURL *u in detectedUrl) {
-        if ([[[u absoluteString] lowercaseString] containsString:@".jpeg"] ||
-            [[[u absoluteString] lowercaseString] containsString:@".jpg"] ||
-            [[[u absoluteString] lowercaseString] containsString:@".png"])
-        {
-            if (![a containsObject:u]) {
-                [a addObject:u];
-            }
-        }
-    }
-    return (NSArray *)a;
-}
-
-// Detect images inside attributed text and place them in array. NOT USED.
-- (NSArray *)detectImageAttachmentsInsideAttribudetText:(NSAttributedString *)attrText
-{
-    NSMutableArray *imagesArray = [[NSMutableArray alloc] init];
-    [attrText enumerateAttribute:NSAttachmentAttributeName
-                         inRange:NSMakeRange(0, [attrText length])
-                         options:0
-                      usingBlock:^(id value, NSRange range, BOOL *stop)
-    {
-        if ([value isKindOfClass:[NSTextAttachment class]])
-        {
-            NSTextAttachment *attachment = (NSTextAttachment *)value;
-            UIImage *image = nil;
-            if ([attachment image])
-            {
-                image = [attachment image];
-            }
-            else
-            {
-                image = [attachment imageForBounds:[attachment bounds]
-                                     textContainer:nil
-                                    characterIndex:range.location];
-            }
-            if (image)
-                [imagesArray addObject:image];
-        }
-    }];
-    return imagesArray;
-}
-
-- (NSMutableArray *)getAllURLsFromAttributedAndSourceText:(NSAttributedString *)attrText withHtmlSource:(NSString *)htmlSource
-{
-    NSMutableArray *detectedUrls = [[NSMutableArray alloc] init];
-    
-    // First - detect properly configured URLs. Like with <a ...> tags.
-    [attrText enumerateAttributesInRange:NSMakeRange(0, attrText.length)
-                                 options:NSAttributedStringEnumerationLongestEffectiveRangeNotRequired
-                              usingBlock:^(NSDictionary<NSAttributedStringKey,id> * _Nonnull attrs, NSRange range, BOOL * _Nonnull stop) {
-                                  if ([attrs objectForKey:@"NSLink"]) {
-                                      NSURL *url = [attrs objectForKey:@"NSLink"];
-//                                      NSLog(@"%@ - %@ Detected URL as NSLink : [%@]", self, NSStringFromSelector(_cmd), url);
-                                      [detectedUrls addObject:url];
-                                  }
-                              }];
-    
-    // Second - there could be URLs in text just in plain text - like https://
-    NSArray *words = [[attrText string] componentsSeparatedByString:@" "];
-    for (NSString *component in words) {
-        if ([component hasPrefix:@"http"]) {
-//            NSLog(@"%@ - %@ Detected URL as TEXT : [%@]", self, NSStringFromSelector(_cmd), component);
-            // If there is new line at the end of the string - NSURL is nil.
-            NSURL *u = [NSURL URLWithString:[component stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]];
-            if (u)
-                [detectedUrls addObject:u];
-        }
-    }
-    
-    if (htmlSource && [htmlSource length] > 0)
-    {
-        NSArray *a = [htmlSource componentsSeparatedByString:@"\""];
-        for (NSString *u in a) {
-            if ([u hasPrefix:@"http"]) {
-                NSURL *url = [NSURL URLWithString:u];
-                if (url) {
-                    [detectedUrls addObject:url];
-                }
-            }
-        }
-    }
-    
-    // REMOVE "thumbs"
-    NSMutableArray *tmp = [[NSMutableArray alloc] init];
-    for (NSURL *s in detectedUrls) {
-        if (![[[s absoluteString] lowercaseString] containsString:@"thumb"]) {
-            [tmp addObject:s];
-        }
-    }
-    
-    return tmp;
-}
-
-- (NSArray *)getHttpOnlyUrls:(NSArray *)allUrls
-{
-    NSMutableArray *urls = [NSMutableArray array];
-    for (NSURL *url in allUrls) {
-        if ([[url absoluteString] hasPrefix:@"http"])
-        {
-            [urls addObject:url];
-        }
-    }
-    return (NSArray *)urls;
-}
-
-- (NSArray *)getRelativeOnlyUrls:(NSArray *)allUrls
-{
-    NSMutableArray *urls = [NSMutableArray array];
-    for (NSURL *url in allUrls) {
-        if ([[url absoluteString] hasPrefix:@"applewebdata"])
-        {
-            [urls addObject:[url query]];
-        }
-    }
-    return (NSArray *)urls;
-}
-
-- (NSAttributedString *)replaceRelativeNyxUrlsInsidePostWithAbsoluteUrls:(NSAttributedString *)attrText
-{
-    NSMutableAttributedString *newSource = [[NSMutableAttributedString alloc] initWithAttributedString:attrText];
-    
-    [newSource enumerateAttributesInRange:NSMakeRange(0, newSource.length)
-                                 options:NSAttributedStringEnumerationLongestEffectiveRangeNotRequired
-                              usingBlock:^(NSDictionary<NSAttributedStringKey,id> * _Nonnull attrs, NSRange range, BOOL * _Nonnull stop) {
-                                  
-                                  if ([attrs objectForKey:@"NSLink"])
-                                  {
-                                      NSURL *url = [attrs objectForKey:@"NSLink"];
-                                      NSString *urlStr = [url absoluteString];
-                                      if ([urlStr hasPrefix:@"applewebdata"])
-                                      {
-                                          // Replace NSLinkAttributeName
-                                          NSRange rangeToReplace = [urlStr rangeOfString:@"?"];
-                                          NSString *absoluteUrl = [urlStr substringFromIndex:rangeToReplace.location];
-                                          NSString *finalUrl = [NSString stringWithFormat:@"https://www.nyx.cz/index.php%@", absoluteUrl];
-                                          [newSource addAttribute:NSLinkAttributeName value:[NSURL URLWithString:finalUrl] range:range];
-                                      }
-                                  }
-                              }];
-    
-    return (NSAttributedString *)newSource;
 }
 
 #pragma mark - LOADING VIEW
@@ -1058,9 +1128,9 @@
     });
 }
 
-#pragma mark - REFRESH DATA IN LIST TABLE
+#pragma mark - REFRESH DATA IN LIST TABLE if RETURNING TO
 
-- (void)didMoveToParentViewController:(UIViewController *)parent
+- (void)willMoveToParentViewController:(UIViewController *)parent
 {
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion]) {
         if (!parent) {
@@ -1073,9 +1143,9 @@
 
 - (void)createSharingDataWithTitle:(NSString *)title andBody:(NSString *)bodyText andBodyAttributed:(NSAttributedString *)bodyAttributed imageUrls:(NSArray *)imageUrls
 {
-    NSAttributedString *bodyWithFullUrls = [self replaceRelativeNyxUrlsInsidePostWithAbsoluteUrls:bodyAttributed];
-    
-    NSArray *httpOnlyUrls = [self getHttpOnlyUrls:[self getAllURLsFromAttributedAndSourceText:bodyWithFullUrls withHtmlSource:nil]];
+    RichTextProcessor *rtp = [[RichTextProcessor alloc] init];
+    NSAttributedString *bodyWithFullUrls = [rtp replaceRelativeNyxUrlsInsidePostWithAbsoluteUrls:bodyAttributed];
+    NSArray *httpOnlyUrls = [rtp getHttpOnlyUrls:[rtp getAllURLsFromAttributedAndSourceText:bodyWithFullUrls withHtmlSource:nil]];
     
     NSMutableArray *shareProviders = [[NSMutableArray alloc] init];
     ShareItemProviderText *textItem = [[ShareItemProviderText alloc] initWithTitle:title andBody:bodyText andBodyAttributed:bodyWithFullUrls andUrls:httpOnlyUrls];
@@ -1091,9 +1161,8 @@
     [self presentActivityController:controller];
 }
 
-- (void)presentActivityController:(UIActivityViewController *)controller {
-    
-    // for iPad: make the presentation a Popover
+- (void)presentActivityController:(UIActivityViewController *)controller
+{
     controller.modalPresentationStyle = UIModalPresentationPopover;
     
     if (self.nController) {
@@ -1110,11 +1179,10 @@
                                               BOOL completed,
                                               NSArray *returnedItems,
                                               NSError *error){
-        if (completed)
-        {
-            // user shared an item
+        if (completed) {
+            // OK
         } else {
-            // user cancelled
+            // CANCEL
         }
         
         if (error) {
@@ -1124,9 +1192,14 @@
     };
 }
 
+#pragma mark - RATING INFO TABLE
+
+- (void)dismiss
+{
+    [self dismissViewControllerAnimated:YES completion:^{}];
+}
 
 
 @end
-
 
 

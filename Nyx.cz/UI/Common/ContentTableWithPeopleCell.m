@@ -137,13 +137,9 @@
     
     if (self.mailboxDirection && [self.mailboxDirection isEqualToString:@"to"]) {
         _avatarView.alpha = .4;
-    } else {
-        _avatarView.alpha = 1;
     }
     if (self.mailboxMailStatus && [self.mailboxMailStatus isEqualToString:@"read"]) {
         self.backgroundColor = COLOR_MAIL_READ;
-    } else {
-        self.backgroundColor = [UIColor whiteColor];
     }
     if (self.commentsCount && [self.commentsCount intValue] > 0) {
         self.backgroundColor = COLOR_SYSTEM_TURQUOISE_LIGHT;
@@ -158,9 +154,9 @@
         _timeLabel.text = self.time;
     }
     // RATING
-    if (self.ratingGiven && [self.ratingGiven length] > 0) {
+    if (self.ratingGiven && [self.ratingGiven length] > 0)
         self.rating = (NSString *)self.ratingGiven;
-    }
+    
     if (self.rating && [self.rating length] > 0 && ![self.rating isEqualToString:@"0"])
     {
         NSInteger r = [self.rating integerValue];
@@ -183,9 +179,8 @@
     
     // NOTICES
     _disclosure.alpha = 0;
-    if (self.noticesLastVisit && [self.noticesLastVisit length] > 0) {
+    if (self.noticesLastVisit && [self.noticesLastVisit length] > 0)
         [self checkNewsForPost:self.notice];
-    }
     
     [self getAvatar];
 }
@@ -229,26 +224,28 @@
 - (void)checkNewsForPost:(NSDictionary *)post
 {
     NewNoticesForPost *np = [[NewNoticesForPost alloc] initWithPost:post forLastVisit:self.noticesLastVisit];
+    
     if (np.nPosts && [np.nPosts count] > 0) {
         self.backgroundColor = COLOR_SYSTEM_TURQUOISE_LIGHT;
         if ([self.peopleCellMode isEqualToString:kPeopleTableModeNotices])
             _disclosure.alpha = 1;
     }
-    if (np.nThumbup && [np.nThumbup count] > 0) {
+    
+    if (np.nThumbup && [np.nThumbup count] > 0)
         self.backgroundColor = COLOR_SYSTEM_TURQUOISE_LIGHT;
-    }
-    if (np.nThumbsdown && [np.nThumbsdown count] > 0) {
+    if (np.nThumbsdown && [np.nThumbsdown count] > 0)
         self.backgroundColor = COLOR_SYSTEM_TURQUOISE_LIGHT;
-    }
+    
     // Show disclosure indicator even for old posts.
     if (np.oPosts && [np.oPosts count] > 0) {
         if ([self.peopleCellMode isEqualToString:kPeopleTableModeNotices])
             _disclosure.alpha = 1;
     }
     
-    // IF content of POST itself in NOTICES TABLE DETAIL is REPLY, there shoud be time tag on first level.
+    // NOTICES TABLE : If there is NEW reply, change background color.
     NSString *replyTime = [post objectForKey:@"time"];
-    if (replyTime && [replyTime length] > 0) {
+    if (replyTime && [replyTime length] > 0)
+    {
         NSInteger last = [self.noticesLastVisit integerValue];
         NSInteger postTime = [replyTime integerValue];
         if (postTime > last) {

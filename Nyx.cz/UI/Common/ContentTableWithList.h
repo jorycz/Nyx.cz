@@ -17,13 +17,6 @@
 {
     UITableView *_table;
     CGFloat _rh;
-    
-    // For next controller - discussion table
-    CGFloat _widthForTableCellBodyTextView;
-    
-    NSMutableString *_currentDiscussionId;
-    
-    NSString *_serverIdentificationDiscussion, *_serverIdentificationDiscussionFromId, *_serverIdentificationDiscussionRefreshAfterNewPost;
 }
 
 
@@ -32,11 +25,20 @@
 @property (nonatomic, strong) NSMutableArray *nyxSections;
 @property (nonatomic, strong) NSMutableArray *nyxRowsForSections;
 
-@property (nonatomic, strong) ContentTableWithPeople *discussionTable;
+@property (nonatomic, strong) ContentTableWithPeople *nestedPeopleTable;
+
+@property (nonatomic, assign) CGFloat widthForTableCellBodyTextView;
+
+@property (nonatomic, strong) NSString *listTableMode;
 
 
 - (id)initWithRowHeight:(CGFloat)rowHeight;
 - (void)reloadTableData;
+
+
+- (void)getDataForBookmarks;
+- (void)getDataForHistory;
+
 
 
 @end

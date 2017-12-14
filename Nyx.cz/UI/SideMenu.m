@@ -18,7 +18,7 @@
     if (self)
     {
         self.backgroundColor = [UIColor whiteColor];
-        self.menuEntries = @[kMenuOverview, kMenuMail, kMenuBookmarks, kMenuHistory, kMenuPeople, kMenuNotifications, kMenuSearchPosts];
+        self.menuEntries = @[kMenuOverview, kMenuMail, kMenuBookmarks, kMenuHistory, kMenuFriendList, kMenuNotifications, kMenuSearchPosts];
         
         self.table = [[UITableView alloc] init];
         [self.table setDelegate:self];

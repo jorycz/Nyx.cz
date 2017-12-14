@@ -18,8 +18,6 @@
     NSIndexPath *_indexPathToDelete, *_indexPathToRating;
     BOOL _tableEditShowDelete, _tableEditShowThumbs;
     
-    NSString *_identificationDelete, *_identificationThumbs, *_identificationThumbsAfterRatingGive;
-    
     NSIndexPath *_preserveIndexPathAfterLoadFromId;
 }
 
@@ -41,9 +39,26 @@
 
 @property (nonatomic, strong) NSString *noticesLastVisitTimestamp;
 
+@property (nonatomic, assign) CGFloat widthForTableCellBodyTextView;
+
+
+// Load Discussion (people table) from Notices (into this people table)
+@property (nonatomic, strong) ContentTableWithPeople *nestedPeopleTable;
+
 
 - (id)initWithRowHeight:(CGFloat)rowHeight;
 - (void)reloadTableDataWithScrollToTop:(BOOL)goToTop;
+
+
+- (void)getDataForFeedOfFriends;
+- (void)getDataForMailbox;
+- (void)getDataForMailboxFromId:(NSString *)fromId;
+- (void)getDataForFriendList;
+- (void)getDataForNotices;
+- (void)getDataForSearchNick:(NSString *)nick andText:(NSString *)text;
+
+- (void)getDataForDiscussion:(NSString *)disId;
+
 
 
 @end

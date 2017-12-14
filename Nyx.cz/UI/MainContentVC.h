@@ -9,27 +9,22 @@
 #import <UIKit/UIKit.h>
 #import "Constants.h"
 
-#import "ContentFriendsFeed.h"
-#import "ContentMailbox.h"
-#import "ContentBookmarks.h"
-#import "ContentHistory.h"
-#import "ContentPeople.h"
-#import "ContentNotification.h"
-#import "ContentSearch.h"
+#import "ContentTableWithPeople.h"
+#import "ContentTableWithList.h"
 
 
 @interface MainContentVC : UIViewController
+{
+    CGFloat _widthForTableCellBodyTextView;
+}
 
+
+@property (nonatomic , strong) UINavigationController *nc;
 
 @property (nonatomic, strong) NSMutableString *menuKey;
 
-@property (nonatomic, strong) ContentFriendsFeed *cFriendFeeds;
-@property (nonatomic, strong) ContentMailbox *cMailBox;
-@property (nonatomic, strong) ContentBookmarks *cBookmarks;
-@property (nonatomic, strong) ContentHistory *cHistory;
-@property (nonatomic, strong) ContentPeople *cPeople;
-@property (nonatomic, strong) ContentNotification *cNotifications;
-@property (nonatomic, strong) ContentSearch *cSearch;
+@property (nonatomic, strong) ContentTableWithPeople *peopleTable;
+@property (nonatomic, strong) ContentTableWithList *listTable;
 
 
 - (void)loadContentWithNavigationController:(UINavigationController *)navController;

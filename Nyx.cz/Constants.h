@@ -10,32 +10,7 @@
 // CGFloat
 #import <UIKit/UIKit.h>
 
-
 @interface Constants : NSObject
-
-// DEFINES
-#define PRESENT_ERROR(s,ss) [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationShowError object:nil userInfo:@{@"title" : (s), @"error" : (ss)}];
-#define NOTIFICATION_MAIN_BUTTON_PRESSED(s) [[NSNotificationCenter defaultCenter] postNotificationName:kMainButtonNotification object:nil userInfo:@{@"button" : (s)}];
-
-#define POST_NOTIFICATION_FRIENDS_FEED_CHANGED [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationFriendsFeedChanged object:nil userInfo:nil];
-#define POST_NOTIFICATION_PEOPLE_TABLE_CHANGED [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationPeopleChanged object:nil userInfo:nil];
-#define POST_NOTIFICATION_NOTICES_TABLE_CHANGED [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationNoticesChanged object:nil userInfo:nil];
-
-#define POST_NOTIFICATION_MAILBOX_CHANGED [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMailboxChanged object:nil userInfo:nil];
-#define POST_NOTIFICATION_MAILBOX_LOAD_FROM(s) [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMailboxLoadFrom object:nil userInfo:@{@"nKey" : (s)}];
-#define POST_NOTIFICATION_MAILBOX_NEW_MESSAGE_FOR(s) [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMailboxNewMessageFor object:nil userInfo:@{@"nKey" : (s)}];
-
-#define POST_NOTIFICATION_DISCUSSION_LOAD_OLDER_FROM(s) [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDiscussionLoadOlderFrom object:nil userInfo:@{@"nKey" : (s)}];
-#define POST_NOTIFICATION_DISCUSSION_LOAD_NEWER_FROM(s) [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDiscussionLoadNewerFrom object:nil userInfo:@{@"nKey" : (s)}];
-
-#define POST_NOTIFICATION_LIST_TABLE_CHANGED [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationListTableChanged object:nil userInfo:nil];
-
-#define PERFSTART NSDate *now = [NSDate date];
-#define PERFSTOP NSLog(@"%@ / %@: TIME : %f", [self class], NSStringFromSelector(_cmd), [[NSDate date] timeIntervalSinceDate:now]);
-#define PERFSTART1 NSDate *now1 = [NSDate date];
-#define PERFSTOP1 NSLog(@"%@ / %@: TIME 1 : %f", [self class], NSStringFromSelector(_cmd), [[NSDate date] timeIntervalSinceDate:now1]);
-#define PERFSTART2 NSDate *now2 = [NSDate date];
-#define PERFSTOP2 NSLog(@"%@ / %@: TIME 2 : %f", [self class], NSStringFromSelector(_cmd), [[NSDate date] timeIntervalSinceDate:now2]);
 
 
 // CONSTANTS
@@ -52,13 +27,9 @@ extern NSInteger const kStatusBarStandardHeight;
 extern NSString* const kNotificationShowError;
 extern NSString* const kNotificationFriendsFeedChanged;
 extern NSString* const kNotificationMailboxChanged;
-extern NSString* const kNotificationMailboxLoadFrom;
 extern NSString* const kNotificationMailboxNewMessageFor;
-extern NSString* const kNotificationDiscussionLoadOlderFrom;
 extern NSString* const kNotificationDiscussionLoadNewerFrom;
 extern NSString* const kNotificationListTableChanged;
-extern NSString* const kNotificationPeopleChanged;
-extern NSString* const kNotificationNoticesChanged;
 
 
 extern NSString* const kPeopleTableModeFeed;
@@ -72,9 +43,29 @@ extern NSString* const kPeopleTableModeDiscussionDetail;
 extern NSString* const kPeopleTableModeNotices;
 extern NSString* const kPeopleTableModeNoticesDetail;
 extern NSString* const kPeopleTableModeSearch;
+extern NSString* const kPeopleTableModeRatingInfo;
 
+extern NSString* const kListTableModeBookmarks;
+extern NSString* const kListTableModeHistory;
 
 extern CGFloat const kLongPressMinimumDuration;
+
+extern NSString* const kApiIdentificationDataForFeedOfFriends;
+extern NSString* const kApiIdentificationDataForDiscussion;
+extern NSString* const kApiIdentificationDataForDiscussionFromID;
+extern NSString* const kApiIdentificationDataForDiscussionRefreshAfterPost;
+extern NSString* const kApiIdentificationPostDelete;
+extern NSString* const kApiIdentificationPostThumbs;
+extern NSString* const kApiIdentificationPostRefreshThumbs;
+extern NSString* const kApiIdentificationPostGetRatingInfo;
+extern NSString* const kApiIdentificationDataForMailbox;
+extern NSString* const kApiIdentificationDataForMailboxOlderMessages;
+extern NSString* const kApiIdentificationDataForFriendList;
+extern NSString* const kApiIdentificationDataForNotices;
+extern NSString* const kApiIdentificationDataForSearch;
+extern NSString* const kApiIdentificationDataForBookmarks;
+extern NSString* const kApiIdentificationDataForHistory;
+
 
 // API
 extern NSString* const kApiLoguser;
@@ -129,7 +120,7 @@ extern NSString* const kMenuOverview;
 extern NSString* const kMenuMail;
 extern NSString* const kMenuBookmarks;
 extern NSString* const kMenuHistory;
-extern NSString* const kMenuPeople;
+extern NSString* const kMenuFriendList;
 extern NSString* const kMenuNotifications;
 extern NSString* const kMenuSearchPosts;
 
@@ -138,6 +129,28 @@ extern NSString* const kMainButtonNotification;
 extern NSString* const kMainButtonLogout;
 extern NSString* const kMainButtonContact;
 extern NSString* const kMainButtonSettings;
+
+
+// MACROS
+#define PRESENT_ERROR(s,ss) [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationShowError object:nil userInfo:@{@"title" : (s), @"error" : (ss)}];
+#define NOTIFICATION_MAIN_BUTTON_PRESSED(s) [[NSNotificationCenter defaultCenter] postNotificationName:kMainButtonNotification object:nil userInfo:@{@"button" : (s)}];
+
+#define POST_NOTIFICATION_FRIENDS_FEED_CHANGED [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationFriendsFeedChanged object:nil userInfo:nil];
+#define POST_NOTIFICATION_MAILBOX_CHANGED [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMailboxChanged object:nil userInfo:nil];
+#define POST_NOTIFICATION_MAILBOX_NEW_MESSAGE_FOR(s) [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMailboxNewMessageFor object:nil userInfo:@{@"nKey" : (s)}];
+
+#define POST_NOTIFICATION_DISCUSSION_LOAD_NEWER_FROM(s) [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDiscussionLoadNewerFrom object:nil userInfo:@{@"nKey" : (s)}];
+
+#define POST_NOTIFICATION_LIST_TABLE_CHANGED [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationListTableChanged object:nil userInfo:nil];
+
+
+
+#define PERFSTART NSDate *now = [NSDate date];
+#define PERFSTOP NSLog(@"%@ / %@: TIME : %f", [self class], NSStringFromSelector(_cmd), [[NSDate date] timeIntervalSinceDate:now]);
+#define PERFSTART1 NSDate *now1 = [NSDate date];
+#define PERFSTOP1 NSLog(@"%@ / %@: TIME 1 : %f", [self class], NSStringFromSelector(_cmd), [[NSDate date] timeIntervalSinceDate:now1]);
+#define PERFSTART2 NSDate *now2 = [NSDate date];
+#define PERFSTOP2 NSLog(@"%@ / %@: TIME 2 : %f", [self class], NSStringFromSelector(_cmd), [[NSDate date] timeIntervalSinceDate:now2]);
 
 
 @end

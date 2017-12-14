@@ -49,7 +49,7 @@
     [self.view addSubview:_tv];
     
     _button = [[UIButton alloc] init];
-    _button.backgroundColor = [UIColor whiteColor];
+    _button.backgroundColor = [UIColor clearColor];
     [_button setImage:[UIImage imageNamed:@"send"] forState:(UIControlStateNormal)];
     [_button addTarget:self action:@selector(post) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_button];

@@ -7,11 +7,13 @@
 //
 
 #import "PeopleRespondVC.h"
-#import "ComputeRowHeight.h"
 #import <QuartzCore/QuartzCore.h>
-#import "LoadingView.h"
 #import <Photos/Photos.h>
 #import "StorageManager.h"
+#import "LoadingView.h"
+
+#import "ComputeRowHeight.h"
+#import "TableConfigurator.h"
 
 
 @interface PeopleRespondVC ()
@@ -187,6 +189,7 @@
         CGRect f = self.view.frame;
         // - 65 is there because there is big avatar left of table cell body text view.
         _widthForTableCellBodyTextView = f.size.width - kWidthForTableCellBodyTextViewSubstract;
+        self.table.widthForTableCellBodyTextView = _widthForTableCellBodyTextView;
         
         CGFloat bottomBarHeight = 0;
         CGFloat edgeInsect = 0;
@@ -432,60 +435,11 @@
 
 - (void)configureTableWithJson:(NSDictionary *)nyxDictionary
 {
-    // Response VC for Feed comments.
-    if ([self.peopleRespondMode isEqualToString:kPeopleTableModeFeed])
-    {
-        NSMutableArray * postDictionaries = [[NSMutableArray alloc] init];
-        [postDictionaries addObject:self.postData];
-        [postDictionaries addObjectsFromArray:[[nyxDictionary objectForKey:@"data"] objectForKey:@"comments"]];
-        
-        if ([postDictionaries count] > 0)
-        {
-            // Add FEED post as first cell here also.
-            [self.table.nyxSections removeAllObjects];
-            [self.table.nyxSections addObjectsFromArray:@[kDisableTableSections]];
-            [self.table.nyxRowsForSections removeAllObjects];
-            [self.table.nyxRowsForSections addObjectsFromArray:@[postDictionaries]];
-            
-            NSMutableArray *tempArrayForRowHeights = [[NSMutableArray alloc] init];
-            NSMutableArray *tempArrayForRowBodyText = [[NSMutableArray alloc] init];
-            
-            for (NSDictionary *d in postDictionaries)
-            {
-                // Calculate heights and create array with same structure just only for row height.
-                // 60 is minimum height - table ROW height is initialized to 70 below ( 70 - nick name )
-                ComputeRowHeight *rowHeight = [[ComputeRowHeight alloc] initWithText:[d objectForKey:@"text"]
-                                                                            forWidth:_widthForTableCellBodyTextView
-                                                                           minHeight:kMinimumPeopleTableCellHeight
-                                                                        inlineImages:nil];
-                [tempArrayForRowHeights addObject:[NSNumber numberWithFloat:rowHeight.heightForRow]];
-                [tempArrayForRowBodyText addObject:rowHeight.attributedText];
-            }
-            [self.table.nyxPostsRowHeights removeAllObjects];
-            [self.table.nyxPostsRowHeights addObjectsFromArray:@[tempArrayForRowHeights]];
-            [self.table.nyxPostsRowBodyTexts removeAllObjects];
-            [self.table.nyxPostsRowBodyTexts addObjectsFromArray:@[tempArrayForRowBodyText]];
-        }
-    }
-    // Response VC for Mailbox response.
-    if ([self.peopleRespondMode isEqualToString:kPeopleTableModeMailbox] ||
-        [self.peopleRespondMode isEqualToString:kPeopleTableModeFriends] ||
-        [self.peopleRespondMode isEqualToString:kPeopleTableModeDiscussion] ||
-        [self.peopleRespondMode isEqualToString:kPeopleTableModeNotices] ||
-        [self.peopleRespondMode isEqualToString:kPeopleTableModeDiscussionDetail])
-    {
-        [self.table.nyxSections removeAllObjects];
-        [self.table.nyxRowsForSections removeAllObjects];
-        [self.table.nyxPostsRowHeights removeAllObjects];
-        [self.table.nyxPostsRowBodyTexts removeAllObjects];
-        
-        [self.table.nyxSections addObjectsFromArray:@[kDisableTableSections]];
-        [self.table.nyxRowsForSections addObjectsFromArray:@[_nyxRowsForSection]];
-        [self.table.nyxPostsRowHeights addObjectsFromArray:@[_nyxRowHeights]];
-        [self.table.nyxPostsRowBodyTexts addObjectsFromArray:@[_nyxTexts]];
-        
-        [self showPreviousReactions];
-    }
+    TableConfigurator *tc = [[TableConfigurator alloc] init];
+    tc.widthForTableCellBodyTextView = _widthForTableCellBodyTextView;
+    [tc reconfigurePeopleTableForResponseScreen:self.table withData:nyxDictionary withTableMode:self.peopleRespondMode postData:self.postData moreRows:_nyxRowsForSection moreHeights:_nyxRowHeights moreTexts:_nyxTexts];
+    
+    [self downloadPreviousReactions];
     
     if (!self.table.view.window) {
         [self.view addSubview:self.table.view];
@@ -709,7 +663,7 @@
 
 #pragma mark - SHOW PREVIOUS REACTIONS
 
-- (void)showPreviousReactions
+- (void)downloadPreviousReactions
 {
     if (_reactionsToDownload && [_reactionsToDownload count] > 0)
     {

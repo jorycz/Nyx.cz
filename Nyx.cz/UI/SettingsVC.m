@@ -289,8 +289,8 @@
         [Preferences preferredStartingLocation:kMenuHistory];
         [self.table reloadData];
     }];
-    UIAlertAction *kMenuPeopleLoc = [UIAlertAction actionWithTitle:kMenuPeople style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
-        [Preferences preferredStartingLocation:kMenuPeople];
+    UIAlertAction *kMenuPeopleLoc = [UIAlertAction actionWithTitle:kMenuFriendList style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+        [Preferences preferredStartingLocation:kMenuFriendList];
         [self.table reloadData];
     }];
     UIAlertAction *kMenuNotificationsLoc = [UIAlertAction actionWithTitle:kMenuNotifications style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {

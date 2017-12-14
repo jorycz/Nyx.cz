@@ -19,6 +19,8 @@
     self = [super init];
     if (self)
     {
+//        NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), [NSString stringWithFormat:@"CURRENT WIDTH %f, MIN HEIGHT %f, INLINE IMAGES [%@]", currentWidth, minHeight, inlineImages]);
+        
         NSData *textData = [text dataUsingEncoding:(NSUTF8StringEncoding)];
         
 //            PERFSTART
