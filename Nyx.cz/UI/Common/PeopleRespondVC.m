@@ -135,9 +135,9 @@
                     [self.attachmentNames addObject:[d objectForKey:@"attachment"]];
             }
             if (_respondTo && [_respondTo length] > 0) {
-                self.responseView.text = [NSString stringWithFormat:@"%@\n\n%@", tmp, _respondTo];
+                self.responseView.text = [NSString stringWithFormat:@"%@\n%@", tmp, _respondTo];
             } else {
-                self.responseView.text = [NSString stringWithFormat:@"%@\n\n", tmp];
+                self.responseView.text = [NSString stringWithFormat:@"%@\n", tmp];
             }
         }
         else
@@ -284,7 +284,7 @@
         if ([self currentlyStoredMessages] && [[self currentlyStoredMessages] count] > 0)
         {
             NSString *message = [NSString stringWithFormat:@"Bude odeslána tato zpráva včetně dalších odpovědí. Příloha bude odeslána pouze poslední přidaná."];
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Odeslat tuto a všechny uložené zprávy?"
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Odeslat zprávu?"
                                                                            message:message
                                                                     preferredStyle:(UIAlertControllerStyleAlert)];
             UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Zrušit" style:(UIAlertActionStyleCancel) handler:^(UIAlertAction * _Nonnull action) {}];
@@ -310,13 +310,15 @@
 {
     [self placeLoadingView];
     
+    NSString *noEntersAtBeginAndEnd = [self.responseView.text stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+    
     ServerConnector *sc = [[ServerConnector alloc] init];
     sc.delegate = self;
     
     if ([self.peopleRespondMode isEqualToString:kPeopleTableModeFeed])
     {
         sc.identifitaion = _postIdentificationPostFeedMessage;
-        NSString *apiRequest = [ApiBuilder apiFeedOfFriendsPostCommentAs:self.nick withId:self.postId sendMessage:self.responseView.text];
+        NSString *apiRequest = [ApiBuilder apiFeedOfFriendsPostCommentAs:self.nick withId:self.postId sendMessage:noEntersAtBeginAndEnd];
         [sc downloadDataForApiRequest:apiRequest];
     }
     
@@ -325,10 +327,10 @@
     {
         sc.identifitaion = _postIdentificationPostMailboxMessage;
         if (!self.attachmentNames || [self.attachmentNames count] < 1) {
-            NSString *apiRequest = [ApiBuilder apiMailboxSendTo:self.nick message:self.responseView.text];
+            NSString *apiRequest = [ApiBuilder apiMailboxSendTo:self.nick message:noEntersAtBeginAndEnd];
             [sc downloadDataForApiRequest:apiRequest];
         } else {
-            NSDictionary *apiRequest = [ApiBuilder apiMailboxSendWithAttachmentTo:self.nick message:self.responseView.text];
+            NSDictionary *apiRequest = [ApiBuilder apiMailboxSendWithAttachmentTo:self.nick message:noEntersAtBeginAndEnd];
             [sc downloadDataForApiRequestWithParameters:apiRequest andAttachmentName:self.attachmentNames];
         }
     }
@@ -336,7 +338,7 @@
     if ([self.peopleRespondMode isEqualToString:kPeopleTableModeDiscussion])
     {
         sc.identifitaion = _postIdentificationPostDiscussionMessage;
-        NSDictionary *apiRequest = [ApiBuilder apiDiscussionSendWithAttachment:_discussionId message:self.responseView.text];
+        NSDictionary *apiRequest = [ApiBuilder apiDiscussionSendWithAttachment:_discussionId message:noEntersAtBeginAndEnd];
         // self.attachmentNames can be nil.
         [sc downloadDataForApiRequestWithParameters:apiRequest andAttachmentName:self.attachmentNames];
     }

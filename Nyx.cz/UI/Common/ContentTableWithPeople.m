@@ -149,6 +149,7 @@
 {
     static NSString *cellIdForReuse = @"uniqCell";
     ContentTableWithPeopleCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdForReuse];
+    
     if (cell == nil)
     {
         cell = [[ContentTableWithPeopleCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdForReuse];
@@ -156,7 +157,9 @@
         longPress.minimumPressDuration = kLongPressMinimumDuration;
         [cell addGestureRecognizer:longPress];
     }
+    
     NSDictionary *cellData = [[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
+    
     if (cellData)
     {
         // remove all custom params
@@ -244,28 +247,30 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     // DENY SELECT FIRST ROW IN DETAIL VIEW - load same content doesn't make sense
-    if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussionDetail] && indexPath.section == 0 && indexPath.row == 0) {
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussionDetail] && indexPath.section == 0 && indexPath.row == 0)
+    {
         return;
     }
     
     NSDictionary *userPostData = [[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
 //    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), userPostData);
     
+    // -------- SETTINGS FOR RESPOND VIEW --------
     NSString *nick;
     NSString *postId;
     CGFloat f = 2.0f;
     
-    if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeed] || [self.peopleTableMode isEqualToString:kPeopleTableModeFeedDetail]) {
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeed]) {
         nick = [userPostData objectForKey:@"nick"];
         postId = [userPostData objectForKey:@"id_update"];
         f = [[[self.nyxPostsRowHeights objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] floatValue];
     }
-    if ([self.peopleTableMode isEqualToString:kPeopleTableModeMailbox] || [self.peopleTableMode isEqualToString:kPeopleTableModeMailboxDetail]) {
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeMailbox]) {
         nick = [userPostData objectForKey:@"other_nick"];
         postId = [userPostData objectForKey:@"id_mail"];
         f = [[[self.nyxPostsRowHeights objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] floatValue];
     }
-    if ([self.peopleTableMode isEqualToString:kPeopleTableModeFriends] || [self.peopleTableMode isEqualToString:kPeopleTableModeFriendsDetail]) {
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeFriends]) {
         nick = [userPostData objectForKey:@"nick"];
         postId = @"666";
         f = 70;
@@ -275,45 +280,35 @@
         postId = [userPostData objectForKey:@"id_wu"];
         f = [[[self.nyxPostsRowHeights objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] floatValue];
     }
-    if ([self.peopleTableMode isEqualToString:kPeopleTableModeNotices] || [self.peopleTableMode isEqualToString:kPeopleTableModeNoticesDetail]) {
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeNotices]) {
         nick = [userPostData objectForKey:@"nick"];
         postId = [userPostData objectForKey:@"id_wu"];
         f = [[[self.nyxPostsRowHeights objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] floatValue];
-    }
-    if ([self.peopleTableMode isEqualToString:kPeopleTableModeSearch]) {
-        UIAlertController *a = [UIAlertController alertControllerWithTitle:@"Klub"
-                                                                   message:[userPostData objectForKey:@"klub_jmeno"]
-                                                            preferredStyle:(UIAlertControllerStyleAlert)];
-        UIAlertAction *ok = [UIAlertAction actionWithTitle:@"OK" style:(UIAlertActionStyleCancel) handler:^(UIAlertAction * _Nonnull action) {}];
-        [a addAction:ok];
-        [self presentViewController:a animated:YES completion:^{}];
     }
     
     NSString *firstPostId = [[[self.nyxRowsForSections objectAtIndex:0] objectAtIndex:0] objectForKey:@"id_wu"];
     NSAttributedString *str = [[self.nyxPostsRowBodyTexts objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
     
-    // RESPOND VIEW --------
+    // -------- RESPOND VIEW --------
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeed] ||
         [self.peopleTableMode isEqualToString:kPeopleTableModeMailbox] ||
         [self.peopleTableMode isEqualToString:kPeopleTableModeFriends] ||
         [self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion] ||
-        [self.peopleTableMode isEqualToString:kPeopleTableModeNotices] ||
-        [self.peopleTableMode isEqualToString:kPeopleTableModeDiscussionDetail])
+        [self.peopleTableMode isEqualToString:kPeopleTableModeDiscussionDetail] ||
+        [self.peopleTableMode isEqualToString:kPeopleTableModeNotices])
     {
         NSMutableArray *previousResponses = [[NSMutableArray alloc] init];
         
         if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion] ||
             [self.peopleTableMode isEqualToString:kPeopleTableModeDiscussionDetail])
         {
-            // Previous reactions ID (wu) to this POST in DISCUSSION.
+            // Previous reactions ID (wu) to this POST in **** DISCUSSION. ****
             ContentTableWithPeopleCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-//            NSArray *recipientNames = [self getRecipientNamesFromSourceHtml:cell.bodyTextSource];
             NSArray *recipientLinks = [self getRelativeOnlyUrls:[self getAllURLsFromAttributedAndSourceText:cell.bodyText withHtmlSource:nil]];
             NSArray *wuOnlyRecipients = [recipientLinks filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF contains %@", @"wu="]];
             if ([wuOnlyRecipients count] > 0) {
                 for (NSInteger index = 0; index < [wuOnlyRecipients count] ; index++)
                 {
-//                    NSString *name = [recipientNames objectAtIndex:index];
                     NSString *reactionId = [[[wuOnlyRecipients objectAtIndex:index] componentsSeparatedByString:@"="] lastObject];
                     [previousResponses addObject:@{@"name": @"getRecipientNamesFromSourceHtml:", @"reactionId": reactionId}];
                 }
@@ -322,7 +317,7 @@
         
         if ([self.peopleTableMode isEqualToString:kPeopleTableModeNotices])
         {
-            // Previous reactions ID (wu) to this POST in NOTICES.
+            // Previous reactions ID (wu) to this POST in **** NOTICES. ****
             NSArray *replies = [userPostData objectForKey:@"replies"];
             if (replies && [replies count] > 0) {
                 for (NSDictionary *r in replies) {
@@ -339,8 +334,6 @@
             }
         }
         
-//        NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), previousResponses);
-        
         [self showRespondViewWithNick:nick
                              bodyText:str
                            bodyHeight:f
@@ -350,7 +343,17 @@
                 previousReactionPosts:(NSArray *)previousResponses
          ];
     }
-    // ---------------------
+    // ------------------------------
+    
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeSearch]) {
+        UIAlertController *a = [UIAlertController alertControllerWithTitle:@"Klub"
+                                                                   message:[userPostData objectForKey:@"klub_jmeno"]
+                                                            preferredStyle:(UIAlertControllerStyleAlert)];
+        UIAlertAction *ok = [UIAlertAction actionWithTitle:@"OK" style:(UIAlertActionStyleCancel) handler:^(UIAlertAction * _Nonnull action) {}];
+        [a addAction:ok];
+        [self presentViewController:a animated:YES completion:^{}];
+    }
+    
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeedDetail]  ||
         [self.peopleTableMode isEqualToString:kPeopleTableModeMailboxDetail]) {
         ContentTableWithPeopleCell *cell = [tableView cellForRowAtIndexPath:indexPath];
