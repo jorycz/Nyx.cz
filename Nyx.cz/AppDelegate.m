@@ -43,6 +43,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [Preferences setupPreferences];
+    
     self.mainScreen = [[MainVC alloc] init];
     UINavigationController *mainNavigationController = [[UINavigationController alloc] initWithRootViewController:self.mainScreen];
     mainNavigationController.navigationBar.tintColor = COLOR_SYSTEM_TURQUOISE;

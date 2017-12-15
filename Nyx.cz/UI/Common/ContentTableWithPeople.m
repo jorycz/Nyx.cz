@@ -42,13 +42,6 @@
         self.nyxPostsRowHeights = [[NSMutableArray alloc] init];
         self.nyxPostsRowBodyTexts = [[NSMutableArray alloc] init];
         self.canEditFirstRow = YES;
-        
-        // Refresh after new FEED POST.
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getDataForFeedOfFriends) name:kNotificationFriendsFeedChanged object:nil];
-        // Refresh after new mail message is sent.
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getDataForMailbox) name:kNotificationMailboxChanged object:nil];
-        // Refresh and load newer posts after new POST is send to discussion.
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getDataForDiscussionBeforeId:) name:kNotificationDiscussionLoadNewerFrom object:nil];
     }
     return self;
 }
@@ -119,6 +112,23 @@
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    // Refresh after new FEED POST.
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getDataForFeedOfFriends) name:kNotificationFriendsFeedChanged object:nil];
+    // Refresh after new mail message is sent.
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getDataForMailbox) name:kNotificationMailboxChanged object:nil];
+    // Refresh and load newer posts after new POST is send to discussion.
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getDataForDiscussionBeforeIdNotificationFromRespondVC:) name:kNotificationDiscussionLoadNewerFrom object:nil];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - Table view data source
@@ -695,7 +705,7 @@
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion])
     {
         NSString *beforeId = [[[self.nyxRowsForSections objectAtIndex:0] objectAtIndex:0] objectForKey:@"id_wu"];
-        POST_NOTIFICATION_DISCUSSION_LOAD_NEWER_FROM(beforeId)
+        [self getDataForDiscussionBeforeId:beforeId];
     }
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeed])
     {
@@ -772,7 +782,14 @@
     [self serverApiCall:apiRequest andIdentification:kApiIdentificationDataForDiscussionFromID];
 }
 
-- (void)getDataForDiscussionBeforeId:(NSNotification *)sender
+- (void)getDataForDiscussionBeforeId:(NSString *)beforeId
+{
+    NSString *discussionId = [self.disscussionClubData objectForKey:@"id_klub"];
+    NSString *apiRequest = [ApiBuilder apiMessagesForDiscussion:discussionId loadPreviousFromId:beforeId];
+    [self serverApiCall:apiRequest andIdentification:kApiIdentificationDataForDiscussionRefreshAfterPost];
+}
+
+- (void)getDataForDiscussionBeforeIdNotificationFromRespondVC:(NSNotification *)sender
 {
     NSString *beforeId = [[sender userInfo] objectForKey:@"nKey"];
     NSString *discussionId = [self.disscussionClubData objectForKey:@"id_klub"];

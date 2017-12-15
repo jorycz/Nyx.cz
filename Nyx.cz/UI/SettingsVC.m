@@ -28,6 +28,7 @@
                              @"Smazat nastavení",
                              @"Zobrazovat obrázky",
                              @"Otevřít v Safari",
+                             @"Sdílet původní obrázky",
                              @"Obnova dat na pozadí",
                              @"Uložená zpráva"
                              ];
@@ -36,6 +37,7 @@
                                @"Smaže veškeré nastavení kromě autorizace.",
                                @"Zobrazovat v postech obrázky nebo URL.",
                                @"Otevře URL linky v Safari místo v aplikaci.",
+                               @"Před sdílením stáhne originální obrázky.",
                                @"",
                                @"Zobrazí uloženou zprávu, pokud existuje."
                                ];
@@ -126,7 +128,8 @@
     
     if (indexPath.row == 1) {
         NSString *startingLocation = [Preferences preferredStartingLocation:nil];
-        NSString *missingLocation = [NSString stringWithFormat:@"Neurčena. Poslední navštívená: %@", [Preferences lastUserPosition:nil]];
+        NSString *last = [Preferences lastUserPosition:nil] ? [Preferences lastUserPosition:nil] : @"Neznámá!" ;
+        NSString *missingLocation = [NSString stringWithFormat:@"Neurčena. Poslední navštívená: %@", last];
         (startingLocation && [startingLocation length] > 0) ? [cell.detailTextLabel setText:startingLocation] : [cell.detailTextLabel setText:missingLocation];
     }
     
@@ -141,6 +144,11 @@
     }
     
     if (indexPath.row == 5) {
+        cell.settingsSwitch = [self placeSwitchWithTag:indexPath.row];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    }
+    
+    if (indexPath.row == 6) {
         NSString *lastBackgroundRefresh = [Preferences actualDateOfBackgroundRefresh:nil];
         (lastBackgroundRefresh && [lastBackgroundRefresh length] > 0) ? [cell.detailTextLabel setText:lastBackgroundRefresh] : [cell.detailTextLabel setText:@"Natím nenačtena žádná data na pozadí."];
     }
@@ -161,7 +169,7 @@
         case 2:
             [self deleteSettings];
             break;
-        case 5:
+        case 6:
         {
             NSString *lastBackgroundRefresh;
             if ([[Preferences actualDateOfBackgroundRefresh:nil] length] > 0) {
@@ -177,7 +185,7 @@
             [self presentViewController:a animated:YES completion:^{}];
         }
             break;
-        case 6:
+        case 7:
         {
             NSString *storedMessage;
             if ([[[[Preferences messagesForDiscussion:nil] firstObject] objectForKey:@"text"] length] > 0) {
@@ -228,6 +236,8 @@
         [[Preferences showImagesInlineInPost:nil] length] > 0 ? [s setOn:YES] : [s setOn:NO] ;
     if (tag == 4)
         [[Preferences openUrlsInSafari:nil] length] > 0 ? [s setOn:YES] : [s setOn:NO] ;
+    if (tag == 5)
+        [[Preferences shareFullSizeImages:nil] length] > 0 ? [s setOn:YES] : [s setOn:NO] ;
     
     return s;
 }
@@ -240,6 +250,8 @@
         s.isOn ? [Preferences showImagesInlineInPost:@"yes"] : [Preferences showImagesInlineInPost:@""] ;
     if (s.tag == 4)
         s.isOn ? [Preferences openUrlsInSafari:@"yes"] : [Preferences openUrlsInSafari:@""] ;
+    if (s.tag == 5)
+        s.isOn ? [Preferences shareFullSizeImages:@"yes"] : [Preferences shareFullSizeImages:@""] ;
 }
 
 
@@ -327,6 +339,13 @@
                                                             preferredStyle:(UIAlertControllerStyleAlert)];
     UIAlertAction *delete = [UIAlertAction actionWithTitle:@"Smazat!" style:(UIAlertActionStyleDestructive) handler:^(UIAlertAction * _Nonnull action) {
         
+        NSString *nick = [Preferences auth_nick:nil];
+        NSString *token = [Preferences auth_token:nil];
+        [Preferences resetPreferences];
+        [Preferences setupPreferences];
+        [Preferences auth_nick:nick];
+        [Preferences auth_token:token];
+        [self dismissSettings];
     }];
     UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Zrušit" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {}];
     [alert addAction:delete];

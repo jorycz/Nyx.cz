@@ -123,6 +123,9 @@ extern NSString* const kMenuHistory;
 extern NSString* const kMenuFriendList;
 extern NSString* const kMenuNotifications;
 extern NSString* const kMenuSearchPosts;
+extern NSString* const kMenuMarket;
+extern NSString* const kMenuCalendar;
+
 
 // Main buttons - logout, contact, settings
 extern NSString* const kMainButtonNotification;

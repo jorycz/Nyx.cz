@@ -24,10 +24,15 @@
 + (NSString *)auth_nick:(NSString *)value;
 + (NSString *)auth_token:(NSString *)value;
 
++ (void)setupPreferences;
 + (NSString *)lastUserPosition:(NSString *)value;
 + (NSString *)preferredStartingLocation:(NSString *)value;
 + (NSString *)showImagesInlineInPost:(NSString *)value;
 + (NSString *)openUrlsInSafari:(NSString *)value;
++ (NSString *)shareFullSizeImages:(NSString *)value;
+
+
+// UTILITY
 
 // Cache for not finished messages
 + (NSArray *)messagesForDiscussion:(NSMutableArray *)value;

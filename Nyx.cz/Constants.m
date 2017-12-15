@@ -123,6 +123,8 @@ NSString* const kMenuHistory = @"Historie";
 NSString* const kMenuFriendList = @"Lidé";
 NSString* const kMenuNotifications = @"Upozornění";
 NSString* const kMenuSearchPosts = @"Hledání příspěvků";
+NSString* const kMenuMarket = @"Tržiště";
+NSString* const kMenuCalendar = @"Kalendář";
 
 // Main buttons - logout, contact, settings
 NSString* const kMainButtonNotification = @"kMainButtonNotification";

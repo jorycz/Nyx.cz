@@ -18,7 +18,7 @@
     if (self)
     {
         self.backgroundColor = [UIColor whiteColor];
-        self.menuEntries = @[kMenuOverview, kMenuMail, kMenuBookmarks, kMenuHistory, kMenuFriendList, kMenuNotifications, kMenuSearchPosts];
+        self.menuEntries = @[kMenuOverview, kMenuMail, kMenuBookmarks, kMenuHistory, kMenuFriendList, kMenuNotifications, kMenuSearchPosts, kMenuMarket, kMenuCalendar];
         
         self.table = [[UITableView alloc] init];
         [self.table setDelegate:self];
@@ -91,6 +91,11 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    if (indexPath.row > 6) {
+        return;
+    }
+    
     [self.delegate sideMenuSelectedItem:[self.menuEntries objectAtIndex:indexPath.row]];
     [self reloadCellsConfiguration];
 }

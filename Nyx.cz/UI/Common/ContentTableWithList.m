@@ -49,7 +49,7 @@
 {
     [super viewDidLoad];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getDataForHistory) name:kNotificationListTableChanged object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshData) name:kNotificationListTableChanged object:nil];
     
     // Uncomment the following line to preserve selection between presentations.
     self.clearsSelectionOnViewWillAppear = NO;
@@ -181,6 +181,16 @@
     return NO;
 }
 
+#pragma mark - REFRESH DATA
+
+- (void)refreshData
+{
+    if ([self.listTableMode isEqualToString:kListTableModeHistory])
+        [self getDataForHistory];
+    if ([self.listTableMode isEqualToString:kListTableModeBookmarks])
+        [self getDataForBookmarks];
+}
+
 #pragma mark - PULL TO REFRESH
 
 - (void)pullToRefresh:(id)sender
@@ -188,10 +198,7 @@
     [_table setScrollEnabled:NO];
     [_table setScrollEnabled:YES];
     
-    if ([self.listTableMode isEqualToString:kListTableModeHistory])
-        [self getDataForHistory];
-    if ([self.listTableMode isEqualToString:kListTableModeBookmarks])
-        [self getDataForBookmarks];
+    [self refreshData];
     
     [(UIRefreshControl *)sender endRefreshing];
 }

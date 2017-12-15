@@ -75,6 +75,16 @@
 
 #pragma mark - PREFERENCES / SETTINGS
 
++ (void)setupPreferences
+{
+    NSString *key = @"_FIRST_RUN_";
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:key] == nil) {
+        [[NSUserDefaults standardUserDefaults] setValue:@"NO" forKey:key];
+        // First run EVER.
+        [self shareFullSizeImages:@"yes"];
+    }
+}
+
 + (NSString *)lastUserPosition:(NSString *)value
 {
     NSString *key = @"_LASTUSERPOSITION";
@@ -114,6 +124,18 @@
 + (NSString *)openUrlsInSafari:(NSString *)value
 {
     NSString *key = @"_URLSINSAFARI";
+    if (value) {
+        [[NSUserDefaults standardUserDefaults] setValue:value forKey:key];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        return nil;
+    } else {
+        return [[NSUserDefaults standardUserDefaults] stringForKey:key];
+    }
+}
+
++ (NSString *)shareFullSizeImages:(NSString *)value
+{
+    NSString *key = @"_SHAREFULLSIZEIMAGES";
     if (value) {
         [[NSUserDefaults standardUserDefaults] setValue:value forKey:key];
         [[NSUserDefaults standardUserDefaults] synchronize];
