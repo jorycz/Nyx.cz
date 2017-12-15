@@ -62,6 +62,13 @@
 {
     [super viewDidLoad];
     
+    // Refresh after new FEED POST.
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getDataForFeedOfFriends) name:kNotificationFriendsFeedChanged object:nil];
+    // Refresh after new mail message is sent.
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getDataForMailbox) name:kNotificationMailboxChanged object:nil];
+    // Refresh and load newer posts after new POST is send to discussion.
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getDataForDiscussionBeforeIdNotificationFromRespondVC:) name:kNotificationDiscussionLoadNewerFrom object:nil];
+    
     _table = [[UITableView alloc] init];
     [self.view addSubview:_table];
 
@@ -112,23 +119,6 @@
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    // Refresh after new FEED POST.
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getDataForFeedOfFriends) name:kNotificationFriendsFeedChanged object:nil];
-    // Refresh after new mail message is sent.
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getDataForMailbox) name:kNotificationMailboxChanged object:nil];
-    // Refresh and load newer posts after new POST is send to discussion.
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getDataForDiscussionBeforeIdNotificationFromRespondVC:) name:kNotificationDiscussionLoadNewerFrom object:nil];
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-    [super viewWillDisappear:animated];
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - Table view data source
@@ -791,10 +781,14 @@
 
 - (void)getDataForDiscussionBeforeIdNotificationFromRespondVC:(NSNotification *)sender
 {
-    NSString *beforeId = [[sender userInfo] objectForKey:@"nKey"];
-    NSString *discussionId = [self.disscussionClubData objectForKey:@"id_klub"];
-    NSString *apiRequest = [ApiBuilder apiMessagesForDiscussion:discussionId loadPreviousFromId:beforeId];
-    [self serverApiCall:apiRequest andIdentification:kApiIdentificationDataForDiscussionRefreshAfterPost];
+    // Do not refresh all PEOPLE type tables (few tables notices -> notices detail -> discussion ...)
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion])
+    {
+        NSString *beforeId = [[sender userInfo] objectForKey:@"nKey"];
+        NSString *discussionId = [self.disscussionClubData objectForKey:@"id_klub"];
+        NSString *apiRequest = [ApiBuilder apiMessagesForDiscussion:discussionId loadPreviousFromId:beforeId];
+        [self serverApiCall:apiRequest andIdentification:kApiIdentificationDataForDiscussionRefreshAfterPost];
+    }
 }
 
 #pragma mark - SERVER / API DELEGATE RESULT
