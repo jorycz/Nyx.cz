@@ -19,6 +19,9 @@
     BOOL _tableEditShowDelete, _tableEditShowThumbs;
     
     NSIndexPath *_preserveIndexPathAfterLoadFromId;
+    
+    NSMutableString *_lastVisitWuId;
+    NSMutableDictionary *_temporaryDataStorageBeforeLastReadIsFound;
 }
 
 
@@ -57,7 +60,7 @@
 - (void)getDataForNotices;
 - (void)getDataForSearchNick:(NSString *)nick andText:(NSString *)text;
 
-- (void)getDataForDiscussion:(NSString *)disId;
+- (void)getDataForDiscussion:(NSString *)disId loadMoreToShowAllUnreadFromId:(NSString *)postId;
 
 
 

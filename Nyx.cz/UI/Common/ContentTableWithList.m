@@ -172,7 +172,7 @@
     
     if ([userPostData objectForKey:@"id_klub"]) {
         [self.nController pushViewController:self.nestedPeopleTable animated:YES];
-        [self.nestedPeopleTable getDataForDiscussion:[userPostData objectForKey:@"id_klub"]];
+        [self.nestedPeopleTable getDataForDiscussion:[userPostData objectForKey:@"id_klub"] loadMoreToShowAllUnreadFromId:@""];
     }
 }
 

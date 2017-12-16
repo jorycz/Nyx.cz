@@ -42,6 +42,8 @@
         self.nyxPostsRowHeights = [[NSMutableArray alloc] init];
         self.nyxPostsRowBodyTexts = [[NSMutableArray alloc] init];
         self.canEditFirstRow = YES;
+        _lastVisitWuId = [[NSMutableString alloc] init];
+        _temporaryDataStorageBeforeLastReadIsFound = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
@@ -126,6 +128,7 @@
 - (void)reloadTableDataWithScrollToTop:(BOOL)goToTop
 {
     [_table reloadData];
+    
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion])
         [self removeLoadingView];
     // Neposouvat kdyz scrollujeme dolu a nacitaji se dalsi posty.
@@ -135,6 +138,12 @@
     } else {
         [_table scrollToRowAtIndexPath:_preserveIndexPathAfterLoadFromId atScrollPosition:(UITableViewScrollPositionBottom) animated:NO];
     }
+}
+
+- (void)reloadTableDataWithScrollToRow:(NSInteger)row
+{
+    [_table reloadData];
+    [_table scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:row inSection:0] atScrollPosition:(UITableViewScrollPositionBottom) animated:NO];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -760,10 +769,17 @@
     [self serverApiCall:apiRequest andIdentification:kApiIdentificationDataForSearch];
 }
 
-- (void)getDataForDiscussion:(NSString *)disId
+- (void)getDataForDiscussion:(NSString *)disId loadMoreToShowAllUnreadFromId:(NSString *)postId
 {
-    NSString *apiRequest = [ApiBuilder apiMessagesForDiscussion:disId];
-    [self serverApiCall:apiRequest andIdentification:kApiIdentificationDataForDiscussion];
+    if (postId && [postId length] > 0)
+    {
+        NSString *apiRequest = [ApiBuilder apiMessagesForDiscussion:disId loadMoreFromId:postId];
+        [self serverApiCall:apiRequest andIdentification:kApiIdentificationDataForDiscussion];
+    } else {
+        [_temporaryDataStorageBeforeLastReadIsFound removeAllObjects];
+        NSString *apiRequest = [ApiBuilder apiMessagesForDiscussion:disId];
+        [self serverApiCall:apiRequest andIdentification:kApiIdentificationDataForDiscussion];
+    }
 }
 
 - (void)getDataForDiscussion:(NSString *)dId fromId:(NSString *)fromId
@@ -888,13 +904,65 @@
                 }
                 if ([identification isEqualToString:kApiIdentificationDataForDiscussion])
                 {
+                    // THIS CODE IS CALLED SO MANY TIMES UNTIL OLDER THAN LAST_VISIT POST IS FOUND or FORCE LIMIT IS REACHED.
+                    
+                    if ([_temporaryDataStorageBeforeLastReadIsFound objectForKey:@"discussion"]) {
+                        // add posts only
+                        NSMutableArray *a = [[NSMutableArray alloc] initWithArray:[_temporaryDataStorageBeforeLastReadIsFound objectForKey:@"data"]];
+                        [a addObjectsFromArray:[jp.jsonDictionary objectForKey:@"data"]];
+                        for (NSMutableDictionary *md in a) {
+                            // Set all these posts as NEW.
+                            [md setValue:@"yes" forKey:@"new"];
+                        }
+                        [_temporaryDataStorageBeforeLastReadIsFound removeObjectForKey:@"data"];
+                        [_temporaryDataStorageBeforeLastReadIsFound setObject:a forKey:@"data"];
+                    } else {
+                        // add all - first call
+                        [_temporaryDataStorageBeforeLastReadIsFound addEntriesFromDictionary:jp.jsonDictionary];
+                    }
+                    
+                    // Load posts until last unread in current data is found.
+                    [_lastVisitWuId setString:[[_temporaryDataStorageBeforeLastReadIsFound objectForKey:@"discussion"] objectForKey:@"last_visit"]];
+                    if (_lastVisitWuId && [_lastVisitWuId length] > 0)
+                    {
+                        BOOL lastUnreadPostReached = NO;
+                        NSArray *posts = [_temporaryDataStorageBeforeLastReadIsFound objectForKey:@"data"];
+                        for (NSDictionary *d in posts)
+                        {
+                            NSInteger id_wu = [[d objectForKey:@"id_wu"] integerValue];
+                            if (id_wu < [_lastVisitWuId integerValue]) {
+                                lastUnreadPostReached = YES;
+                            }
+                        }
+                        
+                        // is last unread or limit is reached
+                        if (!lastUnreadPostReached && [[_temporaryDataStorageBeforeLastReadIsFound objectForKey:@"data"] count] < 500)
+                        {
+                            // load more from id
+                            NSString *lastId = [[posts lastObject] objectForKey:@"id_wu"];
+                            NSString *discussionId = [[jp.jsonDictionary objectForKey:@"discussion"] objectForKey:@"id_klub"];
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [self removeLoadingView];
+                            });
+                            [self getDataForDiscussion:discussionId loadMoreToShowAllUnreadFromId:lastId];
+                            return;
+                        }
+                    }
+                    
+                    // Last UNREAD/LIMIT post is found so configure table.
                     TableConfigurator *tc = [[TableConfigurator alloc] init];
                     tc.widthForTableCellBodyTextView = self.widthForTableCellBodyTextView;
-                    [tc reconfigurePeopleTableDiscussion:self withData:jp.jsonDictionary withActionIdentification:identification];
+                    [tc reconfigurePeopleTableDiscussion:self withData:_temporaryDataStorageBeforeLastReadIsFound withActionIdentification:identification];
                     
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [self.nController.topViewController.navigationItem.rightBarButtonItem setEnabled:YES];
-                        [self reloadTableDataWithScrollToTop:YES];
+                        NSInteger lastUnreadIndex = 0;
+                        for (NSDictionary *d in [_temporaryDataStorageBeforeLastReadIsFound objectForKey:@"data"]) {
+                            if ([[d objectForKey:@"new"] length] > 0) {
+                                lastUnreadIndex++;
+                            }
+                        }
+                        [self reloadTableDataWithScrollToRow:lastUnreadIndex > 0 ? lastUnreadIndex - 1 : 0];
                     });
                 }
                 if ([identification isEqualToString:kApiIdentificationDataForDiscussionFromID])
