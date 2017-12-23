@@ -13,8 +13,6 @@
 #import "ContactVC.h"
 #import "NewNoticesForPost.h"
 
-#import <UserNotifications/UserNotifications.h>
-
 
 @interface MainVC ()
 
@@ -298,9 +296,7 @@
 {
     if (!_gettingNewNotifications) {
         _gettingNewNotifications = YES;
-        if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive ||
-            [[UIApplication sharedApplication] applicationState] == UIApplicationStateInactive)
-            [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
         NSString *apiRequest = [ApiBuilder apiFeedNoticesAndKeepNew:YES];
         ServerConnector *sc = [[ServerConnector alloc] init];
         sc.identifitaion = _identificationDataRefresh;
@@ -401,57 +397,17 @@
     switch ([[UIApplication sharedApplication] applicationState]) {
         case UIApplicationStateActive:
         {
-            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
             [self.sideMenu showNewMailAlert:mail andNyxNotificationAlert:notification];
         }
             break;
         case UIApplicationStateInactive:
         {
-            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
             [self.sideMenu showNewMailAlert:mail andNyxNotificationAlert:notification];
-        }
-            break;
-        case UIApplicationStateBackground:
-        {
-            if (mail || notification)
-            {
-                [self notifyUserWithData:data withMails:mail andNotifications:notification];
-            } else {
-                [self badge:0];
-            }
         }
             break;
         default:
             break;
     }
-}
-
-#pragma mark - BACKGROUND
-
-- (void)notifyUserWithData:(NSDictionary *)data withMails:(NSInteger)m andNotifications:(NSInteger)n
-{
-    [self badge:(m + n)];
-    NSString *body = [NSString stringWithFormat:@"Nové maily (%li) nebo upozornění (%li).", (long)m, (long)n];
-    
-    UNMutableNotificationContent *content = [UNMutableNotificationContent new];
-    content.title = @"Nyx.cz";
-    content.body = body;
-    content.sound = [UNNotificationSound defaultSound];
-    
-    NSString *identifier = @"NYXLocalNotification";
-    UNNotificationRequest *request = [UNNotificationRequest requestWithIdentifier:identifier
-                                                                          content:content trigger:nil];
-    
-    [[UNUserNotificationCenter currentNotificationCenter] addNotificationRequest:request withCompletionHandler:^(NSError * _Nullable error) {
-        if (error != nil) {
-            NSLog(@"Something went wrong: %@",error);
-        }
-    }];
-}
-
-- (void)badge:(NSInteger)b
-{
-    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:b];
 }
 
 

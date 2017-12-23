@@ -54,7 +54,8 @@
 //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(inCallBar:) name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
 //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(inCallBar:) name:UIApplicationDidChangeStatusBarFrameNotification object:nil];
     
-    [self initNotificationTopBar];
+    // Notification Top Bar Init.
+    self.userNotification = [[UserNotification alloc] init];
     
 //    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
 //    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), [paths objectAtIndex:0]);
@@ -176,14 +177,6 @@
     }
 }
 
-#pragma mark - NOTIFICATION TOP BAR INIT
-
-- (void)initNotificationTopBar
-{
-    UserNotification *un = [[UserNotification alloc] init];
-    self.userNotification = un;
-}
-
 #pragma mark - MEMORY CACHE
 
 - (MemCache *)memCache
@@ -230,7 +223,8 @@
             case UNAuthorizationStatusAuthorized:
             {
                 dispatch_sync(dispatch_get_main_queue(), ^{
-                    [self.mainScreen getNewNyxNotifications];
+                    self.bgd = [[BackgroundDownloader alloc] init];
+                    [self.bgd getNewData];
                 });
                 completionHandler(UIBackgroundFetchResultNewData);
             }
@@ -242,6 +236,9 @@
     }];
 }
 
+
 @end
+
+
 
 

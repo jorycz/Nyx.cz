@@ -76,6 +76,7 @@
 		2B42D4261FC8CD3E009F751D /* 17.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B42D40F1FC8CD3E009F751D /* 17.png */; };
 		2B42D44B1FCA2124009F751D /* ContentTableWithList.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B42D44A1FCA2124009F751D /* ContentTableWithList.m */; };
 		2B42D44E1FCA27B9009F751D /* ContentTableWithListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B42D44D1FCA27B9009F751D /* ContentTableWithListCell.m */; };
+		2B5DEC351FEE9344001F90B1 /* BackgroundDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B5DEC341FEE9344001F90B1 /* BackgroundDownloader.m */; };
 		2B6736061FBCE8F500DA728E /* SideMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B6736051FBCE8F500DA728E /* SideMenu.m */; };
 		2B6736091FBCED2100DA728E /* MainVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B6736081FBCED2100DA728E /* MainVC.m */; };
 		2B67360C1FBCFAEF00DA728E /* SideMenuCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B67360B1FBCFAEF00DA728E /* SideMenuCell.m */; };
@@ -224,6 +225,8 @@
 		2B42D44A1FCA2124009F751D /* ContentTableWithList.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ContentTableWithList.m; sourceTree = "<group>"; };
 		2B42D44C1FCA27B9009F751D /* ContentTableWithListCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ContentTableWithListCell.h; sourceTree = "<group>"; };
 		2B42D44D1FCA27B9009F751D /* ContentTableWithListCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ContentTableWithListCell.m; sourceTree = "<group>"; };
+		2B5DEC331FEE9344001F90B1 /* BackgroundDownloader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BackgroundDownloader.h; sourceTree = "<group>"; };
+		2B5DEC341FEE9344001F90B1 /* BackgroundDownloader.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BackgroundDownloader.m; sourceTree = "<group>"; };
 		2B6736041FBCE8F500DA728E /* SideMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SideMenu.h; sourceTree = "<group>"; };
 		2B6736051FBCE8F500DA728E /* SideMenu.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SideMenu.m; sourceTree = "<group>"; };
 		2B6736071FBCED2100DA728E /* MainVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainVC.h; sourceTree = "<group>"; };
@@ -313,6 +316,8 @@
 				2B2303731FBC5A9C00286062 /* UI */,
 				2B0D5D8F1FBC40F20052D63C /* AppDelegate.h */,
 				2B0D5D901FBC40F20052D63C /* AppDelegate.m */,
+				2B5DEC331FEE9344001F90B1 /* BackgroundDownloader.h */,
+				2B5DEC341FEE9344001F90B1 /* BackgroundDownloader.m */,
 				2B0D5D9B1FBC40F30052D63C /* Assets.xcassets */,
 				2B0D5D9D1FBC40F30052D63C /* LaunchScreen.storyboard */,
 				2B0D5DA01FBC40F30052D63C /* Info.plist */,
@@ -717,6 +722,7 @@
 				2B2303971FBC943400286062 /* UserNotification.m in Sources */,
 				2B3180251FC5B65C0063B9EE /* PeopleAutocompleteVC.m in Sources */,
 				2B31800E1FC347DB0063B9EE /* ComputeRowHeight.m in Sources */,
+				2B5DEC351FEE9344001F90B1 /* BackgroundDownloader.m in Sources */,
 				2B2303941FBC73AF00286062 /* JSONParser.m in Sources */,
 				2B31801C1FC4C6A20063B9EE /* NewFeedPostVC.m in Sources */,
 				2B42D44B1FCA2124009F751D /* ContentTableWithList.m in Sources */,

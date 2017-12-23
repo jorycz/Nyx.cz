@@ -34,7 +34,6 @@
 
 
 - (void)sideMenuClose;
-- (void)getNewNyxNotifications;
 
 
 @end

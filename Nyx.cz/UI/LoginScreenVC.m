@@ -250,10 +250,10 @@
         [self showHideSpinner];
         PRESENT_ERROR(title, message)
         
-        UIAlertController *a = [UIAlertController alertControllerWithTitle:@"Chyba"
-                                                                   message:@"Zkusit znova?"
+        UIAlertController *a = [UIAlertController alertControllerWithTitle:title
+                                                                   message:message
                                                             preferredStyle:(UIAlertControllerStyleAlert)];
-        UIAlertAction *ok = [UIAlertAction actionWithTitle:@"OK" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+        UIAlertAction *ok = [UIAlertAction actionWithTitle:@"Zkusit znova" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
             [self tryToLogIn];
         }];
         [a addAction:ok];
