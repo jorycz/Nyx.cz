@@ -959,6 +959,7 @@
                                 lastUnreadIndex++;
                             }
                         }
+                        // Scroll to last unread post
                         [self reloadTableDataWithScrollToRow:lastUnreadIndex > 0 ? lastUnreadIndex - 1 : 0];
                     });
                 }
