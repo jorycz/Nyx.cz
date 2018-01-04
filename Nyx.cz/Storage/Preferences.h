@@ -30,6 +30,7 @@
 + (NSString *)showImagesInlineInPost:(NSString *)value;
 + (NSString *)openUrlsInSafari:(NSString *)value;
 + (NSString *)shareFullSizeImages:(NSString *)value;
++ (NSString *)maximumUnreadPostsLoad:(NSString *)value;
 
 
 // UTILITY

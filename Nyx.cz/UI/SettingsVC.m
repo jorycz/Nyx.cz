@@ -30,7 +30,8 @@
                              @"Otevřít v Safari",
                              @"Sdílet původní obrázky",
                              @"Obnova dat na pozadí",
-                             @"Uložená zpráva"
+                             @"Uložená zpráva",
+                             @"Limit pro načtení nepřečtených"
                              ];
         self.menuSubtitles = @[@"Spočítá a případně umožní vymazat obsah mezipaměti.",
                                @"",
@@ -39,7 +40,8 @@
                                @"Otevře URL linky v Safari místo v aplikaci.",
                                @"Před sdílením stáhne originální obrázky.",
                                @"",
-                               @"Zobrazí uloženou zprávu, pokud existuje."
+                               @"Zobrazí uloženou zprávu, pokud existuje.",
+                               @""
                                ];
     }
     return self;
@@ -152,6 +154,18 @@
         NSString *lastBackgroundRefresh = [Preferences actualDateOfBackgroundRefresh:nil];
         (lastBackgroundRefresh && [lastBackgroundRefresh length] > 0) ? [cell.detailTextLabel setText:lastBackgroundRefresh] : [cell.detailTextLabel setText:@"Natím nenačtena žádná data na pozadí."];
     }
+    if (indexPath.row == 7) {
+        if ([[[[Preferences messagesForDiscussion:nil] firstObject] objectForKey:@"text"] length] > 0) {
+            [cell.detailTextLabel setText:@"Existuje uložená zpráva. Tapni pro detail."];
+        } else {
+            [cell.detailTextLabel setText:@"Žádná uložená zpráva."];
+        }
+    }
+    if (indexPath.row == 8) {
+        if ([Preferences maximumUnreadPostsLoad:nil]) {
+            [cell.detailTextLabel setText:[Preferences maximumUnreadPostsLoad:nil]];
+        }
+    }
     
     return cell;
 }
@@ -206,6 +220,9 @@
             [a addAction:ok];
             [self presentViewController:a animated:YES completion:^{}];
         }
+            break;
+        case 8:
+            [self chooseMaximumUnreadLoad];
             break;
         default:
             break;
@@ -328,8 +345,33 @@
     [alert addAction:kMenuSearchPostsLoc];
     [alert addAction:deletePreferredLocation];
     [alert addAction:cancel];
-    [self presentViewController:alert animated:YES completion:^{
+    [self presentViewController:alert animated:YES completion:^{}];
+}
+
+- (void)chooseMaximumUnreadLoad
+{
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Maximální počet nepřečtených příspěvků"
+                                                                   message:@"Pokud počet nepřečtených příspěvků překročí tento limit, načítání se ukončí."
+                                                            preferredStyle:(UIAlertControllerStyleActionSheet)];
+    UIAlertAction *limit200 = [UIAlertAction actionWithTitle:@"200" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+        [Preferences maximumUnreadPostsLoad:@"200"];
+        [self.table reloadData];
     }];
+    UIAlertAction *limit500 = [UIAlertAction actionWithTitle:@"500" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+        [Preferences maximumUnreadPostsLoad:@"500"];
+        [self.table reloadData];
+    }];
+    UIAlertAction *limit1000 = [UIAlertAction actionWithTitle:@"1000" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+        [Preferences maximumUnreadPostsLoad:@"1000"];
+        [self.table reloadData];
+    }];
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Zrušit" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+    }];
+    [alert addAction:limit200];
+    [alert addAction:limit500];
+    [alert addAction:limit1000];
+    [alert addAction:cancel];
+    [self presentViewController:alert animated:YES completion:^{}];
 }
 
 - (void)deleteSettings

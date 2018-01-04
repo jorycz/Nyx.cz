@@ -933,7 +933,8 @@
                         }
                         
                         // is last unread or limit is reached
-                        if (!lastUnreadPostReached && [[_temporaryDataStorageBeforeLastReadIsFound objectForKey:@"data"] count] < 500)
+                        NSInteger loadLimit = [[Preferences maximumUnreadPostsLoad:nil] integerValue];
+                        if (!lastUnreadPostReached && [[_temporaryDataStorageBeforeLastReadIsFound objectForKey:@"data"] count] < (loadLimit + 1))
                         {
                             // load more from id
                             NSString *lastId = [[posts lastObject] objectForKey:@"id_wu"];

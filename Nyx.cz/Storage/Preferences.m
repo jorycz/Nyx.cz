@@ -80,9 +80,15 @@
     NSString *key = @"_FIRST_RUN_";
     if ([[NSUserDefaults standardUserDefaults] objectForKey:key] == nil) {
         [[NSUserDefaults standardUserDefaults] setValue:@"NO" forKey:key];
-        // First run EVER.
-        [self shareFullSizeImages:@"yes"];
+        // First run EVER SETUP !!!
+        
     }
+    
+    // Setup DEFAULTS if not set already
+    if (![self shareFullSizeImages:nil])
+        [self shareFullSizeImages:@"yes"];
+    if (![self maximumUnreadPostsLoad:nil])
+        [self maximumUnreadPostsLoad:@"500"];
 }
 
 + (NSString *)lastUserPosition:(NSString *)value
@@ -136,6 +142,18 @@
 + (NSString *)shareFullSizeImages:(NSString *)value
 {
     NSString *key = @"_SHAREFULLSIZEIMAGES";
+    if (value) {
+        [[NSUserDefaults standardUserDefaults] setValue:value forKey:key];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        return nil;
+    } else {
+        return [[NSUserDefaults standardUserDefaults] stringForKey:key];
+    }
+}
+
++ (NSString *)maximumUnreadPostsLoad:(NSString *)value
+{
+    NSString *key = @"_MAXIMUMUNREADPOSTSLOAD";
     if (value) {
         [[NSUserDefaults standardUserDefaults] setValue:value forKey:key];
         [[NSUserDefaults standardUserDefaults] synchronize];
