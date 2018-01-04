@@ -616,7 +616,7 @@
                                                                    message:message
                                                             preferredStyle:(UIAlertControllerStyleActionSheet)];
     UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Zrušit" style:(UIAlertActionStyleCancel) handler:^(UIAlertAction * _Nonnull action) {}];
-    UIAlertAction *store = [UIAlertAction actionWithTitle:@"Uložit" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *store = [UIAlertAction actionWithTitle:@"Uložit a číst dál" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
         [self storeCurrentMessageToPreferences];
     }];
     UIAlertAction *deleteAll = [UIAlertAction actionWithTitle:@"Smazat uložené a začít znova"

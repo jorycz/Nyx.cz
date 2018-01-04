@@ -37,7 +37,7 @@
 @property (nonatomic, strong) NSString *activeFriendStatus;
 @property (nonatomic, strong) NSString *discussionNewPost;
 @property (nonatomic, strong) NSString *time;
-@property (nonatomic, strong) NSString *rating;
+@property (nonatomic, strong) NSMutableString *rating;
 
 @property (nonatomic, strong) NSMutableString *ratingGiven;
 

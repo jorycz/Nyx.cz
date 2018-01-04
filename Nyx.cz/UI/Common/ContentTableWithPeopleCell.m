@@ -77,6 +77,7 @@
         _disclosure.backgroundColor = [UIColor whiteColor];
         [self addSubview:_disclosure];
         
+        self.rating = [[NSMutableString alloc] initWithString:@""];
         self.ratingGiven = [[NSMutableString alloc] init];
     }
     return self;
@@ -155,7 +156,7 @@
     }
     // RATING
     if (self.ratingGiven && [self.ratingGiven length] > 0)
-        self.rating = (NSString *)self.ratingGiven;
+        [self.rating setString:self.ratingGiven];
     
     if (self.rating && [self.rating length] > 0 && ![self.rating isEqualToString:@"0"])
     {

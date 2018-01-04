@@ -177,15 +177,15 @@
     
 //    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), cellData);
     
+    // Remove all custom params.
+    cell.activeFriendStatus = nil;
+    cell.commentsCount = nil;
+    cell.mailboxDirection = nil;
+    cell.mailboxMailStatus = nil;
+    [cell.rating setString:@""];
+    
     if (cellData)
     {
-        // Remove all custom params.
-        cell.activeFriendStatus = nil;
-        cell.commentsCount = nil;
-        cell.mailboxDirection = nil;
-        cell.mailboxMailStatus = nil;
-        cell.rating = nil;
-        
         cell.peopleCellMode = self.peopleTableMode;
         
         NSString *nick;
@@ -212,13 +212,13 @@
         {
             nick = [cellData objectForKey:@"nick"];
             cell.discussionNewPost = [cellData objectForKey:@"new"];
-            cell.rating = [cellData objectForKey:@"wu_rating"];
+            [cell.rating setString:[cellData objectForKey:@"wu_rating"]];
             cell.bodyTextSource = [cellData objectForKey:@"content"];
         }
         if ([self.peopleTableMode isEqualToString:kPeopleTableModeNotices] || [self.peopleTableMode isEqualToString:kPeopleTableModeNoticesDetail])
         {
             nick = [cellData objectForKey:@"nick"];
-            cell.rating = [cellData objectForKey:@"wu_rating"];
+            [cell.rating setString:[cellData objectForKey:@"wu_rating"]];
             cell.bodyTextSource = [cellData objectForKey:@"content"];
             cell.noticesLastVisit = self.noticesLastVisitTimestamp;
             cell.notice = cellData;
@@ -226,7 +226,7 @@
         if ([self.peopleTableMode isEqualToString:kPeopleTableModeSearch])
         {
             nick = [cellData objectForKey:@"nick"];
-            cell.rating = [cellData objectForKey:@"wu_rating"];
+            [cell.rating setString:[cellData objectForKey:@"wu_rating"]];
             cell.bodyTextSource = [cellData objectForKey:@"content"];
         }
         if ([self.peopleTableMode isEqualToString:kPeopleTableModeRatingInfo])
@@ -1271,7 +1271,7 @@
     };
 }
 
-#pragma mark - RATING INFO TABLE
+#pragma mark - DISMISS
 
 - (void)dismiss
 {
