@@ -182,7 +182,7 @@
     cell.commentsCount = nil;
     cell.mailboxDirection = nil;
     cell.mailboxMailStatus = nil;
-    [cell.rating setString:@""];
+    [cell.rating setString:[cellData objectForKey:@"wu_rating"] ? [cellData objectForKey:@"wu_rating"] : @""];
     
     if (cellData)
     {
@@ -212,13 +212,11 @@
         {
             nick = [cellData objectForKey:@"nick"];
             cell.discussionNewPost = [cellData objectForKey:@"new"];
-            [cell.rating setString:[cellData objectForKey:@"wu_rating"]];
             cell.bodyTextSource = [cellData objectForKey:@"content"];
         }
         if ([self.peopleTableMode isEqualToString:kPeopleTableModeNotices] || [self.peopleTableMode isEqualToString:kPeopleTableModeNoticesDetail])
         {
             nick = [cellData objectForKey:@"nick"];
-            [cell.rating setString:[cellData objectForKey:@"wu_rating"]];
             cell.bodyTextSource = [cellData objectForKey:@"content"];
             cell.noticesLastVisit = self.noticesLastVisitTimestamp;
             cell.notice = cellData;
@@ -226,7 +224,6 @@
         if ([self.peopleTableMode isEqualToString:kPeopleTableModeSearch])
         {
             nick = [cellData objectForKey:@"nick"];
-            [cell.rating setString:[cellData objectForKey:@"wu_rating"]];
             cell.bodyTextSource = [cellData objectForKey:@"content"];
         }
         if ([self.peopleTableMode isEqualToString:kPeopleTableModeRatingInfo])
