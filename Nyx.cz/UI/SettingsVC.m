@@ -11,6 +11,7 @@
 #import "Preferences.h"
 
 #import "StorageManager.h"
+#import "LoadingView.h"
 
 
 @interface SettingsVC ()
@@ -291,25 +292,34 @@
 
 - (void)countCache
 {
-    StorageManager *sm = [[StorageManager alloc] init];
-    NSDictionary *d = [sm countCache];
-    NSUInteger files = [[d objectForKey:@"files"] integerValue];
-    NSUInteger size = [[d objectForKey:@"size"] integerValue];
-    NSString *m = [NSString stringWithFormat:@"Využito %li MB (Počet souborů %li).", (long)size, (long)files];
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Velikost cache"
-                                                                   message:m
-                                                            preferredStyle:(UIAlertControllerStyleAlert)];
-    UIAlertAction *ok = [UIAlertAction actionWithTitle:@"OK"
-                                                 style:(UIAlertActionStyleDefault)
-                                               handler:^(UIAlertAction * _Nonnull action) {}];
-    UIAlertAction *delete = [UIAlertAction actionWithTitle:@"Empty Cache"
-                                                     style:(UIAlertActionStyleDestructive)
-                                                   handler:^(UIAlertAction * _Nonnull action) {
-        [sm emptyCache];
-    }];
-    [alert addAction:delete];
-    [alert addAction:ok];
-    [self presentViewController:alert animated:YES completion:^{}];
+    [self placeLoadingView];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        StorageManager *sm = [[StorageManager alloc] init];
+        NSDictionary *d = [sm countCache];
+        NSUInteger files = [[d objectForKey:@"files"] integerValue];
+        NSUInteger size = [[d objectForKey:@"size"] integerValue];
+        NSString *m = [NSString stringWithFormat:@"Využito %li MB (Počet souborů %li).", (long)size, (long)files];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Velikost cache"
+                                                                           message:m
+                                                                    preferredStyle:(UIAlertControllerStyleAlert)];
+            UIAlertAction *ok = [UIAlertAction actionWithTitle:@"OK"
+                                                         style:(UIAlertActionStyleDefault)
+                                                       handler:^(UIAlertAction * _Nonnull action) {}];
+            UIAlertAction *delete = [UIAlertAction actionWithTitle:@"Empty Cache"
+                                                             style:(UIAlertActionStyleDestructive)
+                                                           handler:^(UIAlertAction * _Nonnull action) {
+                                                               [sm emptyCache];
+                                                           }];
+            [alert addAction:delete];
+            [alert addAction:ok];
+            [self presentViewController:alert animated:YES completion:^{
+                [self removeLoadingView];
+            }];
+        });
+    });
 }
 
 - (void)chooseStartingLocation
@@ -408,6 +418,23 @@
     [alert addAction:delete];
     [alert addAction:cancel];
     [self presentViewController:alert animated:YES completion:^{}];
+}
+
+#pragma mark - LOADING VIEW
+
+- (void)placeLoadingView
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        LoadingView *lv = [[LoadingView alloc] initWithFrame:self.view.bounds];
+        [self.view addSubview:lv];
+    });
+}
+
+- (void)removeLoadingView
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[self.view viewWithTag:kLoadingCoverViewTag] removeFromSuperview];
+    });
 }
 
 
