@@ -1182,6 +1182,10 @@
         [alert addAction:showRating];
     }
     
+    // For iPad
+    alert.popoverPresentationController.sourceView = cell.contentView;
+    alert.popoverPresentationController.sourceRect = cell.bounds;
+    // --------
     [self.nController presentViewController:alert animated:YES completion:nil];
 }
 
