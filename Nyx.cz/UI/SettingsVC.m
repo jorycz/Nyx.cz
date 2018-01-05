@@ -31,7 +31,8 @@
                              @"Sdílet původní obrázky",
                              @"Obnova dat na pozadí",
                              @"Uložená zpráva",
-                             @"Limit pro načtení nepřečtených"
+                             @"Limit pro načtení nepřečtených",
+                             @"Kopírovat HTML kód"
                              ];
         self.menuSubtitles = @[@"Spočítá a případně umožní vymazat obsah mezipaměti.",
                                @"",
@@ -41,7 +42,8 @@
                                @"Před sdílením stáhne originální obrázky.",
                                @"",
                                @"Zobrazí uloženou zprávu, pokud existuje.",
-                               @""
+                               @"",
+                               @"Zobrazí možnost zkopírovat HTML kód."
                                ];
     }
     return self;
@@ -122,6 +124,7 @@
     cell.textLabel.text = [self.menuEntries objectAtIndex:indexPath.row];
     cell.accessoryType = UITableViewCellAccessoryNone;
     cell.selectionStyle = UITableViewCellSelectionStyleDefault;
+    
     [cell.settingsSwitch removeFromSuperview];
     cell.settingsSwitch = nil;
     
@@ -166,6 +169,10 @@
             [cell.detailTextLabel setText:[Preferences maximumUnreadPostsLoad:nil]];
         }
     }
+    if (indexPath.row == 9) {
+        cell.settingsSwitch = [self placeSwitchWithTag:indexPath.row];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    }
     
     return cell;
 }
@@ -183,6 +190,9 @@
         case 2:
             [self deleteSettings];
             break;
+            
+        // NO ACTION FOR CELL TAP FOR SWITCH BASED CELLS ...
+            
         case 6:
         {
             NSString *lastBackgroundRefresh;
@@ -214,6 +224,7 @@
             UIAlertAction *ok = [UIAlertAction actionWithTitle:@"OK" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {}];
             UIAlertAction *delete = [UIAlertAction actionWithTitle:@"Smazat" style:(UIAlertActionStyleDestructive) handler:^(UIAlertAction * _Nonnull action) {
                 [Preferences messagesForDiscussion:(NSMutableArray *)@[]];
+                [self.table reloadData];
             }];
             if ([[[[Preferences messagesForDiscussion:nil] firstObject] objectForKey:@"text"] length] > 0)
                 [a addAction:delete];
@@ -255,6 +266,8 @@
         [[Preferences openUrlsInSafari:nil] length] > 0 ? [s setOn:YES] : [s setOn:NO] ;
     if (tag == 5)
         [[Preferences shareFullSizeImages:nil] length] > 0 ? [s setOn:YES] : [s setOn:NO] ;
+    if (tag == 9)
+        [[Preferences allowCopyOfHTMLSourceCode:nil] length] > 0 ? [s setOn:YES] : [s setOn:NO] ;
     
     return s;
 }
@@ -269,6 +282,8 @@
         s.isOn ? [Preferences openUrlsInSafari:@"yes"] : [Preferences openUrlsInSafari:@""] ;
     if (s.tag == 5)
         s.isOn ? [Preferences shareFullSizeImages:@"yes"] : [Preferences shareFullSizeImages:@""] ;
+    if (s.tag == 9)
+        s.isOn ? [Preferences allowCopyOfHTMLSourceCode:@"yes"] : [Preferences allowCopyOfHTMLSourceCode:@""] ;
 }
 
 

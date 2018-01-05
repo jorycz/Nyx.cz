@@ -1154,12 +1154,15 @@
     }];
     [alert addAction:copy];
     
-    UIAlertAction *copySource = [UIAlertAction actionWithTitle:@"Kopírovat HTML kód" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action)
+    if ([[Preferences allowCopyOfHTMLSourceCode:nil] length] > 0)
     {
-        UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-        pasteboard.string = sourceText;
-    }];
-    [alert addAction:copySource];
+        UIAlertAction *copySource = [UIAlertAction actionWithTitle:@"Kopírovat HTML kód" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action)
+                                     {
+                                         UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+                                         pasteboard.string = sourceText;
+                                     }];
+        [alert addAction:copySource];
+    }
     
     UIAlertAction *sharePost = [UIAlertAction actionWithTitle:@"Sdílet" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action)
     {

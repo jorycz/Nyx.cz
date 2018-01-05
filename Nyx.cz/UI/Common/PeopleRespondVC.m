@@ -627,6 +627,10 @@
     [alert addAction:cancel];
     [alert addAction:store];
     [alert addAction:deleteAll];
+    // For iPad
+    alert.popoverPresentationController.sourceView = self.bottomView;
+    alert.popoverPresentationController.sourceRect = self.bottomView.bounds;
+    // --------
     [self presentViewController:alert animated:YES completion:^{}];
 }
 

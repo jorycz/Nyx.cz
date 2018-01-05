@@ -84,11 +84,14 @@
         
     }
     
-    // Setup DEFAULTS if not set already
+    // Setup DEFAULTS every app start IF NOT SET already:
+    
     if (![self shareFullSizeImages:nil])
         [self shareFullSizeImages:@"yes"];
     if (![self maximumUnreadPostsLoad:nil])
         [self maximumUnreadPostsLoad:@"500"];
+    if (![self allowCopyOfHTMLSourceCode:nil])
+        [self allowCopyOfHTMLSourceCode:@""];
 }
 
 + (NSString *)lastUserPosition:(NSString *)value
@@ -163,6 +166,18 @@
     }
 }
 
++ (NSString *)allowCopyOfHTMLSourceCode:(NSString *)value
+{
+    NSString *key = @"_ALLOWCOPYHTMLSOURCE";
+    if (value) {
+        [[NSUserDefaults standardUserDefaults] setValue:value forKey:key];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        return nil;
+    } else {
+        return [[NSUserDefaults standardUserDefaults] stringForKey:key];
+    }
+}
+
 
 #pragma mark - UTILITY
 
@@ -204,8 +219,4 @@
 
 
 @end
-
-
-
-
 
