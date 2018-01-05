@@ -141,9 +141,9 @@
         
         [self adjustFrameForCurrentStatusBar];
         
-        //        self.nController.topViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
-        //                                                                                                                             target:self
-        //                                                                                                                             action:@selector(refreshDataForMainContent)];
+        self.nc.topViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch
+                                                                                                                    target:self
+                                                                                                                    action:@selector(searchForBoard:)];
         [self.listTable getDataForHistory];
     }
     
@@ -192,7 +192,7 @@
         
         [self adjustFrameForCurrentStatusBar];
         
-        self.nc.topViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
+        self.nc.topViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch
                                                                                                                     target:self
                                                                                                                     action:@selector(showSearchDialog)];
         [self showSearchDialog];
@@ -274,7 +274,13 @@
 
 - (void)searchForBoard:(NSNotification *)sender
 {
-    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"");
+    // Na toto by mozna bylo lepsi dat target konkretni LIST tabulku (historii, bookmarky)
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Vyhledávání diskuzí"
+                                                                   message:@"Není implementováno."
+                                                            preferredStyle:(UIAlertControllerStyleAlert)];
+    UIAlertAction *ok = [UIAlertAction actionWithTitle:@"OK" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {}];
+    [alert addAction:ok];
+    [self presentViewController:alert animated:YES completion:^{}];
 }
 
 

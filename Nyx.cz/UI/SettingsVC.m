@@ -37,7 +37,7 @@
         self.menuSubtitles = @[@"Spočítá a případně umožní vymazat obsah mezipaměti.",
                                @"",
                                @"Smaže veškeré nastavení kromě autorizace.",
-                               @"Zobrazovat v postech obrázky nebo URL.",
+                               @"Zobrazovat v postech originál obrázky.",
                                @"Otevře URL linky v Safari místo v aplikaci.",
                                @"Před sdílením stáhne originální obrázky.",
                                @"",

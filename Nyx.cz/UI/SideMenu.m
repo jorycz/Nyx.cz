@@ -92,7 +92,14 @@
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    if (indexPath.row > 6) {
+    if (indexPath.row > 6)
+    {
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:[self.menuEntries objectAtIndex:indexPath.row]
+                                                                       message:@"Není implementováno."
+                                                                preferredStyle:(UIAlertControllerStyleAlert)];
+        UIAlertAction *ok = [UIAlertAction actionWithTitle:@"OK" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {}];
+        [alert addAction:ok];
+        [self.delegate presentViewController:alert animated:YES completion:^{}];
         return;
     }
     
