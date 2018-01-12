@@ -247,17 +247,25 @@
 - (void)presentErrorWithTitle:(NSString *)title andMessage:(NSString *)message
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self showHideSpinner];
-        PRESENT_ERROR(title, message)
-        
-        UIAlertController *a = [UIAlertController alertControllerWithTitle:title
-                                                                   message:message
-                                                            preferredStyle:(UIAlertControllerStyleAlert)];
-        UIAlertAction *ok = [UIAlertAction actionWithTitle:@"Zkusit znova" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
-            [self tryToLogIn];
-        }];
-        [a addAction:ok];
-        [self presentViewController:a animated:YES completion:^{}];
+        if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateBackground)
+        {
+            [self showHideSpinner];
+            [self performSelector:@selector(tryToLogIn) withObject:nil afterDelay:3];
+        }
+        else
+        {
+            [self showHideSpinner];
+            PRESENT_ERROR(title, message)
+            
+            UIAlertController *a = [UIAlertController alertControllerWithTitle:title
+                                                                       message:message
+                                                                preferredStyle:(UIAlertControllerStyleAlert)];
+            UIAlertAction *ok = [UIAlertAction actionWithTitle:@"Zkusit znova" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+                [self tryToLogIn];
+            }];
+            [a addAction:ok];
+            [self presentViewController:a animated:YES completion:^{}];
+        }
     });
 }
 
