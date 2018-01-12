@@ -99,7 +99,7 @@
 //    NSLog(@"%@ - %@ : ERROR [%@]", self, NSStringFromSelector(_cmd), params);
     NSMutableURLRequest *mutableRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:kServerAPIURL]
                                                                   cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
-                                                              timeoutInterval:10];
+                                                              timeoutInterval:kHTTPRequestTimeout];
     [mutableRequest setHTTPMethod:@"POST"];
  
     NSString *boundary = [self generateBoundaryString];
@@ -150,7 +150,7 @@
 //    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), apiRequest);
     NSMutableURLRequest *mutableRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:kServerAPIURL]
                                                                   cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
-                                                              timeoutInterval:10];
+                                                              timeoutInterval:kHTTPRequestTimeout];
     [mutableRequest setHTTPMethod:@"POST"];
     [mutableRequest setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
     [mutableRequest setHTTPBody:[apiRequest dataUsingEncoding:NSUTF8StringEncoding]];
@@ -183,7 +183,7 @@
     NSURL *url = [NSURL URLWithString:[urlStr stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
     NSMutableURLRequest *mutableRequest = [NSMutableURLRequest requestWithURL:url
                                                                   cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
-                                                              timeoutInterval:10];
+                                                              timeoutInterval:kHTTPRequestTimeout];
     [mutableRequest setHTTPMethod:@"GET"];
     NSURLSession *session = [NSURLSession sharedSession];
     NSURLSessionDataTask *sessionDataTask = [session dataTaskWithRequest:mutableRequest

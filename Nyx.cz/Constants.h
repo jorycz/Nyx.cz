@@ -22,6 +22,7 @@ extern NSInteger const kWidthForTableCellBodyTextViewSubstract;
 extern NSInteger const kMinimumPeopleTableCellHeight;
 extern NSInteger const kNavigationBarHeight;
 extern NSInteger const kStatusBarStandardHeight;
+extern NSInteger const kHTTPRequestTimeout;
 
 
 extern NSString* const kNotificationShowError;
