@@ -142,7 +142,7 @@
         [self getNewNyxNotifications];
         self.navigationItem.rightBarButtonItem.enabled = NO;
         self.navigationItem.leftBarButtonItem.enabled = NO;
-        [UIView animateWithDuration:.3 animations:^{
+        [UIView animateWithDuration:.15 animations:^{
             self.contentVc.view.center = CGPointMake(_viewCenter.x + _sideMenuMaxShift, _viewCenter.y);
             self.sideMenu.alpha = 1;
         } completion:^(BOOL finished) {
@@ -156,7 +156,7 @@
 
 - (void)sideMenuClose
 {
-    [UIView animateWithDuration:.3 animations:^{
+    [UIView animateWithDuration:.2 animations:^{
         self.contentVc.view.center = CGPointMake(_viewCenter.x, _viewCenter.y);
         self.sideMenu.alpha = 0.1;
     } completion:^(BOOL finished) {
