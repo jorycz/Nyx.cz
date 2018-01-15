@@ -66,7 +66,7 @@
                                                                                    action:@selector(dismissSettings)];
     self.navigationItem.rightBarButtonItem = dismissButton;
     
-    self.title = @"Nastavení";
+    self.title = [NSString stringWithFormat:@"%@ (%@)", @"Nastavení", [self appVersion]];
     
     self.table = [[UITableView alloc] init];
     [self.table setDelegate:self];
@@ -435,6 +435,23 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [[self.view viewWithTag:kLoadingCoverViewTag] removeFromSuperview];
     });
+}
+
+
+#pragma mark - APP VERSION
+
+- (NSString *)appVersion
+{
+    NSString * version = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleShortVersionString"];
+    NSString * appBuild = [[NSBundle mainBundle] objectForInfoDictionaryKey: (NSString *)kCFBundleVersionKey];
+    
+    NSString * versionBuild = [NSString stringWithFormat: @"verze %@", version];
+    
+    if (![version isEqualToString: appBuild]) {
+        versionBuild = [NSString stringWithFormat: @"%@.%@", versionBuild, appBuild];
+    }
+    
+    return versionBuild;
 }
 
 
