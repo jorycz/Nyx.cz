@@ -13,6 +13,7 @@
 #import "NewFeedPostVC.h"
 #import "PeopleAutocompleteVC.h"
 #import "PeopleRespondVC.h"
+#import "Colors.h"
 
 
 @interface MainContentVC ()
@@ -43,7 +44,7 @@
 {
     [super loadView];
     self.view = [[UIView alloc] init];
-    self.view.backgroundColor = [UIColor whiteColor];
+    self.view.backgroundColor = COLOR_BACKGROUND_WHITE;
 }
 
 - (void)viewDidLoad

@@ -19,10 +19,10 @@
 {
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])
     {
-        self.backgroundColor = [UIColor whiteColor];
+        self.backgroundColor = COLOR_BACKGROUND_WHITE;
         
         _avatarView = [[UIImageView alloc] init];
-        _avatarView.backgroundColor = [UIColor clearColor];
+        _avatarView.backgroundColor = COLOR_CLEAR;
         _avatarView.contentMode = UIViewContentModeCenter;
         _avatarView.layer.cornerRadius = 5;
         _avatarView.layer.masksToBounds = YES;
@@ -30,36 +30,38 @@
         [self addSubview:_avatarView];
         
         _nickLabel = [[UILabel alloc] init];
-        _nickLabel.backgroundColor = [UIColor clearColor];
+        _nickLabel.backgroundColor = COLOR_CLEAR;
+        _nickLabel.textColor = COLOR_TEXT_BLACK;
         _nickLabel.userInteractionEnabled = NO;
         _nickLabel.textAlignment = NSTextAlignmentLeft;
         _nickLabel.font = [UIFont boldSystemFontOfSize:14];
         [self addSubview:_nickLabel];
         
         _timeLabel = [[UILabel alloc] init];
-        _timeLabel.backgroundColor = [UIColor clearColor];
+        _timeLabel.backgroundColor = COLOR_CLEAR;
         _timeLabel.userInteractionEnabled = NO;
         _timeLabel.textAlignment = NSTextAlignmentRight;
-        _timeLabel.textColor = [UIColor lightGrayColor];
+        _timeLabel.textColor = COLOR_TIMELABEL;
         _timeLabel.font = [UIFont systemFontOfSize:12];
         [self addSubview:_timeLabel];
         
         _ratingLabel = [[UILabel alloc] init];
-        _ratingLabel.backgroundColor = [UIColor clearColor];
+        _ratingLabel.backgroundColor = COLOR_CLEAR;
         _ratingLabel.userInteractionEnabled = NO;
         _ratingLabel.textAlignment = NSTextAlignmentCenter;
         _ratingLabel.font = [UIFont boldSystemFontOfSize:12];
         [self addSubview:_ratingLabel];
         
         _bodyView = [[UITextView alloc] init];
-        _bodyView.backgroundColor = [UIColor clearColor];
+        _bodyView.backgroundColor = COLOR_CLEAR;
+        _bodyView.textColor = COLOR_TEXT_BLACK;
         _bodyView.userInteractionEnabled = NO;
         [_bodyView setTextContainerInset:UIEdgeInsetsZero];
         _bodyView.textContainer.lineFragmentPadding = 0;
         [self addSubview:_bodyView];
         
-        NSDictionary *linkAttributes = @{NSForegroundColorAttributeName: [UIColor blueColor],
-                                         NSUnderlineColorAttributeName: [UIColor clearColor],
+        NSDictionary *linkAttributes = @{NSForegroundColorAttributeName: COLOR_URL,
+                                         NSUnderlineColorAttributeName: COLOR_CLEAR,
                                          NSUnderlineStyleAttributeName: @(NSUnderlineStyleNone)};
         _bodyView.linkTextAttributes = linkAttributes;
         
@@ -74,7 +76,7 @@
         
         _disclosure = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"disclosure"]];
         _disclosure.contentMode = UIViewContentModeCenter;
-        _disclosure.backgroundColor = [UIColor clearColor];
+        _disclosure.backgroundColor = COLOR_CLEAR;
         [self addSubview:_disclosure];
         
         self.rating = [[NSMutableString alloc] initWithString:@""];
@@ -134,7 +136,7 @@
     _nickLabel.alpha = 1;
     _bodyView.alpha = 1;
     
-    self.backgroundColor = [UIColor whiteColor];
+    self.backgroundColor = COLOR_BACKGROUND_WHITE;
     
     if (self.mailboxDirection && [self.mailboxDirection isEqualToString:@"to"]) {
         _avatarView.alpha = .4;
@@ -162,7 +164,7 @@
     {
         NSInteger r = [self.rating integerValue];
         if (r < 0) {
-            _ratingLabel.textColor = [UIColor redColor];
+            _ratingLabel.textColor = COLOR_RATING_NEGATIVE;
             _ratingLabel.text = self.rating;
             if (r < -5)
             {

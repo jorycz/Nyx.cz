@@ -8,6 +8,7 @@
 
 #import "MainVC.h"
 #import "Preferences.h"
+#import "Colors.h"
 
 #import "SettingsVC.h"
 #import "ContactVC.h"
@@ -44,7 +45,7 @@
 {
     [super loadView];
     self.view = [[UIView alloc] init];
-    self.view.backgroundColor = [UIColor whiteColor];
+    self.view.backgroundColor = COLOR_BACKGROUND_WHITE;
 }
 
 - (void)viewDidLoad

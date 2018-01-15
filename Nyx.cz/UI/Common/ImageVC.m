@@ -9,6 +9,7 @@
 #import "ImageVC.h"
 #import "CacheManager.h"
 #import "Constants.h"
+#import "Colors.h"
 
 
 @interface ImageVC ()
@@ -21,7 +22,7 @@
 {
     [super loadView];
     self.view = [[UIView alloc] init];
-    self.view.backgroundColor = [UIColor clearColor];
+    self.view.backgroundColor = COLOR_CLEAR;
 }
 
 - (void)viewDidLoad
@@ -29,7 +30,7 @@
     [super viewDidLoad];
     
     _zoomView = [[UIScrollView alloc] init];
-    _zoomView.backgroundColor = [UIColor clearColor];
+    _zoomView.backgroundColor = COLOR_CLEAR;
     _zoomView.showsHorizontalScrollIndicator = NO;
     _zoomView.showsVerticalScrollIndicator = NO;
     _zoomView.delegate = self;
@@ -37,7 +38,7 @@
     [self.view addSubview:_zoomView];
     
     _imageView = [[UIImageView alloc] init];
-    _imageView.backgroundColor = [UIColor clearColor];
+    _imageView.backgroundColor = COLOR_CLEAR;
     _imageView.contentMode = UIViewContentModeScaleAspectFit;
     [_zoomView addSubview:_imageView];
     

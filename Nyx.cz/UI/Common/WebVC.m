@@ -7,6 +7,8 @@
 //
 
 #import "WebVC.h"
+#import "Colors.h"
+
 
 @interface WebVC ()
 
@@ -26,7 +28,7 @@
 {
     [super loadView];
     self.view = [[UIView alloc] init];
-    self.view.backgroundColor = [UIColor blackColor];
+    self.view.backgroundColor = COLOR_BACKGROUND_WHITE;
 }
 
 - (void)viewDidLoad

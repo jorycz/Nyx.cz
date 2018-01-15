@@ -11,6 +11,7 @@
 #import <Photos/Photos.h>
 #import "StorageManager.h"
 #import "LoadingView.h"
+#import "Colors.h"
 
 #import "ComputeRowHeight.h"
 #import "TableConfigurator.h"
@@ -58,7 +59,7 @@
 {
     [super loadView];
     self.view = [[UIView alloc] init];
-    self.view.backgroundColor = [UIColor whiteColor];
+    self.view.backgroundColor = COLOR_BACKGROUND_WHITE;
 }
 
 - (void)viewDidLoad
@@ -94,22 +95,22 @@
     }
     
     self.bottomView = [[UIView alloc] init];
-    self.bottomView.backgroundColor = [UIColor colorWithWhite:.95 alpha:1];
+    self.bottomView.backgroundColor = COLOR_BACKGROUND_RESPOND_VIEW;
     
     self.responseView = [[UITextView alloc] init];
 //    [self.responseView setTextContainerInset:(UIEdgeInsetsZero)];
-    self.responseView.backgroundColor = [UIColor whiteColor];
+    self.responseView.backgroundColor = COLOR_BACKGROUND_WHITE;
     self.responseView.clipsToBounds = YES;
     self.responseView.font = [UIFont systemFontOfSize:13];
     self.responseView.layer.cornerRadius = 6.0f;
     
     self.sendButton = [[UIButton alloc] init];
-    self.sendButton.backgroundColor = [UIColor clearColor];
+    self.sendButton.backgroundColor = COLOR_CLEAR;
     [self.sendButton setImage:[UIImage imageNamed:@"send"] forState:(UIControlStateNormal)];
     [self.sendButton addTarget:self action:@selector(sendResponse) forControlEvents:UIControlEventTouchUpInside];
     
     self.manageButton = [[UIButton alloc] init];
-    self.manageButton.backgroundColor = [UIColor clearColor];
+    self.manageButton.backgroundColor = COLOR_CLEAR;
     [self.manageButton setImage:[UIImage imageNamed:@"email"] forState:(UIControlStateNormal)];
     [self.manageButton addTarget:self action:@selector(manageMessage:) forControlEvents:UIControlEventTouchUpInside];
     

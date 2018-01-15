@@ -19,16 +19,16 @@
 {
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])
     {
-        self.backgroundColor = [UIColor whiteColor];
+        self.backgroundColor = COLOR_BACKGROUND_WHITE;
         self.textLabel.font = [UIFont boldSystemFontOfSize:20];
         
         _alert = [[UILabel alloc] initWithFrame:CGRectZero];
         _alert.userInteractionEnabled = NO;
-        _alert.backgroundColor = [UIColor redColor];
+        _alert.backgroundColor = COLOR_BACKGROUND_NOTIFICATION_CIRCLE_SIDE_MENU;
         _alert.layer.cornerRadius = 15;
         _alert.clipsToBounds = YES;
         _alert.alpha = 0;
-        _alert.textColor = [UIColor whiteColor];
+        _alert.textColor = COLOR_TEXT_NOTIFICATION_CIRCLE_SIDE_MENU;
         _alert.textAlignment = NSTextAlignmentCenter;
         _alert.font = [UIFont boldSystemFontOfSize:15];
         [self addSubview:_alert];
@@ -49,7 +49,7 @@
 
 - (void)updateLabelColor
 {
-    self.textLabel.textColor = [UIColor grayColor];
+    self.textLabel.textColor = COLOR_SIDE_MENU_ITEM_TEXT;
     if ([self.textLabel.text isEqualToString:[Preferences lastUserPosition:nil]]) {
         self.textLabel.textColor = COLOR_SYSTEM_TURQUOISE;
     }

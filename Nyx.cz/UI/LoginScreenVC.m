@@ -11,6 +11,8 @@
 #import "JSONParser.h"
 #import "Constants.h"
 #import "Preferences.h"
+#import "Colors.h"
+
 
 @interface LoginScreenVC ()
 
@@ -22,7 +24,7 @@
 {
     [super loadView];
     self.view = [[UIView alloc] init];
-    self.view.backgroundColor = [UIColor whiteColor];
+    self.view.backgroundColor = COLOR_BACKGROUND_WHITE;
 }
 
 - (instancetype)init

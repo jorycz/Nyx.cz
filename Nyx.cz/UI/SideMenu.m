@@ -8,6 +8,7 @@
 
 #import "SideMenu.h"
 #import "SideMenuCell.h"
+#import "Colors.h"
 
 
 @implementation SideMenu
@@ -17,13 +18,13 @@
     self = [super initWithFrame:frame];
     if (self)
     {
-        self.backgroundColor = [UIColor whiteColor];
+        self.backgroundColor = COLOR_BACKGROUND_WHITE;
         self.menuEntries = @[kMenuOverview, kMenuMail, kMenuBookmarks, kMenuHistory, kMenuFriendList, kMenuNotifications, kMenuSearchPosts, kMenuMarket, kMenuCalendar];
         
         self.table = [[UITableView alloc] init];
         [self.table setDelegate:self];
         [self.table setDataSource:self];
-        [self.table setBackgroundColor:[UIColor whiteColor]];
+        [self.table setBackgroundColor:COLOR_BACKGROUND_WHITE];
         [self.table setSeparatorStyle:UITableViewCellSeparatorStyleNone];
         [self.table setRowHeight:40];
         [self addSubview:self.table];
@@ -35,10 +36,10 @@
         [self addSubview:self.bottomSection];
         
         _topBorder = [[UIView alloc] init];
-        _topBorder.backgroundColor = [UIColor lightGrayColor];
+        _topBorder.backgroundColor = COLOR_SIDE_MENU_BORDER_LINES;
         _topBorder.alpha = .3;
         _bottomBorder = [[UIView alloc] init];
-        _bottomBorder.backgroundColor = [UIColor lightGrayColor];
+        _bottomBorder.backgroundColor = COLOR_SIDE_MENU_BORDER_LINES;
         _bottomBorder.alpha = .3;
         [self addSubview:_topBorder];
         [self addSubview:_bottomBorder];

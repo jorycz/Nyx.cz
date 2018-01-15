@@ -57,7 +57,7 @@
 {
     [super loadView];
     self.view = [[UIView alloc] init];
-    self.view.backgroundColor = [UIColor whiteColor];
+    self.view.backgroundColor = COLOR_BACKGROUND_WHITE;
 }
 
 - (void)viewDidLoad
@@ -74,7 +74,7 @@
     _table = [[UITableView alloc] init];
     [self.view addSubview:_table];
 
-    [_table setBackgroundColor:[UIColor whiteColor]];
+    [_table setBackgroundColor:COLOR_BACKGROUND_WHITE];
     [_table setSeparatorStyle:(UITableViewCellSeparatorStyleNone)];
     [_table setDataSource:self];
     [_table setDelegate:self];
@@ -270,7 +270,7 @@
         if (section == 0) {
             view.tintColor = COLOR_RATING_POSITIVE;
         } else {
-            view.tintColor = [UIColor colorWithRed:1 green:0 blue:0 alpha:.9];
+            view.tintColor = COLOR_RATING_NEGATIVE;
         }
     }
 }

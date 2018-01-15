@@ -9,6 +9,7 @@
 #import "SettingsVC.h"
 #import "Constants.h"
 #import "Preferences.h"
+#import "Colors.h"
 
 #import "StorageManager.h"
 #import "LoadingView.h"
@@ -54,7 +55,7 @@
 {
     [super loadView];
     self.view = [[UIView alloc] init];
-    self.view.backgroundColor = [UIColor whiteColor];
+    self.view.backgroundColor = COLOR_BACKGROUND_WHITE;
 }
 
 - (void)viewDidLoad
@@ -71,7 +72,7 @@
     self.table = [[UITableView alloc] init];
     [self.table setDelegate:self];
     [self.table setDataSource:self];
-    [self.table setBackgroundColor:[UIColor whiteColor]];
+    [self.table setBackgroundColor:COLOR_BACKGROUND_WHITE];
     [self.table setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     [self.table setRowHeight:80];
     [self.view addSubview:self.table];
@@ -117,7 +118,7 @@
     if (cell == nil)
     {
         cell = [[SettingsVCCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdForReuse];
-        cell.backgroundColor = [UIColor whiteColor];
+        cell.backgroundColor = COLOR_BACKGROUND_WHITE;
         cell.textLabel.font = [UIFont boldSystemFontOfSize:22];
     }
     

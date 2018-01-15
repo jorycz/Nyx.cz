@@ -9,6 +9,7 @@
 #import "SideMenuBottomSection.h"
 #import "Preferences.h"
 #import "Constants.h"
+#import "Colors.h"
 
 
 @implementation SideMenuBottomSection
@@ -17,7 +18,7 @@
 {
     self = [super init];
     if (self) {
-        self.backgroundColor = [UIColor whiteColor];
+        self.backgroundColor = COLOR_BACKGROUND_WHITE;
         
         // https://www.iconfinder.com/iconsets/glyphs
         _logoutButton = [[UIButton alloc] init];

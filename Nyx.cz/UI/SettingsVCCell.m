@@ -16,7 +16,7 @@
 {
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])
     {
-        self.backgroundColor = [UIColor whiteColor];
+        self.backgroundColor = COLOR_BACKGROUND_WHITE;
         
         _separator = [[UIView alloc] init];
         _separator.backgroundColor = [UIColor colorWithWhite:.5 alpha:.5];

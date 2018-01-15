@@ -7,6 +7,8 @@
 //
 
 #import "ContactVC.h"
+#import "Colors.h"
+
 
 @interface ContactVC ()
 
@@ -18,7 +20,7 @@
 {
     [super loadView];
     self.view = [[UIView alloc] init];
-    self.view.backgroundColor = [UIColor whiteColor];
+    self.view.backgroundColor = COLOR_BACKGROUND_WHITE;
 }
 
 - (void)viewDidLoad

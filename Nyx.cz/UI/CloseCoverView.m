@@ -7,6 +7,8 @@
 //
 
 #import "CloseCoverView.h"
+#import "Colors.h"
+
 
 @implementation CloseCoverView
 
@@ -15,7 +17,7 @@
     self = [super init];
     if (self)
     {
-        self.backgroundColor = [UIColor blackColor];
+        self.backgroundColor = COLOR_BACKGROUND_COVERVIEW;
         self.alpha = 0.01;
         
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewTapped)];

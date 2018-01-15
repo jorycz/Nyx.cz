@@ -9,6 +9,7 @@
 #import "PeopleAutocompleteVC.h"
 #import <QuartzCore/QuartzCore.h>
 #import "Timestamp.h"
+#import "Colors.h"
 
 
 @interface PeopleAutocompleteVC ()
@@ -43,7 +44,7 @@
 {
     [super loadView];
     self.view = [[UIView alloc] init];
-    self.view.backgroundColor = [UIColor whiteColor];
+    self.view.backgroundColor = COLOR_BACKGROUND_WHITE;
 }
 
 - (void)viewDidLoad
@@ -52,7 +53,7 @@
     _table = [[UITableView alloc] init];
     [self.view addSubview:_table];
     
-    [_table setBackgroundColor:[UIColor whiteColor]];
+    [_table setBackgroundColor:COLOR_BACKGROUND_WHITE];
     [_table setSeparatorStyle:(UITableViewCellSeparatorStyleNone)];
     [_table setDataSource:self];
     [_table setDelegate:self];
@@ -62,7 +63,7 @@
     
     _searchField = [[UITextField alloc] init];
     _searchField.delegate = self;
-    _searchField.backgroundColor = [UIColor lightGrayColor];
+    _searchField.backgroundColor = COLOR_BACKGROUND_WHITE;
     _searchField.clipsToBounds = YES;
     _searchField.layer.cornerRadius = 6.0f;
     [_searchField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
@@ -72,7 +73,7 @@
     [_searchField setLeftView:spacerView];
     
     _topView = [[UIView alloc] init];
-    _topView.backgroundColor = [UIColor colorWithWhite:.95 alpha:1];
+    _topView.backgroundColor = COLOR_BACKGROUND_RESPOND_VIEW;
     [_topView addSubview:_searchField];
     [self.view addSubview:_topView];
     

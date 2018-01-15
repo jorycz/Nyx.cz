@@ -72,7 +72,7 @@
     [self.pageController didMoveToParentViewController:self];
     
     UIPageControl *pc = [UIPageControl appearanceWhenContainedInInstancesOfClasses:@[[ImagePreviewVC class]]];
-    pc.pageIndicatorTintColor = [UIColor whiteColor];
+    pc.pageIndicatorTintColor = COLOR_PAGE_INDICATOR;
     pc.currentPageIndicatorTintColor = COLOR_SYSTEM_TURQUOISE;
 }
 

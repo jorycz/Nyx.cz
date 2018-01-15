@@ -11,6 +11,7 @@
 #import "JSONParser.h"
 #import "ApiBuilder.h"
 #import "LoadingView.h"
+#import "Colors.h"
 
 #import "TableConfigurator.h"
 
@@ -42,7 +43,7 @@
 {
     [super loadView];
     self.view = [[UIView alloc] init];
-    self.view.backgroundColor = [UIColor whiteColor];
+    self.view.backgroundColor = COLOR_BACKGROUND_WHITE;
 }
 
 - (void)viewDidLoad
@@ -60,7 +61,7 @@
     _table = [[UITableView alloc] init];
     [self.view addSubview:_table];
     
-    [_table setBackgroundColor:[UIColor whiteColor]];
+    [_table setBackgroundColor:COLOR_BACKGROUND_WHITE];
     [_table setSeparatorStyle:(UITableViewCellSeparatorStyleNone)];
     [_table setDataSource:self];
     [_table setDelegate:self];

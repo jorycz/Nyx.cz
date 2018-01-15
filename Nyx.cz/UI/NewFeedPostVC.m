@@ -8,6 +8,7 @@
 
 #import "NewFeedPostVC.h"
 #import "JSONParser.h"
+#import "Colors.h"
 
 
 @interface NewFeedPostVC ()
@@ -34,7 +35,7 @@
 {
     [super loadView];
     self.view = [[UIView alloc] init];
-    self.view.backgroundColor = [UIColor colorWithWhite:.95 alpha:1];
+    self.view.backgroundColor = COLOR_BACKGROUND_WHITE;
 }
 
 - (void)viewDidLoad
@@ -43,13 +44,13 @@
     
     _tv = [[UITextView alloc] init];
     //    [self.responseView setTextContainerInset:(UIEdgeInsetsZero)];
-    _tv.backgroundColor = [UIColor whiteColor];
+    _tv.backgroundColor = COLOR_BACKGROUND_WHITE;
     _tv.clipsToBounds = YES;
     _tv.layer.cornerRadius = 8.0f;
     [self.view addSubview:_tv];
     
     _button = [[UIButton alloc] init];
-    _button.backgroundColor = [UIColor clearColor];
+    _button.backgroundColor = COLOR_CLEAR;
     [_button setImage:[UIImage imageNamed:@"send"] forState:(UIControlStateNormal)];
     [_button addTarget:self action:@selector(post) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_button];
