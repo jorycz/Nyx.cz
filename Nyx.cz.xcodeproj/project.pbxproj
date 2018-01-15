@@ -84,6 +84,7 @@
 		2B8FECCE1FD8226A004CCED8 /* Colors.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B8FECCD1FD8226A004CCED8 /* Colors.m */; };
 		2B8FECD11FD848F6004CCED8 /* ImagePreviewVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B8FECD01FD848F6004CCED8 /* ImagePreviewVC.m */; };
 		2B8FECD41FD8495A004CCED8 /* ImageVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B8FECD31FD8495A004CCED8 /* ImageVC.m */; };
+		2BC82C88200CF05800FFB3BC /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 2BC82C87200CF05800FFB3BC /* Settings.bundle */; };
 		2BD251C21FC0CBFB00BE6272 /* CloseCoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BD251C11FC0CBFB00BE6272 /* CloseCoverView.m */; };
 		2BD251C51FC0D28600BE6272 /* MainContentVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BD251C41FC0D28600BE6272 /* MainContentVC.m */; };
 		2BD251CB1FC0ECBD00BE6272 /* SideMenuTopSection.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BD251CA1FC0ECBD00BE6272 /* SideMenuTopSection.m */; };
@@ -241,6 +242,7 @@
 		2B8FECD01FD848F6004CCED8 /* ImagePreviewVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ImagePreviewVC.m; sourceTree = "<group>"; };
 		2B8FECD21FD8495A004CCED8 /* ImageVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImageVC.h; sourceTree = "<group>"; };
 		2B8FECD31FD8495A004CCED8 /* ImageVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ImageVC.m; sourceTree = "<group>"; };
+		2BC82C87200CF05800FFB3BC /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		2BD251C01FC0CBFB00BE6272 /* CloseCoverView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CloseCoverView.h; sourceTree = "<group>"; };
 		2BD251C11FC0CBFB00BE6272 /* CloseCoverView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CloseCoverView.m; sourceTree = "<group>"; };
 		2BD251C31FC0D28600BE6272 /* MainContentVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainContentVC.h; sourceTree = "<group>"; };
@@ -329,6 +331,7 @@
 				2B2303821FBC5CE200286062 /* Constants.m */,
 				2B8FECCC1FD8226A004CCED8 /* Colors.h */,
 				2B8FECCD1FD8226A004CCED8 /* Colors.m */,
+				2BC82C87200CF05800FFB3BC /* Settings.bundle */,
 			);
 			path = Nyx.cz;
 			sourceTree = "<group>";
@@ -691,6 +694,7 @@
 				2BD251D71FC108E200BE6272 /* contact@2x.png in Resources */,
 				2B3180291FC76B680063B9EE /* burger@2x.png in Resources */,
 				2B42D41E1FC8CD3E009F751D /* 18.png in Resources */,
+				2BC82C88200CF05800FFB3BC /* Settings.bundle in Resources */,
 				2B42D41F1FC8CD3E009F751D /* 6.png in Resources */,
 				2B42D4141FC8CD3E009F751D /* 0.png in Resources */,
 				2B42D4161FC8CD3E009F751D /* 4.png in Resources */,
