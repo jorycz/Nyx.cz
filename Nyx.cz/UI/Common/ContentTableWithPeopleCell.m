@@ -74,7 +74,7 @@
         
         _disclosure = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"disclosure"]];
         _disclosure.contentMode = UIViewContentModeCenter;
-        _disclosure.backgroundColor = [UIColor whiteColor];
+        _disclosure.backgroundColor = [UIColor clearColor];
         [self addSubview:_disclosure];
         
         self.rating = [[NSMutableString alloc] initWithString:@""];
