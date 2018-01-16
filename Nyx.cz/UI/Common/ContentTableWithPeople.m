@@ -1168,6 +1168,14 @@
         NSLog(@"%@ - %@ : ERROR [%@]", self, NSStringFromSelector(_cmd), @"Navigation controller -- MAIN -- doesn't exist !!!");
         return;
     }
+    // DISABLE actions for first CELL in these detail tables.
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeMailboxDetail] ||
+        [self.peopleTableMode isEqualToString:kPeopleTableModeDiscussionDetail])
+    {
+        if ([[_table indexPathForCell:cell] row] < 1) {
+            return;
+        }
+    }
     // ENABLE actions only for some table modes.
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeed] ||
         [self.peopleTableMode isEqualToString:kPeopleTableModeFeedDetail] ||
