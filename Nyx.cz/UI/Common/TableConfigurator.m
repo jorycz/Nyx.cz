@@ -345,6 +345,8 @@
             [table.nyxPostsRowBodyTexts removeAllObjects];
             [table.nyxPostsRowBodyTexts addObjectsFromArray:@[tempArrayForRowBodyText]];
         }
+    } else {
+        PRESENT_ERROR(@"Nic nenalezeno.", @"Dle zadané kombinace se nepodařilo nic najít.")
     }
 }
 
