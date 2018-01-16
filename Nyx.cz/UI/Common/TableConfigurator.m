@@ -500,8 +500,16 @@
 
 - (void)configurePeopleTableRatingInfo:(ContentTableWithPeople *)table withData:(NSDictionary *)dict
 {
-    [table.nyxSections addObject:[NSString stringWithFormat:@"Pozitivní (%@)", [dict objectForKey:@"positive"]]];
-    [table.nyxSections addObject:[NSString stringWithFormat:@"Negativní (%@)", [dict objectForKey:@"negative"]]];
+    if ([[dict objectForKey:@"positive"] isEqualToString:@"0"]) {
+        [table.nyxSections addObject:[NSString stringWithFormat:@"Pozitivní žádné."]];
+    } else {
+        [table.nyxSections addObject:[NSString stringWithFormat:@"Pozitivní (%@)", [dict objectForKey:@"positive"]]];
+    }
+    if ([[dict objectForKey:@"negative"] isEqualToString:@"0"]) {
+        [table.nyxSections addObject:[NSString stringWithFormat:@"Negativní žádné."]];
+    } else {
+        [table.nyxSections addObject:[NSString stringWithFormat:@"Negativní (%@)", [dict objectForKey:@"negative"]]];
+    }
     
     NSMutableArray *positive = [[NSMutableArray alloc] init];
     NSMutableArray *positiveRows = [[NSMutableArray alloc] init];
