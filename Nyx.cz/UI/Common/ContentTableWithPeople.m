@@ -385,12 +385,12 @@
                 }
             }
             if (!previousResponses || [previousResponses count] < 1) {
-                // Show discussion right away from post without comments.
-                NSString *id_klub = [userPostData objectForKey:@"id_klub"];
+                // Show discussion for post without comments.
+                NSString *discussionId = [userPostData objectForKey:@"id_klub"];
                 NSString *id_wu = [userPostData objectForKey:@"id_wu"];
                 // Load even currently clicked POST from NOTICES so fake starting ID here.
                 NSInteger biggerId = [id_wu integerValue] + 1;
-                [self createAnotherDiscussionTableForDiscussionId:id_klub andLoadFromPostId:[@(biggerId) stringValue]];
+                [self createAnotherDiscussionTableForDiscussionId:discussionId andLoadFromPostId:[@(biggerId) stringValue] discussionName:@""];
                 return;
             }
         }
@@ -407,12 +407,13 @@
     // --------------- RESPOND VIEW ------------------
     
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeSearch]) {
-        UIAlertController *a = [UIAlertController alertControllerWithTitle:@"Klub"
-                                                                   message:[userPostData objectForKey:@"klub_jmeno"]
-                                                            preferredStyle:(UIAlertControllerStyleAlert)];
-        UIAlertAction *ok = [UIAlertAction actionWithTitle:@"OK" style:(UIAlertActionStyleCancel) handler:^(UIAlertAction * _Nonnull action) {}];
-        [a addAction:ok];
-        [self presentViewController:a animated:YES completion:^{}];
+        // Show discussion for post without comments.
+        NSString *discussionId = [userPostData objectForKey:@"id_klub"];
+        NSString *id_wu = [userPostData objectForKey:@"id_wu"];
+        NSString *dName = [userPostData objectForKey:@"klub_jmeno"];
+        // Load even currently clicked POST from NOTICES so fake starting ID here.
+        NSInteger biggerId = [id_wu integerValue] + 1;
+        [self createAnotherDiscussionTableForDiscussionId:discussionId andLoadFromPostId:[@(biggerId) stringValue] discussionName:dName];
     }
     
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeNoticesDetail])
@@ -421,7 +422,7 @@
         NSString *id_wu = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"id_wu"];
         // Load even currently clicked POST from NOTICES so fake starting ID here.
         NSInteger biggerId = [id_wu integerValue] + 1;
-        [self createAnotherDiscussionTableForDiscussionId:discussionId andLoadFromPostId:[@(biggerId) stringValue]];
+        [self createAnotherDiscussionTableForDiscussionId:discussionId andLoadFromPostId:[@(biggerId) stringValue] discussionName:@""];
     }
 }
 
@@ -666,7 +667,7 @@
 
 #pragma mark - SHOW ANOTHER DISCUSSION PEOPLE TABLE - from notices section
 
-- (void)createAnotherDiscussionTableForDiscussionId:(NSString *)dId andLoadFromPostId:(NSString *)postId
+- (void)createAnotherDiscussionTableForDiscussionId:(NSString *)dId andLoadFromPostId:(NSString *)postId discussionName:(NSString *)dName
 {
     // DISCUSSION TABLE INIT !
     self.nestedPeopleTable = [[ContentTableWithPeople alloc] initWithRowHeight:70];
@@ -675,7 +676,7 @@
     self.nestedPeopleTable.canEditFirstRow = YES;
     self.nestedPeopleTable.widthForTableCellBodyTextView = self.widthForTableCellBodyTextView;
     self.nestedPeopleTable.peopleTableMode = kPeopleTableModeDiscussion;
-    
+    self.nestedPeopleTable.title = dName;
     [self.nController pushViewController:self.nestedPeopleTable animated:YES];
     [self.nestedPeopleTable getDataForDiscussion:dId fromId:postId];
 }

@@ -293,10 +293,21 @@
         
         for (NSDictionary *d in postDictionaries)
         {
-            [tempArrayForRowSections addObject:d];
+            // In case I need show club name inside body of the search result user post.
+            NSMutableString *finalBody = [[NSMutableString alloc] init];
+            NSString *clubNameFromGLobalSearch = [d objectForKey:@"klub_jmeno"];
+            // If it is post from GLOBAL SEARCH ONLY - there will be KEY "klub_jmeno"
+            // In that case - insert that CLUB NAME before post body and replace that KEY in dictionary for TABLE.
+            if (clubNameFromGLobalSearch && [clubNameFromGLobalSearch length] > 0)
+                [finalBody appendString:[NSString stringWithFormat:@"<b>%@</b><br>", clubNameFromGLobalSearch]];
+            [finalBody appendString:[d objectForKey:@"content"]];
+            NSMutableDictionary *finalDictionary = [[NSMutableDictionary alloc] initWithDictionary:d];
+            [finalDictionary setValue:finalBody forKey:@"content"];
+            
+            [tempArrayForRowSections addObject:finalDictionary];
             // Calculate heights and create array with same structure just only for row height.
             // 60 is minimum height - table ROW height is initialized to 70 below ( 70 - nick name )
-            ComputeRowHeight *rowHeight = [[ComputeRowHeight alloc] initWithText:[d objectForKey:@"content"]
+            ComputeRowHeight *rowHeight = [[ComputeRowHeight alloc] initWithText:finalBody
                                                                         forWidth:self.widthForTableCellBodyTextView
                                                                        minHeight:kMinimumPeopleTableCellHeight
                                                                     inlineImages:[Preferences showImagesInlineInPost:nil]];
