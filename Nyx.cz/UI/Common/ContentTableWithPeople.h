@@ -16,12 +16,14 @@
     UITableView *_table;
     CGFloat _rh;
     NSIndexPath *_indexPathToDelete, *_indexPathToRating;
-    BOOL _tableEditShowDelete, _tableEditShowThumbs;
+    BOOL _tableEditShowDelete, _tableEditShowThumbs, _showingSearchResult;
     
     NSIndexPath *_preserveIndexPathAfterLoadFromId;
     
     NSMutableString *_lastVisitWuId;
     NSMutableDictionary *_temporaryDataStorageBeforeLastReadIsFound;
+    
+    NSMutableString __block *_searchNick, __block *_searchText;
 }
 
 
@@ -62,6 +64,7 @@
 
 - (void)getDataForDiscussion:(NSString *)disId loadMoreToShowAllUnreadFromId:(NSString *)postId;
 
+- (void)showSearchAlert:(id)sender;
 
 
 @end

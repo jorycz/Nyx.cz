@@ -277,7 +277,7 @@
     }
 }
 
-- (void)configurePeopleTableSearch:(ContentTableWithPeople *)table withData:(NSDictionary *)dict
+- (void)configurePeopleTableSearch:(ContentTableWithPeople *)table withData:(NSDictionary *)dict addingData:(BOOL)addData
 {
     NSMutableArray *postDictionaries = [[NSMutableArray alloc] init];
     [postDictionaries addObjectsFromArray:[dict objectForKey:@"data"]];
@@ -304,15 +304,36 @@
             [tempArrayForRowBodyText addObject:rowHeight.attributedText];
         }
         
-        // First discussion load - remove all data and start again
-        [table.nyxRowsForSections removeAllObjects];
-        [table.nyxRowsForSections addObjectsFromArray:@[tempArrayForRowSections]];
-        
-        [table.nyxPostsRowHeights removeAllObjects];
-        [table.nyxPostsRowHeights addObjectsFromArray:@[tempArrayForRowHeights]];
-        
-        [table.nyxPostsRowBodyTexts removeAllObjects];
-        [table.nyxPostsRowBodyTexts addObjectsFromArray:@[tempArrayForRowBodyText]];
+        if (addData)
+        {
+            // Add new posts complete data to previous complete posts data.
+            NSMutableArray *previousNyxRowsForSections = [[NSMutableArray alloc] initWithArray:[table.nyxRowsForSections objectAtIndex:0]];
+            [previousNyxRowsForSections addObjectsFromArray:tempArrayForRowSections];
+            [table.nyxRowsForSections removeAllObjects];
+            [table.nyxRowsForSections addObjectsFromArray:@[previousNyxRowsForSections]];
+            
+            NSMutableArray *previousNyxPostsRowHeights = [[NSMutableArray alloc] initWithArray:[table.nyxPostsRowHeights objectAtIndex:0]];
+            [previousNyxPostsRowHeights addObjectsFromArray:tempArrayForRowHeights];
+            [table.nyxPostsRowHeights removeAllObjects];
+            [table.nyxPostsRowHeights addObjectsFromArray:@[previousNyxPostsRowHeights]];
+            
+            NSMutableArray *previousNyxPostsRowBodyTexts = [[NSMutableArray alloc] initWithArray:[table.nyxPostsRowBodyTexts objectAtIndex:0]];
+            [previousNyxPostsRowBodyTexts addObjectsFromArray:tempArrayForRowBodyText];
+            [table.nyxPostsRowBodyTexts removeAllObjects];
+            [table.nyxPostsRowBodyTexts addObjectsFromArray:@[previousNyxPostsRowBodyTexts]];
+        }
+        else
+        {
+            // First discussion load - remove all data and start again
+            [table.nyxRowsForSections removeAllObjects];
+            [table.nyxRowsForSections addObjectsFromArray:@[tempArrayForRowSections]];
+            
+            [table.nyxPostsRowHeights removeAllObjects];
+            [table.nyxPostsRowHeights addObjectsFromArray:@[tempArrayForRowHeights]];
+            
+            [table.nyxPostsRowBodyTexts removeAllObjects];
+            [table.nyxPostsRowBodyTexts addObjectsFromArray:@[tempArrayForRowBodyText]];
+        }
     }
 }
 

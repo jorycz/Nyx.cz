@@ -110,9 +110,14 @@
         
         [self adjustFrameForCurrentStatusBar];
         
-        self.nc.topViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
-                                                                                                                             target:self
-                                                                                                                             action:@selector(chooseNickname:)];
+        UIBarButtonItem *composeMessage = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
+                                                                                        target:self
+                                                                                        action:@selector(chooseNickname:)];
+        UIBarButtonItem *searchMessage = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch
+                                                                                       target:self.peopleTable
+                                                                                       action:@selector(showSearchAlert:)];
+        self.nc.topViewController.navigationItem.rightBarButtonItems = @[searchMessage, composeMessage];
+        
         [self.peopleTable getDataForMailbox];
     }
     
@@ -126,9 +131,9 @@
         
         [self adjustFrameForCurrentStatusBar];
         
-        self.nc.topViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch
-                                                                                                                    target:self
-                                                                                                                    action:@selector(searchForBoard:)];
+//        self.nc.topViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch
+//                                                                                                                    target:self
+//                                                                                                                    action:@selector(searchForBoard:)];
         [self.listTable getDataForBookmarks];
     }
     
@@ -142,9 +147,9 @@
         
         [self adjustFrameForCurrentStatusBar];
         
-        self.nc.topViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch
-                                                                                                                    target:self
-                                                                                                                    action:@selector(searchForBoard:)];
+//        self.nc.topViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch
+//                                                                                                                    target:self
+//                                                                                                                    action:@selector(searchForBoard:)];
         [self.listTable getDataForHistory];
     }
     
@@ -194,9 +199,8 @@
         [self adjustFrameForCurrentStatusBar];
         
         self.nc.topViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch
-                                                                                                                    target:self
-                                                                                                                    action:@selector(showSearchDialog)];
-        [self showSearchDialog];
+                                                                                                                    target:self.peopleTable
+                                                                                                                    action:@selector(showSearchAlert:)];
     }
 }
 
@@ -246,30 +250,6 @@
     [self.nc pushViewController:response animated:YES];
 }
 
-#pragma mark - SEARCH DIALOG
-
-- (void)showSearchDialog
-{
-    [self.nc.topViewController.navigationItem.rightBarButtonItem setEnabled:NO];
-    
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Vyhledávání"
-                                                                   message:@"Vyhledat je možné dle nicku a textu."
-                                                            preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *login = [UIAlertAction actionWithTitle:@"Vyhledat" style:UIAlertActionStyleDefault
-                                                  handler:^(UIAlertAction * action) {
-                                                      NSString *n = [[alert.textFields objectAtIndex:0] text];
-                                                      NSString *t = [[alert.textFields objectAtIndex:1] text];
-                                                      [self.peopleTable getDataForSearchNick:n andText:t];
-                                                  }];
-    [alert addAction:login];
-    [alert addTextFieldWithConfigurationHandler:^(UITextField *textField) {
-        textField.placeholder = @"Nick";
-    }];
-    [alert addTextFieldWithConfigurationHandler:^(UITextField *textField) {
-        textField.placeholder = @"Text";
-    }];
-    [self.nc presentViewController:alert animated:YES completion:^{}];
-}
 
 #pragma mark - SEARCH BOARD
 

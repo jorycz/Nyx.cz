@@ -48,7 +48,12 @@
 + (NSString *)apiDiscussionGetRatingInDiscussion:(NSString *)discussionId forPost:(NSString *)postId;
 + (NSString *)apiDiscussionSearchInDiscussion:(NSString *)discussionId forNick:(NSString *)nickId withText:(NSString *)text;
 
-+ (NSString *)apiSearchFor:(NSString *)nick andText:(NSString *)text forPosition:(NSString *)position;
++ (NSString *)apiSearchFor:(NSString *)nick andText:(NSString *)text;
++ (NSString *)apiSearchFor:(NSString *)nick andText:(NSString *)text fromWuId:(NSString *)fromWuId;
++ (NSString *)apiSearchMailboxFor:(NSString *)nick andText:(NSString *)text;
++ (NSString *)apiSearchMailboxFor:(NSString *)nick andText:(NSString *)text fromId:(NSString *)fromId;
++ (NSString *)apiSearchDiscussionFor:(NSString *)nick andText:(NSString *)text discussionId:(NSString *)dId;
++ (NSString *)apiSearchDiscussionFor:(NSString *)nick andText:(NSString *)text discussionId:(NSString *)dId fromWuId:(NSString *)fromWuId;
 
 + (NSString *)apiUtilMakeInactive;
 + (NSString *)apiUtilRemoveAuthorization;

@@ -44,6 +44,9 @@
         self.canEditFirstRow = YES;
         _lastVisitWuId = [[NSMutableString alloc] init];
         _temporaryDataStorageBeforeLastReadIsFound = [[NSMutableDictionary alloc] init];
+        _showingSearchResult = NO;
+        _searchNick = [[NSMutableString alloc] init];
+        _searchText = [[NSMutableString alloc] init];
     }
     return self;
 }
@@ -82,9 +85,13 @@
     _table.allowsSelection = self.allowsSelection;
     
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion]) {
-        self.nController.topViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
-                                                                                                                             target:self
-                                                                                                                             action:@selector(createNewPostToDiscussion)];
+        UIBarButtonItem *searchMessage = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch
+                                                                                       target:self
+                                                                                       action:@selector(showSearchAlert:)];
+        UIBarButtonItem *newPost = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
+                                                                                 target:self
+                                                                                 action:@selector(createNewPostToDiscussion)];
+        self.nController.topViewController.navigationItem.rightBarButtonItems = @[searchMessage, newPost];
     }
     
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeRatingInfo]) {
@@ -121,6 +128,15 @@
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
+}
+
+#pragma mark - NAVIGATION BAR BUTTONS ENABLE
+
+- (void)enableNavigationButtons:(BOOL)b
+{
+    for (UIBarButtonItem *item in self.nController.topViewController.navigationItem.rightBarButtonItems) {
+        [item setEnabled:b];
+    }
 }
 
 #pragma mark - Table view data source
@@ -590,7 +606,7 @@
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if ([self.peopleTableMode isEqualToString:kPeopleTableModeMailbox])
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeMailbox] && !_showingSearchResult)
     {
         // Load more mails when reach end.
         if (indexPath.row + 1 == [[self.nyxRowsForSections objectAtIndex:0] count])
@@ -600,8 +616,18 @@
             [self getDataForMailboxFromId:fromID];
         }
     }
+    else if ([self.peopleTableMode isEqualToString:kPeopleTableModeMailbox] && _showingSearchResult)
+    {
+        // Load more SEARCH in mails when reach end.
+        if (indexPath.row + 1 == [[self.nyxRowsForSections objectAtIndex:0] count])
+        {
+            _preserveIndexPathAfterLoadFromId = indexPath;
+            NSString *fromID = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"id_mail"];
+            [self getDataForSearchMailboxNick:_searchNick andText:_searchText fromId:fromID];
+        }
+    }
     
-    if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion])
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion] && !_showingSearchResult)
     {
         // Load more posts when reach end.
         if (indexPath.row + 1 == [[self.nyxRowsForSections objectAtIndex:0] count])
@@ -612,6 +638,26 @@
             [self getDataForDiscussion:discussionId fromId:fromID];
         }
     }
+    else if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion] && _showingSearchResult)
+    {
+        if (indexPath.row + 1 == [[self.nyxRowsForSections objectAtIndex:0] count])
+        {
+            _preserveIndexPathAfterLoadFromId = indexPath;
+            NSString *fromID = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"id_wu"];
+            [self getDataForSearchDiscussionNick:_searchNick andText:_searchText fromWuId:fromID];
+        }
+    }
+    
+//    if ([self.peopleTableMode isEqualToString:kPeopleTableModeSearch] && _showingSearchResult)
+//    {
+//        // Load more SEARCH when reach end.
+//        if (indexPath.row + 1 == [[self.nyxRowsForSections objectAtIndex:0] count])
+//        {
+//            _preserveIndexPathAfterLoadFromId = indexPath;
+//            NSString *fromID = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"id_wu"];
+//            [self getDataForSearchNick:_searchNick andText:_searchText fromWuId:fromID];
+//        }
+//    }
 }
 
 #pragma mark - SHOW ANOTHER DISCUSSION PEOPLE TABLE - from notices section
@@ -694,6 +740,7 @@
 
 - (void)pullToRefresh:(id)sender
 {
+    _showingSearchResult = NO;
     [_table setScrollEnabled:NO];
     [_table setScrollEnabled:YES];
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeMailbox])
@@ -764,8 +811,40 @@
 
 - (void)getDataForSearchNick:(NSString *)nick andText:(NSString *)text
 {
-    NSString *apiRequest = [ApiBuilder apiSearchFor:nick andText:text forPosition:@""];
+    NSString *apiRequest = [ApiBuilder apiSearchFor:nick andText:text];
     [self serverApiCall:apiRequest andIdentification:kApiIdentificationDataForSearch];
+}
+
+- (void)getDataForSearchNick:(NSString *)nick andText:(NSString *)text fromWuId:(NSString *)fromWuId
+{
+    NSString *apiRequest = [ApiBuilder apiSearchFor:nick andText:text fromWuId:fromWuId];
+    [self serverApiCall:apiRequest andIdentification:kApiIdentificationDataForSearchOlder];
+}
+
+- (void)getDataForSearchMailboxNick:(NSString *)nick andText:(NSString *)text
+{
+    NSString *apiRequest = [ApiBuilder apiSearchMailboxFor:nick andText:text];
+    [self serverApiCall:apiRequest andIdentification:kApiIdentificationDataForSearchMailbox];
+}
+
+- (void)getDataForSearchMailboxNick:(NSString *)nick andText:(NSString *)text fromId:(NSString *)fromId
+{
+    NSString *apiRequest = [ApiBuilder apiSearchMailboxFor:nick andText:text fromId:fromId];
+    [self serverApiCall:apiRequest andIdentification:kApiIdentificationDataForSearchMailboxOlder];
+}
+
+- (void)getDataForSearchDiscussionNick:(NSString *)nick andText:(NSString *)text
+{
+    NSString *discussionId = [self.disscussionClubData objectForKey:@"id_klub"];
+    NSString *apiRequest = [ApiBuilder apiSearchDiscussionFor:nick andText:text discussionId:discussionId];
+    [self serverApiCall:apiRequest andIdentification:kApiIdentificationDataForSearchDiscussion];
+}
+
+- (void)getDataForSearchDiscussionNick:(NSString *)nick andText:(NSString *)text fromWuId:(NSString *)fromWuId
+{
+    NSString *discussionId = [self.disscussionClubData objectForKey:@"id_klub"];
+    NSString *apiRequest = [ApiBuilder apiSearchDiscussionFor:nick andText:text discussionId:discussionId fromWuId:fromWuId];
+    [self serverApiCall:apiRequest andIdentification:kApiIdentificationDataForSearchDiscussionOlder];
 }
 
 - (void)getDataForDiscussion:(NSString *)disId loadMoreToShowAllUnreadFromId:(NSString *)postId
@@ -855,7 +934,7 @@
                     [tc configurePeopleTableMailbox:self withData:jp.jsonDictionary addingData:NO];
                     
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        [self.nController.topViewController.navigationItem.rightBarButtonItem setEnabled:YES];
+                        [self enableNavigationButtons:YES];
                         [self reloadTableDataWithScrollToTop:YES];
                     });
                 }
@@ -866,7 +945,7 @@
                     [tc configurePeopleTableMailbox:self withData:jp.jsonDictionary addingData:YES];
                     
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        [self.nController.topViewController.navigationItem.rightBarButtonItem setEnabled:YES];
+                        [self enableNavigationButtons:YES];
                         [self reloadTableDataWithScrollToTop:NO];
                     });
                 }
@@ -890,15 +969,32 @@
                         [self reloadTableDataWithScrollToTop:YES];
                     });
                 }
-                if ([identification isEqualToString:kApiIdentificationDataForSearch])
+                if ([identification isEqualToString:kApiIdentificationDataForSearch] ||
+                    [identification isEqualToString:kApiIdentificationDataForSearchMailbox] ||
+                    [identification isEqualToString:kApiIdentificationDataForSearchDiscussion])
                 {
                     TableConfigurator *tc = [[TableConfigurator alloc] init];
                     tc.widthForTableCellBodyTextView = self.widthForTableCellBodyTextView;
-                    [tc configurePeopleTableSearch:self withData:jp.jsonDictionary];
+                    [tc configurePeopleTableSearch:self withData:jp.jsonDictionary addingData:NO];
                     
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        [self.nController.topViewController.navigationItem.rightBarButtonItem setEnabled:YES];
+                        [self enableNavigationButtons:YES];
+                        _showingSearchResult = YES;
                         [self reloadTableDataWithScrollToTop:YES];
+                    });
+                }
+                if ([identification isEqualToString:kApiIdentificationDataForSearchOlder] ||
+                    [identification isEqualToString:kApiIdentificationDataForSearchMailboxOlder] ||
+                    [identification isEqualToString:kApiIdentificationDataForSearchDiscussionOlder])
+                {
+                    TableConfigurator *tc = [[TableConfigurator alloc] init];
+                    tc.widthForTableCellBodyTextView = self.widthForTableCellBodyTextView;
+                    [tc configurePeopleTableSearch:self withData:jp.jsonDictionary addingData:YES];
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self enableNavigationButtons:YES];
+                        _showingSearchResult = YES;
+                        [self reloadTableDataWithScrollToTop:NO];
                     });
                 }
                 if ([identification isEqualToString:kApiIdentificationDataForDiscussion])
@@ -955,7 +1051,7 @@
                     [tc reconfigurePeopleTableDiscussion:self withData:_temporaryDataStorageBeforeLastReadIsFound withActionIdentification:identification];
                     
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        [self.nController.topViewController.navigationItem.rightBarButtonItem setEnabled:YES];
+                        [self enableNavigationButtons:YES];
                         NSInteger lastUnreadIndex = 0;
                         for (NSDictionary *d in [_temporaryDataStorageBeforeLastReadIsFound objectForKey:@"data"]) {
                             if ([[d objectForKey:@"new"] length] > 0) {
@@ -973,7 +1069,7 @@
                     [tc reconfigurePeopleTableDiscussion:self withData:jp.jsonDictionary withActionIdentification:identification];
                     
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        [self.nController.topViewController.navigationItem.rightBarButtonItem setEnabled:YES];
+                        [self enableNavigationButtons:YES];
                         [self reloadTableDataWithScrollToTop:NO];
                     });
                 }
@@ -984,7 +1080,7 @@
                     [tc reconfigurePeopleTableDiscussion:self withData:jp.jsonDictionary withActionIdentification:identification];
                     
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        [self.nController.topViewController.navigationItem.rightBarButtonItem setEnabled:YES];
+                        [self enableNavigationButtons:YES];
                         [self reloadTableDataWithScrollToTop:YES];
                     });
                 }
@@ -1095,7 +1191,7 @@
     RichTextProcessor *rtp = [[RichTextProcessor alloc] init];
     NSArray *urlsWithoutImages = [[NSArray alloc] initWithArray:[rtp urlsWithoutImages:httpUrls] copyItems:YES];
     
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Volby příspěvku"
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil
                                                                    message:nil
                                                             preferredStyle:UIAlertControllerStyleActionSheet];
     
@@ -1200,7 +1296,7 @@
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-        [self.nController.topViewController.navigationItem.rightBarButtonItem setEnabled:NO];
+        [self enableNavigationButtons:NO];
         LoadingView *lv = [[LoadingView alloc] initWithFrame:self.view.bounds];
         [self.view addSubview:lv];
     });
@@ -1210,7 +1306,7 @@
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-        [self.nController.topViewController.navigationItem.rightBarButtonItem setEnabled:YES];
+        [self enableNavigationButtons:YES];
         [[self.view viewWithTag:kLoadingCoverViewTag] removeFromSuperview];
     });
 }
@@ -1278,6 +1374,42 @@
         }
     };
 }
+
+
+#pragma mark - SEARCH
+
+- (void)showSearchAlert:(id)sender
+{
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Vyhledávání"
+                                                                   message:@"Vyhledat podle nicku a textu."
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *login = [UIAlertAction actionWithTitle:@"Vyhledat" style:UIAlertActionStyleDefault
+                                                  handler:^(UIAlertAction * action) {
+                                                      [_searchNick setString:[[alert.textFields objectAtIndex:0] text]];
+                                                      [_searchText setString:[[alert.textFields objectAtIndex:1] text]];
+                                                      if ([self.peopleTableMode isEqualToString:kPeopleTableModeSearch])
+                                                          [self getDataForSearchNick:_searchNick andText:_searchText];
+                                                      if ([self.peopleTableMode isEqualToString:kPeopleTableModeMailbox])
+                                                          [self getDataForSearchMailboxNick:_searchNick andText:_searchText];
+                                                      if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion])
+                                                          [self getDataForSearchDiscussionNick:_searchNick andText:_searchText];
+                                                  }];
+    [alert addAction:login];
+    [alert addTextFieldWithConfigurationHandler:^(UITextField *textField) {
+        textField.placeholder = @"Nick";
+    }];
+    [alert addTextFieldWithConfigurationHandler:^(UITextField *textField) {
+        textField.placeholder = @"Text";
+    }];
+    [self.nController presentViewController:alert animated:YES completion:^{}];
+}
+
+- (void)searchForPostWithNick:(NSString *)nick andText:(NSString *)postText
+{
+    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), nick);
+    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), postText);
+}
+
 
 #pragma mark - DISMISS
 

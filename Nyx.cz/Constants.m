@@ -64,6 +64,11 @@ NSString* const kApiIdentificationDataForMailboxOlderMessages = @"kApiIdentifica
 NSString* const kApiIdentificationDataForFriendList = @"kApiIdentificationDataForFriendList";
 NSString* const kApiIdentificationDataForNotices = @"kApiIdentificationDataForNotices";
 NSString* const kApiIdentificationDataForSearch = @"kApiIdentificationDataForSearch";
+NSString* const kApiIdentificationDataForSearchOlder = @"kApiIdentificationDataForSearchOlder";
+NSString* const kApiIdentificationDataForSearchMailbox = @"kApiIdentificationDataForSearchMailbox";
+NSString* const kApiIdentificationDataForSearchMailboxOlder = @"kApiIdentificationDataForSearchMailboxOlder";
+NSString* const kApiIdentificationDataForSearchDiscussion = @"kApiIdentificationDataForSearchDiscussion";
+NSString* const kApiIdentificationDataForSearchDiscussionOlder = @"kApiIdentificationDataForSearchDiscussionOlder";
 NSString* const kApiIdentificationDataForBookmarks = @"kApiIdentificationDataForBookmarks";
 NSString* const kApiIdentificationDataForHistory = @"kApiIdentificationDataForHistory";
 

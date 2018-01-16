@@ -64,6 +64,11 @@ extern NSString* const kApiIdentificationDataForMailboxOlderMessages;
 extern NSString* const kApiIdentificationDataForFriendList;
 extern NSString* const kApiIdentificationDataForNotices;
 extern NSString* const kApiIdentificationDataForSearch;
+extern NSString* const kApiIdentificationDataForSearchOlder;
+extern NSString* const kApiIdentificationDataForSearchMailbox;
+extern NSString* const kApiIdentificationDataForSearchMailboxOlder;
+extern NSString* const kApiIdentificationDataForSearchDiscussion;
+extern NSString* const kApiIdentificationDataForSearchDiscussionOlder;
 extern NSString* const kApiIdentificationDataForBookmarks;
 extern NSString* const kApiIdentificationDataForHistory;
 

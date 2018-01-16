@@ -29,7 +29,7 @@
 - (void)configurePeopleTableMailbox:(ContentTableWithPeople *)table withData:(NSDictionary *)dict addingData:(BOOL)addData;
 - (void)configurePeopleTablePeople:(ContentTableWithPeople *)table withData:(NSDictionary *)dict;
 - (void)configurePeopleTableNotices:(ContentTableWithPeople *)table withData:(NSDictionary *)dict;
-- (void)configurePeopleTableSearch:(ContentTableWithPeople *)table withData:(NSDictionary *)dict;
+- (void)configurePeopleTableSearch:(ContentTableWithPeople *)table withData:(NSDictionary *)dict addingData:(BOOL)addData;
 
 
 // POEPLE TABLE - RECONFIGURATION

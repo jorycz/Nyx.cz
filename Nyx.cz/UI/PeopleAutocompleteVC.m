@@ -23,7 +23,7 @@
     self = [super init];
     if (self)
     {
-        self.title = @"Hledání";
+        self.title = @"Adresát";
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
         _firstInit = YES;
         _loadingInProgress = NO;

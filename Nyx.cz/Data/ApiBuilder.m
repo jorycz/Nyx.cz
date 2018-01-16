@@ -215,12 +215,38 @@
     return [NSString stringWithFormat:@"%@&id=%@&filter_user=%@&filter_text=%@", [self defaultApiRequestWithL:kApiDiscussion andL2:kApiDiscussionMessages], discussionId, nickId, text];
 }
 
-#pragma mark - GLOBAL SEARCH
+#pragma mark - SEARCH
 
-+ (NSString *)apiSearchFor:(NSString *)nick andText:(NSString *)text forPosition:(NSString *)position
++ (NSString *)apiSearchFor:(NSString *)nick andText:(NSString *)text
 {
-    return [NSString stringWithFormat:@"%@&filter_user=%@&filter_text=%@&position=%@", [self defaultApiRequestWithL:kApiSearch andL2:kApiSearchWriteups], nick, text, position];
+    return [NSString stringWithFormat:@"%@&filter_user=%@&filter_text=%@", [self defaultApiRequestWithL:kApiSearch andL2:kApiSearchWriteups], nick, text];
 }
+
++ (NSString *)apiSearchFor:(NSString *)nick andText:(NSString *)text fromWuId:(NSString *)fromWuId
+{
+    return [NSString stringWithFormat:@"%@&filter_user=%@&filter_text=%@&id_wu=%@&direction=older", [self defaultApiRequestWithL:kApiSearch andL2:kApiSearchWriteups], nick, text, fromWuId];
+}
+
++ (NSString *)apiSearchMailboxFor:(NSString *)nick andText:(NSString *)text
+{
+    return [NSString stringWithFormat:@"%@&filter_user=%@&filter_text=%@", [self defaultApiRequestWithL:kApiMail andL2:kApiMailMessages], nick, text];
+}
+
++ (NSString *)apiSearchMailboxFor:(NSString *)nick andText:(NSString *)text fromId:(NSString *)fromId
+{
+    return [NSString stringWithFormat:@"%@&filter_user=%@&filter_text=%@&id_mail=%@&direction=older", [self defaultApiRequestWithL:kApiMail andL2:kApiMailMessages], nick, text, fromId];
+}
+
++ (NSString *)apiSearchDiscussionFor:(NSString *)nick andText:(NSString *)text discussionId:(NSString *)dId
+{
+    return [NSString stringWithFormat:@"%@&id=%@&filter_user=%@&filter_text=%@", [self defaultApiRequestWithL:kApiDiscussion andL2:kApiDiscussionMessages], dId, nick, text];
+}
+
++ (NSString *)apiSearchDiscussionFor:(NSString *)nick andText:(NSString *)text discussionId:(NSString *)dId fromWuId:(NSString *)fromWuId
+{
+    return [NSString stringWithFormat:@"%@&id=%@&filter_user=%@&filter_text=%@&id_wu=%@&direction=older", [self defaultApiRequestWithL:kApiDiscussion andL2:kApiDiscussionMessages], dId, nick, text, fromWuId];
+}
+
 
 #pragma mark - UTIL
 
