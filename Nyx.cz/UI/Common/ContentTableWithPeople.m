@@ -749,8 +749,8 @@
     }
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion])
     {
-        NSString *beforeId = [[[self.nyxRowsForSections objectAtIndex:0] objectAtIndex:0] objectForKey:@"id_wu"];
-        [self getDataForDiscussionBeforeId:beforeId];
+        NSString *discussionId = [self.disscussionClubData objectForKey:@"id_klub"];
+        [self getDataForDiscussion:discussionId loadMoreToShowAllUnreadFromId:@""];
     }
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeed])
     {
@@ -864,13 +864,6 @@
 {
     NSString *apiRequest = [ApiBuilder apiMessagesForDiscussion:dId loadMoreFromId:fromId];
     [self serverApiCall:apiRequest andIdentification:kApiIdentificationDataForDiscussionFromID];
-}
-
-- (void)getDataForDiscussionBeforeId:(NSString *)beforeId
-{
-    NSString *discussionId = [self.disscussionClubData objectForKey:@"id_klub"];
-    NSString *apiRequest = [ApiBuilder apiMessagesForDiscussion:discussionId loadPreviousFromId:beforeId];
-    [self serverApiCall:apiRequest andIdentification:kApiIdentificationDataForDiscussionRefreshAfterPost];
 }
 
 - (void)getDataForDiscussionBeforeIdNotificationFromRespondVC:(NSNotification *)sender
