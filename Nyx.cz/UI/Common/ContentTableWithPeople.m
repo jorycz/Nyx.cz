@@ -131,6 +131,8 @@
     
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion])
         [self removeLoadingView];
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeRatingInfo])
+        return;
     // Neposouvat kdyz scrollujeme dolu a nacitaji se dalsi posty.
     if (goToTop)
     {

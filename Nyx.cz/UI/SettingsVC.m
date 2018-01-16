@@ -249,7 +249,7 @@
 
 - (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section
 {
-    view.tintColor = [UIColor colorWithRed:1 green:0 blue:0 alpha:.9];
+    view.tintColor = COLOR_BACKGROUND_SETTINGS_DELETE_WARNING;
 }
 
 
