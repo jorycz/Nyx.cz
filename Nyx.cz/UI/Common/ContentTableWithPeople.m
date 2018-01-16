@@ -1380,7 +1380,7 @@
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Vyhledávání"
                                                                    message:@"Vyhledat podle nicku a textu."
                                                             preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *login = [UIAlertAction actionWithTitle:@"Vyhledat" style:UIAlertActionStyleDefault
+    UIAlertAction *search = [UIAlertAction actionWithTitle:@"Vyhledat" style:UIAlertActionStyleDefault
                                                   handler:^(UIAlertAction * action) {
                                                       [_searchNick setString:[[alert.textFields objectAtIndex:0] text]];
                                                       [_searchText setString:[[alert.textFields objectAtIndex:1] text]];
@@ -1391,7 +1391,9 @@
                                                       if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion])
                                                           [self getDataForSearchDiscussionNick:_searchNick andText:_searchText];
                                                   }];
-    [alert addAction:login];
+    [alert addAction:search];
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Zrušit" style:(UIAlertActionStyleCancel) handler:^(UIAlertAction * _Nonnull action) {}];
+    [alert addAction:cancel];
     [alert addTextFieldWithConfigurationHandler:^(UITextField *textField) {
         textField.placeholder = @"Nick";
     }];

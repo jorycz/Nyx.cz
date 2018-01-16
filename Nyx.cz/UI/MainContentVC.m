@@ -78,7 +78,7 @@
     // - 65 is there because there is big avatar left of table cell body text view.
     _widthForTableCellBodyTextView = self.view.frame.size.width - kWidthForTableCellBodyTextViewSubstract;
     
-    self.nc.topViewController.navigationItem.rightBarButtonItem = nil;
+    self.nc.topViewController.navigationItem.rightBarButtonItems = nil;
     self.peopleTable = nil;
     self.listTable = nil;
     
@@ -201,6 +201,7 @@
         self.nc.topViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch
                                                                                                                     target:self.peopleTable
                                                                                                                     action:@selector(showSearchAlert:)];
+        [self.peopleTable showSearchAlert:nil];
     }
 }
 
