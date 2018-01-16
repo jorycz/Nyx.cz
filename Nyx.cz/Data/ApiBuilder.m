@@ -222,9 +222,9 @@
     return [NSString stringWithFormat:@"%@&filter_user=%@&filter_text=%@", [self defaultApiRequestWithL:kApiSearch andL2:kApiSearchWriteups], nick, text];
 }
 
-+ (NSString *)apiSearchFor:(NSString *)nick andText:(NSString *)text fromWuId:(NSString *)fromWuId
++ (NSString *)apiSearchFor:(NSString *)nick andText:(NSString *)text page:(NSInteger)page
 {
-    return [NSString stringWithFormat:@"%@&filter_user=%@&filter_text=%@&id_wu=%@&direction=older", [self defaultApiRequestWithL:kApiSearch andL2:kApiSearchWriteups], nick, text, fromWuId];
+    return [NSString stringWithFormat:@"%@&filter_user=%@&filter_text=%@&position=%@", [self defaultApiRequestWithL:kApiSearch andL2:kApiSearchWriteups], nick, text, [@(page) stringValue]];
 }
 
 + (NSString *)apiSearchMailboxFor:(NSString *)nick andText:(NSString *)text

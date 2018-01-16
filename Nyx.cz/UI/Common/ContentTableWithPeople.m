@@ -47,6 +47,7 @@
         _showingSearchResult = NO;
         _searchNick = [[NSMutableString alloc] init];
         _searchText = [[NSMutableString alloc] init];
+        _globalSearchPage = 0;
     }
     return self;
 }
@@ -300,9 +301,7 @@
     
     // DENY SELECT FIRST ROW IN DETAIL VIEW - load same content doesn't make sense
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussionDetail] && indexPath.section == 0 && indexPath.row == 0)
-    {
         return;
-    }
     // DENY SELECT ON RATING INFO TABLE
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeRatingInfo])
         return;
@@ -386,7 +385,12 @@
                 }
             }
             if (!previousResponses || [previousResponses count] < 1) {
-                // DO NOT continue to DETAIL if NONE replies in NOTICES TABLE.
+                // Show discussion right away from post without comments.
+                NSString *id_klub = [userPostData objectForKey:@"id_klub"];
+                NSString *id_wu = [userPostData objectForKey:@"id_wu"];
+                // Load even currently clicked POST from NOTICES so fake starting ID here.
+                NSInteger biggerId = [id_wu integerValue] + 1;
+                [self createAnotherDiscussionTableForDiscussionId:id_klub andLoadFromPostId:[@(biggerId) stringValue]];
                 return;
             }
         }
@@ -400,7 +404,7 @@
                 previousReactionPosts:(NSArray *)previousResponses
          ];
     }
-    // ------------------------------
+    // --------------- RESPOND VIEW ------------------
     
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeSearch]) {
         UIAlertController *a = [UIAlertController alertControllerWithTitle:@"Klub"
@@ -648,16 +652,16 @@
         }
     }
     
-//    if ([self.peopleTableMode isEqualToString:kPeopleTableModeSearch] && _showingSearchResult)
-//    {
-//        // Load more SEARCH when reach end.
-//        if (indexPath.row + 1 == [[self.nyxRowsForSections objectAtIndex:0] count])
-//        {
-//            _preserveIndexPathAfterLoadFromId = indexPath;
-//            NSString *fromID = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"id_wu"];
-//            [self getDataForSearchNick:_searchNick andText:_searchText fromWuId:fromID];
-//        }
-//    }
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeSearch] && _showingSearchResult)
+    {
+        // Load more SEARCH when reach end.
+        if (indexPath.row + 1 == [[self.nyxRowsForSections objectAtIndex:0] count])
+        {
+            _preserveIndexPathAfterLoadFromId = indexPath;
+            _globalSearchPage += 20;
+            [self getDataForSearchNick:_searchNick andText:_searchText page:_globalSearchPage];
+        }
+    }
 }
 
 #pragma mark - SHOW ANOTHER DISCUSSION PEOPLE TABLE - from notices section
@@ -815,9 +819,9 @@
     [self serverApiCall:apiRequest andIdentification:kApiIdentificationDataForSearch];
 }
 
-- (void)getDataForSearchNick:(NSString *)nick andText:(NSString *)text fromWuId:(NSString *)fromWuId
+- (void)getDataForSearchNick:(NSString *)nick andText:(NSString *)text page:(NSInteger)page
 {
-    NSString *apiRequest = [ApiBuilder apiSearchFor:nick andText:text fromWuId:fromWuId];
+    NSString *apiRequest = [ApiBuilder apiSearchFor:nick andText:text page:page];
     [self serverApiCall:apiRequest andIdentification:kApiIdentificationDataForSearchOlder];
 }
 

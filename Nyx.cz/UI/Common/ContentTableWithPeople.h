@@ -24,6 +24,8 @@
     NSMutableDictionary *_temporaryDataStorageBeforeLastReadIsFound;
     
     NSMutableString __block *_searchNick, __block *_searchText;
+    
+    NSInteger _globalSearchPage;
 }
 
 
