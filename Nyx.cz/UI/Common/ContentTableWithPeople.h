@@ -16,7 +16,7 @@
     UITableView *_table;
     CGFloat _rh;
     NSIndexPath *_indexPathToDelete, *_indexPathToRating;
-    BOOL _tableEditShowDelete, _tableEditShowThumbs, _showingSearchResult;
+    BOOL _tableEditShowDelete, _tableEditShowThumbs, _showingSearchResult, _noMoreSearchResult;
     
     NSIndexPath *_preserveIndexPathAfterLoadFromId;
     

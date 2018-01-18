@@ -610,6 +610,11 @@
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if (_showingSearchResult && _noMoreSearchResult) {
+        NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"No more search result.");
+        return;
+    }
+    
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeMailbox] && !_showingSearchResult)
     {
         // Load more mails when reach end.
@@ -744,6 +749,7 @@
 - (void)pullToRefresh:(id)sender
 {
     _showingSearchResult = NO;
+    _noMoreSearchResult = NO;
     [_table setScrollEnabled:NO];
     [_table setScrollEnabled:YES];
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeMailbox])
@@ -969,28 +975,47 @@
                     [identification isEqualToString:kApiIdentificationDataForSearchMailbox] ||
                     [identification isEqualToString:kApiIdentificationDataForSearchDiscussion])
                 {
-                    TableConfigurator *tc = [[TableConfigurator alloc] init];
-                    tc.widthForTableCellBodyTextView = self.widthForTableCellBodyTextView;
-                    [tc configurePeopleTableSearch:self withData:jp.jsonDictionary addingData:NO];
+                    if ([[jp.jsonDictionary objectForKey:@"data"] count] < 1)
+                    {
+                        PRESENT_ERROR(@"Nic nenalezeno.", @"Dle zadané kombinace se nepodařilo nic najít.")
+                        _noMoreSearchResult = YES;
+                        _showingSearchResult = NO;
+                    } else {
+                        TableConfigurator *tc = [[TableConfigurator alloc] init];
+                        tc.widthForTableCellBodyTextView = self.widthForTableCellBodyTextView;
+                        [tc configurePeopleTableSearch:self withData:jp.jsonDictionary addingData:NO];
+                        _noMoreSearchResult = NO;
+                        _showingSearchResult = YES;
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self reloadTableDataWithScrollToTop:YES];
+                        });
+                    }
                     
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [self enableNavigationButtons:YES];
-                        _showingSearchResult = YES;
-                        [self reloadTableDataWithScrollToTop:YES];
                     });
                 }
                 if ([identification isEqualToString:kApiIdentificationDataForSearchOlder] ||
                     [identification isEqualToString:kApiIdentificationDataForSearchMailboxOlder] ||
                     [identification isEqualToString:kApiIdentificationDataForSearchDiscussionOlder])
                 {
-                    TableConfigurator *tc = [[TableConfigurator alloc] init];
-                    tc.widthForTableCellBodyTextView = self.widthForTableCellBodyTextView;
-                    [tc configurePeopleTableSearch:self withData:jp.jsonDictionary addingData:YES];
+                    if ([[jp.jsonDictionary objectForKey:@"data"] count] < 1)
+                    {
+                        _noMoreSearchResult = YES;
+                        _showingSearchResult = YES;
+                    } else {
+                        TableConfigurator *tc = [[TableConfigurator alloc] init];
+                        tc.widthForTableCellBodyTextView = self.widthForTableCellBodyTextView;
+                        [tc configurePeopleTableSearch:self withData:jp.jsonDictionary addingData:YES];
+                        _noMoreSearchResult = NO;
+                        _showingSearchResult = YES;
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self reloadTableDataWithScrollToTop:NO];
+                        });
+                    }
                     
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [self enableNavigationButtons:YES];
-                        _showingSearchResult = YES;
-                        [self reloadTableDataWithScrollToTop:NO];
                     });
                 }
                 if ([identification isEqualToString:kApiIdentificationDataForDiscussion])
@@ -1390,6 +1415,9 @@
                                                             preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *search = [UIAlertAction actionWithTitle:@"Vyhledat" style:UIAlertActionStyleDefault
                                                   handler:^(UIAlertAction * action) {
+                                                      _noMoreSearchResult = NO;
+                                                      _showingSearchResult = YES;
+                                                      
                                                       [_searchNick setString:[[alert.textFields objectAtIndex:0] text]];
                                                       [_searchText setString:[[alert.textFields objectAtIndex:1] text]];
                                                       if ([self.peopleTableMode isEqualToString:kPeopleTableModeSearch])
