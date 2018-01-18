@@ -86,6 +86,13 @@
     }
     cell.tag = (int)indexPath.row;
     [cell updateMenuLabel:[self.menuEntries objectAtIndex:indexPath.row]];
+    
+    if (indexPath.row > 6) {
+        cell.contentView.alpha = 0.5;
+    } else {
+        cell.contentView.alpha = 1;
+    }
+    
     return cell;
 }
 
