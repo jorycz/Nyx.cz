@@ -19,14 +19,7 @@
     {
         self.backgroundColor = COLOR_BACKGROUND_WHITE;
         
-        _unreadLabel = [[UILabel alloc] init];
-        _unreadLabel.backgroundColor = COLOR_SYSTEM_TURQUOISE;
-        _unreadLabel.textColor = COLOR_BACKGROUND_WHITE;
-        _unreadLabel.userInteractionEnabled = NO;
-        _unreadLabel.textAlignment = NSTextAlignmentCenter;
-        _unreadLabel.font = [UIFont boldSystemFontOfSize:12];
-        _unreadLabel.layer.cornerRadius = 8;
-        _unreadLabel.clipsToBounds = YES;
+        _unreadLabel = [[UnreadLabel alloc] init];
         [self addSubview:_unreadLabel];
         
         _boardNameLabel = [[UILabel alloc] init];
@@ -67,7 +60,7 @@
     
     CGRect f = self.frame;
     
-    _unreadLabel.frame = CGRectMake(3, 3, 28, f.size.height - 6);
+    _unreadLabel.frame = CGRectMake(3, 3, 29, f.size.height - 6);
     
     _boardNameLabel.frame = CGRectMake(36, 2, f.size.width - 36, f.size.height - 4);
     

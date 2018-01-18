@@ -7,10 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "UnreadLabel.h"
+
 
 @interface ContentTableWithListCell : UITableViewCell
 {
-    UILabel *_unreadLabel, *_boardNameLabel;
+    UnreadLabel *_unreadLabel;
+    UILabel *_boardNameLabel;
     
     UIColor *_sepColor;
     UIView *_separator;

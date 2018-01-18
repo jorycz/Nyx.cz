@@ -81,6 +81,7 @@
 		2B6736061FBCE8F500DA728E /* SideMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B6736051FBCE8F500DA728E /* SideMenu.m */; };
 		2B6736091FBCED2100DA728E /* MainVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B6736081FBCED2100DA728E /* MainVC.m */; };
 		2B67360C1FBCFAEF00DA728E /* SideMenuCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B67360B1FBCFAEF00DA728E /* SideMenuCell.m */; };
+		2B70FB512010FA25004735EF /* UnreadLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B70FB502010FA25004735EF /* UnreadLabel.m */; };
 		2B8FECCE1FD8226A004CCED8 /* Colors.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B8FECCD1FD8226A004CCED8 /* Colors.m */; };
 		2B8FECD11FD848F6004CCED8 /* ImagePreviewVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B8FECD01FD848F6004CCED8 /* ImagePreviewVC.m */; };
 		2B8FECD41FD8495A004CCED8 /* ImageVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B8FECD31FD8495A004CCED8 /* ImageVC.m */; };
@@ -236,6 +237,8 @@
 		2B6736081FBCED2100DA728E /* MainVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainVC.m; sourceTree = "<group>"; };
 		2B67360A1FBCFAEF00DA728E /* SideMenuCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SideMenuCell.h; sourceTree = "<group>"; };
 		2B67360B1FBCFAEF00DA728E /* SideMenuCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SideMenuCell.m; sourceTree = "<group>"; };
+		2B70FB4F2010FA25004735EF /* UnreadLabel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UnreadLabel.h; sourceTree = "<group>"; };
+		2B70FB502010FA25004735EF /* UnreadLabel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UnreadLabel.m; sourceTree = "<group>"; };
 		2B8FECCC1FD8226A004CCED8 /* Colors.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Colors.h; sourceTree = "<group>"; };
 		2B8FECCD1FD8226A004CCED8 /* Colors.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Colors.m; sourceTree = "<group>"; };
 		2B8FECCF1FD848F6004CCED8 /* ImagePreviewVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImagePreviewVC.h; sourceTree = "<group>"; };
@@ -539,6 +542,8 @@
 				2B42D44A1FCA2124009F751D /* ContentTableWithList.m */,
 				2B42D44C1FCA27B9009F751D /* ContentTableWithListCell.h */,
 				2B42D44D1FCA27B9009F751D /* ContentTableWithListCell.m */,
+				2B70FB4F2010FA25004735EF /* UnreadLabel.h */,
+				2B70FB502010FA25004735EF /* UnreadLabel.m */,
 				2B1D59531FCCB3DD009E4A88 /* WebVC.h */,
 				2B1D59541FCCB3DD009E4A88 /* WebVC.m */,
 				2B8FECCF1FD848F6004CCED8 /* ImagePreviewVC.h */,
@@ -733,6 +738,7 @@
 				2B5DEC351FEE9344001F90B1 /* BackgroundDownloader.m in Sources */,
 				2B2303941FBC73AF00286062 /* JSONParser.m in Sources */,
 				2B31801C1FC4C6A20063B9EE /* NewFeedPostVC.m in Sources */,
+				2B70FB512010FA25004735EF /* UnreadLabel.m in Sources */,
 				2B42D44B1FCA2124009F751D /* ContentTableWithList.m in Sources */,
 				2B1D594F1FCB4EAD009E4A88 /* ComputeRowHeightTextAttachment.m in Sources */,
 				2B0D5D911FBC40F20052D63C /* AppDelegate.m in Sources */,
