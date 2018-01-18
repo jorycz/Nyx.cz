@@ -25,7 +25,7 @@
         self.textAlignment = NSTextAlignmentCenter;
         // Font size 12 = minimum.
         self.font = [UIFont boldSystemFontOfSize:16];
-        self.layer.cornerRadius = 8;
+        self.layer.cornerRadius = 6;
         self.clipsToBounds = YES;
     }
     return self;

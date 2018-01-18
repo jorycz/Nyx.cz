@@ -60,9 +60,9 @@
     
     CGRect f = self.frame;
     
-    _unreadLabel.frame = CGRectMake(3, 3, 29, f.size.height - 6);
+    _unreadLabel.frame = CGRectMake(3, 2, 29, f.size.height - 5);
     
-    _boardNameLabel.frame = CGRectMake(36, 2, f.size.width - 36, f.size.height - 4);
+    _boardNameLabel.frame = CGRectMake(36, 1, f.size.width - 36, f.size.height - 4);
     
     _separator.frame = CGRectMake(15, f.size.height - 1, f.size.width - 30, 1);
 }
