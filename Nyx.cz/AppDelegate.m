@@ -11,7 +11,6 @@
 #import "Colors.h"
 
 #import <AVFoundation/AVFoundation.h>
-#import <UserNotifications/UserNotifications.h>
 
 
 @interface AppDelegate ()
@@ -77,8 +76,14 @@
                                                                                         // Enable or disable features based on authorization.
                                                                                         if (granted) {
                                                                                             NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"GRANTED");
+                                                                                            NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @" - Registering for PUSH Notifications!");
+                                                                                            dispatch_async(dispatch_get_main_queue(), ^{
+                                                                                                [[UIApplication sharedApplication] registerForRemoteNotifications];
+                                                                                            });
                                                                                         } else {
                                                                                             NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"DENIED");
+                                                                                            NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), error.localizedRecoveryOptions);
+                                                                                            NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), error.localizedRecoverySuggestion);
                                                                                         }
                                                                                     }];
             }
@@ -131,6 +136,41 @@
     [self saveContext];
 }
 
+
+#pragma mark - PUSH NOTIFICATIONS
+
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
+{
+    // Do I need something here? Not yet.
+}
+
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
+{
+    NSLog(@"%@ - %@ : ERROR [%@]", self, NSStringFromSelector(_cmd), @"!!! ERROR REGISTERING REMOTE PUSH NOTIFICATIONS !!!");
+    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), error.localizedDescription);
+    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), error.localizedRecoveryOptions);
+    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), error.localizedRecoverySuggestion);
+}
+
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions))completionHandler
+{
+    NSLog( @"Handle push from foreground" );
+    // custom code to handle push while app is in the foreground
+    NSLog(@"%@", notification.request.content.userInfo);
+}
+
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)(void))completionHandler
+{
+    NSLog( @"Handle push from background or closed" );
+    // if you set a member variable in didReceiveRemoteNotification, you  will know if this is from closed or background
+    NSLog(@"%@", response.notification.request.content.userInfo);
+}
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
+{
+    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"REMOTE SILENT NOTIFICATION ARRIVED.");
+    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), userInfo);
+}
 
 #pragma mark - Core Data stack
 

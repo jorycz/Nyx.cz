@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
+#import <UserNotifications/UserNotifications.h>
 
 #import "UserNotification.h"
 #import "MainVC.h"
@@ -15,7 +16,7 @@
 #import "BackgroundDownloader.h"
 
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate, UNUserNotificationCenterDelegate>
 {
     UIBackgroundTaskIdentifier _backgroundTask;
 }

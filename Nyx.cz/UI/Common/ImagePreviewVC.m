@@ -35,7 +35,7 @@
 {
     [super loadView];
     self.view = [[UIView alloc] init];
-    self.view.backgroundColor = COLOR_SYSTEM_TURQUOISE_LIGHT;
+    self.view.backgroundColor = COLOR_BACKGROUND_WHITE;
 }
 
 - (void)viewDidLoad

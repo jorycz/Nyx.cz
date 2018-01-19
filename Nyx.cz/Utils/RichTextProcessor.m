@@ -132,8 +132,17 @@
             [[[u absoluteString] lowercaseString] containsString:@".jpg"] ||
             [[[u absoluteString] lowercaseString] containsString:@".png"])
         {
-            if (![a containsObject:u]) {
-                [a addObject:u];
+            if (![a containsObject:u])
+            {
+                if ([[u absoluteString] containsString:@"www.nyx.cz"] && [[u absoluteString] containsString:@"png?url=http"])
+                {
+                    // This is thumbnail of image uploaded on Nyx.cz.
+                    // There will be URL for original image so let's filter only that original image file for VIEW!
+                }
+                else
+                {
+                    [a addObject:u];
+                }
             }
         }
     }
@@ -163,6 +172,13 @@
     }
     return (NSArray *)urls;
 }
+
+- (NSArray *)deduplicateUrls:(NSArray *)urls
+{
+    NSArray *deduplicated = [[NSSet setWithArray:urls] allObjects];
+    return deduplicated;
+}
+
 
 #pragma mark - REPLACING
 

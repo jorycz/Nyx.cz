@@ -1212,7 +1212,8 @@
         // Remove strange links and detect recipient URLs if any
         RichTextProcessor *rtp = [[RichTextProcessor alloc] init];
         NSArray *httpOnlyUrls = [rtp getHttpOnlyUrls:[rtp getAllURLsFromAttributedAndSourceText:cell.bodyText withHtmlSource:cell.bodyTextSource]];
-        [self showActionSheetForURLs:httpOnlyUrls forText:cell.bodyText withSource:cell.bodyTextSource insideCell:cell];
+        NSArray *deduplicated = [rtp deduplicateUrls:httpOnlyUrls];
+        [self showActionSheetForURLs:deduplicated forText:cell.bodyText withSource:cell.bodyTextSource insideCell:cell];
     }
 }
 
@@ -1437,12 +1438,6 @@
         textField.placeholder = @"Text";
     }];
     [self.nController presentViewController:alert animated:YES completion:^{}];
-}
-
-- (void)searchForPostWithNick:(NSString *)nick andText:(NSString *)postText
-{
-    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), nick);
-    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), postText);
 }
 
 

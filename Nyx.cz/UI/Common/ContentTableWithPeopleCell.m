@@ -139,7 +139,7 @@
     self.backgroundColor = COLOR_BACKGROUND_WHITE;
     
     if (self.mailboxDirection && [self.mailboxDirection isEqualToString:@"to"]) {
-        _avatarView.alpha = .4;
+        _avatarView.alpha = .35;
     }
     if (self.mailboxMailStatus && [self.mailboxMailStatus isEqualToString:@"read"]) {
         self.backgroundColor = COLOR_MAIL_READ;

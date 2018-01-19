@@ -239,6 +239,7 @@
 		2B67360B1FBCFAEF00DA728E /* SideMenuCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SideMenuCell.m; sourceTree = "<group>"; };
 		2B70FB4F2010FA25004735EF /* UnreadLabel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UnreadLabel.h; sourceTree = "<group>"; };
 		2B70FB502010FA25004735EF /* UnreadLabel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UnreadLabel.m; sourceTree = "<group>"; };
+		2B822AB22011E8770060FABE /* Nyx.cz.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Nyx.cz.entitlements; sourceTree = "<group>"; };
 		2B8FECCC1FD8226A004CCED8 /* Colors.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Colors.h; sourceTree = "<group>"; };
 		2B8FECCD1FD8226A004CCED8 /* Colors.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Colors.m; sourceTree = "<group>"; };
 		2B8FECCF1FD848F6004CCED8 /* ImagePreviewVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImagePreviewVC.h; sourceTree = "<group>"; };
@@ -315,6 +316,7 @@
 		2B0D5D8E1FBC40F20052D63C /* Nyx.cz */ = {
 			isa = PBXGroup;
 			children = (
+				2B822AB22011E8770060FABE /* Nyx.cz.entitlements */,
 				2B38C3061FE162D60099D2FF /* Share */,
 				2B2303701FBC59C400286062 /* Images */,
 				2B317FD81FC21B8F0063B9EE /* Utils */,
@@ -628,6 +630,9 @@
 							com.apple.BackgroundModes = {
 								enabled = 1;
 							};
+							com.apple.Push = {
+								enabled = 1;
+							};
 						};
 					};
 					2B0D5DA61FBC40F30052D63C = {
@@ -933,6 +938,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Nyx.cz/Nyx.cz.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = HPAHZ9LC8R;
 				INFOPLIST_FILE = Nyx.cz/Info.plist;
@@ -948,6 +954,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Nyx.cz/Nyx.cz.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = HPAHZ9LC8R;
 				INFOPLIST_FILE = Nyx.cz/Info.plist;

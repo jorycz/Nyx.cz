@@ -83,6 +83,7 @@
 - (void)tryToLogIn
 {
 #if TARGET_OS_SIMULATOR
+    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"Running on SIMULATOR!");
     NSString *pass = [Preferences password:nil];
     if (pass && [pass length] > 0) {
         [self presentNyxScreen];
@@ -110,6 +111,7 @@
                                                handler:^(UIAlertAction * action) {
                                                    [self showHideSpinner];
 #if TARGET_OS_SIMULATOR
+                                                   NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"Running on SIMULATOR!");
                                                    // SKIP Authorization on SIMULATOR - take care to fill login and password here OK!
                                                    NSString *simulatorUser = [[alert.textFields objectAtIndex:0] text];
                                                    NSString *simulatorPassword = [[alert.textFields objectAtIndex:1] text];

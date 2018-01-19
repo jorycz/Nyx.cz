@@ -21,6 +21,7 @@
 - (NSArray *)urlsWithImagesOnly:(NSArray *)detectedUrl;
 - (NSArray *)getHttpOnlyUrls:(NSArray *)allUrls;
 - (NSArray *)getRelativeOnlyUrls:(NSArray *)allUrls;
+- (NSArray *)deduplicateUrls:(NSArray *)urls;
 
 - (NSAttributedString *)replaceRelativeNyxUrlsInsidePostWithAbsoluteUrls:(NSAttributedString *)attrText;
 
