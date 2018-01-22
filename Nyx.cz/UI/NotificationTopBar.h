@@ -20,6 +20,7 @@
 @property (nonatomic, strong) NSTimer *dismissTimer;
 
 
-- (void)showNotification;
+- (void)showNotificationWithBackgroundColor:(UIColor *)c;
+
 
 @end

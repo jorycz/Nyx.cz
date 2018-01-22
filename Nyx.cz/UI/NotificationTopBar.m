@@ -35,7 +35,6 @@
         _visible = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, _height);
         _hidden = CGRectMake(0, -_height, [UIScreen mainScreen].bounds.size.width, _height);
         
-        self.backgroundColor = COLOR_BACKGROUND_ALERT_BAR;
         self.frame = _hidden;
     }
     return self;
@@ -49,8 +48,10 @@
 
 #pragma mark - SHOW NOTIFICATION
 
-- (void)showNotification
+- (void)showNotificationWithBackgroundColor:(UIColor *)c
 {
+    self.backgroundColor = c;
+    
     [self addSubview:[self createLabel]];
     [self addSubview:[self createMessage]];
     [self addSubview:[self createCloseInfo]];
@@ -89,7 +90,7 @@
     UILabel *notificationView = [[UILabel alloc] initWithFrame:_message];
     notificationView.backgroundColor = COLOR_CLEAR;
     notificationView.textColor = COLOR_TEXT_ALERT_BAR;
-    notificationView.font = [UIFont systemFontOfSize:18];
+    notificationView.font = [UIFont systemFontOfSize:16];
     notificationView.textAlignment = NSTextAlignmentLeft;
     notificationView.adjustsFontSizeToFitWidth = YES;
     notificationView.numberOfLines = 1;

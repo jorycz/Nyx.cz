@@ -26,6 +26,7 @@ NSInteger const kHTTPRequestTimeout = 6;
 
 
 NSString* const kNotificationShowError = @"kNotificationShowError";
+NSString* const kNotificationShowInfo = @"kNotificationShowInfo";
 NSString* const kNotificationFriendsFeedChanged = @"kNotificationFriendsFeedChanged";
 NSString* const kNotificationMailboxChanged = @"kNotificationMailboxChanged";
 NSString* const kNotificationMailboxNewMessageFor = @"kNotificationMailboxNewMessageFor";

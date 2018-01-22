@@ -26,6 +26,7 @@ extern NSInteger const kHTTPRequestTimeout;
 
 
 extern NSString* const kNotificationShowError;
+extern NSString* const kNotificationShowInfo;
 extern NSString* const kNotificationFriendsFeedChanged;
 extern NSString* const kNotificationMailboxChanged;
 extern NSString* const kNotificationMailboxNewMessageFor;
@@ -151,6 +152,8 @@ extern NSString* const kApiApnsTest;
 
 // MACROS
 #define PRESENT_ERROR(s,ss) [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationShowError object:nil userInfo:@{@"title" : (s), @"error" : (ss)}];
+#define PRESENT_INFO(s,ss) [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationShowInfo object:nil userInfo:@{@"title" : (s), @"info" : (ss)}];
+
 #define NOTIFICATION_MAIN_BUTTON_PRESSED(s) [[NSNotificationCenter defaultCenter] postNotificationName:kMainButtonNotification object:nil userInfo:@{@"button" : (s)}];
 
 #define POST_NOTIFICATION_FRIENDS_FEED_CHANGED [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationFriendsFeedChanged object:nil userInfo:nil];

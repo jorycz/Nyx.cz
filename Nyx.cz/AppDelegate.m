@@ -11,6 +11,8 @@
 #import "Colors.h"
 
 #import <AVFoundation/AVFoundation.h>
+// Vibrate
+#import <AudioToolbox/AudioToolbox.h>
 
 
 @interface AppDelegate ()
@@ -104,17 +106,6 @@
     // Set background fetch interval - when set to "Minimum", it's enabled.
     [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
     
-    // HANDLE LAUNCH FROM NOTIFICATION
-    if (launchOptions != nil)
-    {
-        NSDictionary *dictionary = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
-        if (dictionary != nil)
-        {
-            NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"Launched from push notification.");
-            [self manageRemoteNotification:dictionary];
-        }
-    }
-    
     return YES;
 }
 
@@ -185,14 +176,14 @@
 {
     if(application.applicationState == UIApplicationStateInactive)
     {
-        NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @" === UIApplicationStateInactive");
+//        NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @" === UIApplicationStateInactive");
         // Do tasks.
         [self manageRemoteNotification:userInfo];
         completionHandler(UIBackgroundFetchResultNewData);
     }
     else if (application.applicationState == UIApplicationStateBackground)
     {
-        NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @" === UIApplicationStateBackground");
+//        NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @" === UIApplicationStateBackground");
         NSString* contentAvailable = [NSString stringWithFormat:@"%@", [[userInfo valueForKey:@"aps"] valueForKey:@"content-available"]];
         if([contentAvailable isEqualToString:@"1"]) {
             // Do tasks.
@@ -203,17 +194,21 @@
     }
     else
     {
-        NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @" === UIApplicationStateActive");
+//        NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @" === UIApplicationStateActive");
+//        NSLog(@"%@ - %@ : ==> NOTIFICATION DATA [%@]", self, NSStringFromSelector(_cmd), userInfo);
         // Show an in-app banner & Do task.
-        [self manageRemoteNotification:userInfo];
+        // ALSO HANDLE LAUNCH FROM NOTIFICATION
+        NSString *body = [[userInfo objectForKey:@"aps"] objectForKey:@"alert"];
+        PRESENT_INFO(@"Nová zpráva", body)
         completionHandler(UIBackgroundFetchResultNewData);
     }
 }
 
 - (void)manageRemoteNotification:(NSDictionary *)userInfo
 {
-    NSLog(@"%@ - %@ : ==> NOTIFICATION DATA [%@]", self, NSStringFromSelector(_cmd), userInfo);
+//    NSLog(@"%@ - %@ : ==> NOTIFICATION DATA [%@]", self, NSStringFromSelector(_cmd), userInfo);
 }
+
 
 #pragma mark - Core Data stack
 
