@@ -183,21 +183,19 @@
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
-    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"REMOTE SILENT NOTIFICATION ARRIVED.");
-    
     if(application.applicationState == UIApplicationStateInactive)
     {
-        NSLog(@"Inactive - the user has tapped in the notification when app was closed or in background");
-        //do some tasks
+        NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @" === UIApplicationStateInactive");
+        // Do tasks.
         [self manageRemoteNotification:userInfo];
         completionHandler(UIBackgroundFetchResultNewData);
     }
     else if (application.applicationState == UIApplicationStateBackground)
     {
-        NSLog(@"application Background - notification has arrived when app was in background");
+        NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @" === UIApplicationStateBackground");
         NSString* contentAvailable = [NSString stringWithFormat:@"%@", [[userInfo valueForKey:@"aps"] valueForKey:@"content-available"]];
         if([contentAvailable isEqualToString:@"1"]) {
-            // do tasks
+            // Do tasks.
             [self manageRemoteNotification:userInfo];
             NSLog(@"content-available is equal to 1");
             completionHandler(UIBackgroundFetchResultNewData);
@@ -205,9 +203,8 @@
     }
     else
     {
-        NSLog(@"application Active - notication has arrived while app was opened");
-        //Show an in-app banner
-        //do tasks
+        NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @" === UIApplicationStateActive");
+        // Show an in-app banner & Do task.
         [self manageRemoteNotification:userInfo];
         completionHandler(UIBackgroundFetchResultNewData);
     }
