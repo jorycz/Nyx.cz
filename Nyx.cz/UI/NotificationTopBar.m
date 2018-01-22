@@ -23,13 +23,13 @@
         
         int screenWidth = [UIScreen mainScreen].bounds.size.width;
         int horizontalPadding = 20;
-        int verticalPadding = 20;
-        int spacing = 5;
-        int titleHeight = 28;
+        int verticalPadding = 23;
+        int spacing = 0;
+        int titleHeight = 24;
         int messageHeight = 21;
         
         _title = CGRectMake(horizontalPadding, verticalPadding, screenWidth - (2 * horizontalPadding), titleHeight);
-        _message = CGRectMake(horizontalPadding, verticalPadding + titleHeight + spacing, screenWidth - (2 * horizontalPadding), messageHeight);
+        _message = CGRectMake(horizontalPadding, verticalPadding + titleHeight + spacing, screenWidth - (2 * horizontalPadding), 2 * messageHeight);
         
         _height = (2 * verticalPadding) + spacing + titleHeight + messageHeight + 5;
         _visible = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, _height);
@@ -54,7 +54,7 @@
     
     [self addSubview:[self createLabel]];
     [self addSubview:[self createMessage]];
-    [self addSubview:[self createCloseInfo]];
+//    [self addSubview:[self createCloseInfo]];
     [self addGestureRecognizer:[self tap]];
     
     [[[[UIApplication sharedApplication] delegate] window] addSubview:self];
@@ -76,7 +76,7 @@
     UILabel *notificationView = [[UILabel alloc] initWithFrame:_title];
     notificationView.backgroundColor = COLOR_CLEAR;
     notificationView.textColor = COLOR_TEXT_ALERT_BAR;
-    notificationView.font = [UIFont systemFontOfSize:24];
+    notificationView.font = [UIFont systemFontOfSize:22];
     notificationView.textAlignment = NSTextAlignmentLeft;
     notificationView.adjustsFontSizeToFitWidth = YES;
     notificationView.numberOfLines = 1;
@@ -93,7 +93,7 @@
     notificationView.font = [UIFont systemFontOfSize:16];
     notificationView.textAlignment = NSTextAlignmentLeft;
     notificationView.adjustsFontSizeToFitWidth = YES;
-    notificationView.numberOfLines = 1;
+    notificationView.numberOfLines = 2;
     notificationView.minimumScaleFactor = 0.8;
     notificationView.text = self.notificationMessage;
     return notificationView;
@@ -103,11 +103,11 @@
 {
     int width = 150;
     int viewWidth = self.frame.size.width;
-    CGRect _closeInfo = CGRectMake(viewWidth - width - 10, _height - 25, width, 20);
+    CGRect _closeInfo = CGRectMake(viewWidth - width - 10, 23, width, 20);
     UILabel *notificationView = [[UILabel alloc] initWithFrame:_closeInfo];
     notificationView.backgroundColor = COLOR_CLEAR;
     notificationView.textColor = COLOR_TEXT_ALERT_BAR;
-    notificationView.font = [UIFont systemFontOfSize:12];
+    notificationView.font = [UIFont systemFontOfSize:11];
     notificationView.textAlignment = NSTextAlignmentRight;
     notificationView.adjustsFontSizeToFitWidth = YES;
     notificationView.numberOfLines = 1;

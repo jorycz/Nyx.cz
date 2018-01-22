@@ -46,26 +46,18 @@
 {
     [Preferences setupPreferences];
     
-    self.mainScreen = [[MainVC alloc] init];
-    UINavigationController *mainNavigationController = [[UINavigationController alloc] initWithRootViewController:self.mainScreen];
-    mainNavigationController.navigationBar.tintColor = COLOR_SYSTEM_TURQUOISE;
-    
     // IN CALL STATUS BAR
     // Not needed with willChangeStatusBarFrame and didChangeStatusBarFrame methods above.
 //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(inCallBar:) name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
 //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(inCallBar:) name:UIApplicationDidChangeStatusBarFrameNotification object:nil];
-    
+
+//    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+//    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), [paths objectAtIndex:0]);
+
     // Notification Top Bar Init.
     self.userNotification = [[UserNotification alloc] init];
     
-//    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-//    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), [paths objectAtIndex:0]);
-    
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    self.window.backgroundColor = UIColorFromRGB(0xBAE0FF);
-    self.window.rootViewController = mainNavigationController;
-    [self.window makeKeyAndVisible];
-
+    // REMOTE and LOCAL NOTIFICATION RIGHTS
     [[UNUserNotificationCenter currentNotificationCenter] getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
         switch (settings.authorizationStatus) {
             case UNAuthorizationStatusNotDetermined:
@@ -77,13 +69,12 @@
                                                                                     completionHandler:^(BOOL granted, NSError * _Nullable error) {
                                                                                         // Enable or disable features based on authorization.
                                                                                         if (granted) {
-                                                                                            NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"GRANTED");
-                                                                                            NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @" - Registering for PUSH Notifications!");
+                                                                                            NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"Notifications GRANTED");
                                                                                             dispatch_async(dispatch_get_main_queue(), ^{
                                                                                                 [[UIApplication sharedApplication] registerForRemoteNotifications];
                                                                                             });
                                                                                         } else {
-                                                                                            NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"DENIED");
+                                                                                            NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"Notifications DENIED");
                                                                                             NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), error.localizedRecoveryOptions);
                                                                                             NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), error.localizedRecoverySuggestion);
                                                                                         }
@@ -103,6 +94,16 @@
         }
     }];
     
+    // UI
+    self.mainScreen = [[MainVC alloc] init];
+    UINavigationController *mainNavigationController = [[UINavigationController alloc] initWithRootViewController:self.mainScreen];
+    mainNavigationController.navigationBar.tintColor = COLOR_SYSTEM_TURQUOISE;
+    
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    self.window.backgroundColor = UIColorFromRGB(0xBAE0FF);
+    self.window.rootViewController = mainNavigationController;
+    [self.window makeKeyAndVisible];
+    
     // Set background fetch interval - when set to "Minimum", it's enabled.
     [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
     
@@ -114,23 +115,19 @@
     // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
 }
 
-
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
 }
 
-
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
 }
-
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     application.applicationIconBadgeNumber = 0;
 }
-
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
@@ -138,13 +135,13 @@
     [self saveContext];
 }
 
-#pragma mark - DEVICE TOKEN DATA TO STRING
+
+#pragma mark - PUSH NOTIFICATIONS DEVICE TOKEN
 
 - (NSString *)stringWithDeviceToken:(NSData *)deviceToken
 {
     const char *data = [deviceToken bytes];
     NSMutableString *token = [NSMutableString string];
-    
     for (NSUInteger i = 0; i < [deviceToken length]; i++) {
         [token appendFormat:@"%02.2hhX", data[i]];
     }
@@ -155,7 +152,6 @@
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
-//    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), deviceToken);
     NSString *token = [self stringWithDeviceToken:deviceToken];
     if (token && [token length] > 0)
     {
@@ -174,39 +170,34 @@
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
+//    NSLog(@"%@ - %@ : ==> NOTIFICATION DATA [%@]", self, NSStringFromSelector(_cmd), userInfo);
+    
     if(application.applicationState == UIApplicationStateInactive)
     {
 //        NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @" === UIApplicationStateInactive");
-        // Do tasks.
-        [self manageRemoteNotification:userInfo];
-        completionHandler(UIBackgroundFetchResultNewData);
+        [self showNotificationAppBanner:userInfo];
     }
     else if (application.applicationState == UIApplicationStateBackground)
     {
 //        NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @" === UIApplicationStateBackground");
         NSString* contentAvailable = [NSString stringWithFormat:@"%@", [[userInfo valueForKey:@"aps"] valueForKey:@"content-available"]];
-        if([contentAvailable isEqualToString:@"1"]) {
-            // Do tasks.
-            [self manageRemoteNotification:userInfo];
-            NSLog(@"content-available is equal to 1");
-            completionHandler(UIBackgroundFetchResultNewData);
+        if([contentAvailable isEqualToString:@"1"])
+        {
+            // 30s to download something, do something ...
         }
     }
     else
     {
 //        NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @" === UIApplicationStateActive");
-//        NSLog(@"%@ - %@ : ==> NOTIFICATION DATA [%@]", self, NSStringFromSelector(_cmd), userInfo);
-        // Show an in-app banner & Do task.
-        // ALSO HANDLE LAUNCH FROM NOTIFICATION
-        NSString *body = [[userInfo objectForKey:@"aps"] objectForKey:@"alert"];
-        PRESENT_INFO(@"Nová zpráva", body)
-        completionHandler(UIBackgroundFetchResultNewData);
+        [self showNotificationAppBanner:userInfo];
     }
+    completionHandler(UIBackgroundFetchResultNewData);
 }
 
-- (void)manageRemoteNotification:(NSDictionary *)userInfo
+- (void)showNotificationAppBanner:(NSDictionary *)userInfo
 {
-//    NSLog(@"%@ - %@ : ==> NOTIFICATION DATA [%@]", self, NSStringFromSelector(_cmd), userInfo);
+    NSString *body = [[userInfo objectForKey:@"aps"] objectForKey:@"alert"];
+    PRESENT_INFO(@"Nová zpráva", body)
 }
 
 
@@ -277,13 +268,10 @@
 {
     switch (application.applicationState) {
         case UIApplicationStateActive:
-            NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"ACTIVE");
             break;
         case UIApplicationStateInactive:
-            NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"INACTIVE");
             break;
         case UIApplicationStateBackground:
-            NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"BACKGROUND");
             break;
         default:
             break;
@@ -294,6 +282,8 @@
     dateFormatter.timeStyle = NSDateFormatterShortStyle;
     NSString *dateStr = [dateFormatter stringFromDate:[NSDate date]];
     [Preferences actualDateOfBackgroundRefresh:dateStr];
+    
+    // TODO - NOT USED with PUSH notifications. Use for cache maintenance in future.
     
 //    [[UNUserNotificationCenter currentNotificationCenter] getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
 //

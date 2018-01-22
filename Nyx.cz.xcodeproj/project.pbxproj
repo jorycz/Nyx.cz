@@ -116,6 +116,19 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		2B8B7F812016545900A000C6 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		2B0D5D8C1FBC40F20052D63C /* Nyx.cz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Nyx.cz.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2B0D5D8F1FBC40F20052D63C /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -568,6 +581,7 @@
 				2B0D5D881FBC40F20052D63C /* Sources */,
 				2B0D5D891FBC40F20052D63C /* Frameworks */,
 				2B0D5D8A1FBC40F20052D63C /* Resources */,
+				2B8B7F812016545900A000C6 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);

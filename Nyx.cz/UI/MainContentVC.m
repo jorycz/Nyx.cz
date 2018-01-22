@@ -60,7 +60,7 @@
 - (void)adjustFrameForCurrentStatusBar
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-//        CGFloat navigationBarHeight = self.nController.navigationBar.frame.size.height;
+//        CGFloat navigationBarHeight = self.nc.navigationBar.frame.size.height;
 //        CGFloat statusBarHeigh = [UIApplication sharedApplication].statusBarFrame.size.height;
 //        NSLog(@"- navigation bar height %li - status bar height %li - ", (long)navigationBarHeight, (long)statusBarHeigh);
         CGRect f = self.view.bounds;
