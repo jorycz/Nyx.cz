@@ -71,6 +71,11 @@ NSString* const kApiIdentificationDataForSearchDiscussion = @"kApiIdentification
 NSString* const kApiIdentificationDataForSearchDiscussionOlder = @"kApiIdentificationDataForSearchDiscussionOlder";
 NSString* const kApiIdentificationDataForBookmarks = @"kApiIdentificationDataForBookmarks";
 NSString* const kApiIdentificationDataForHistory = @"kApiIdentificationDataForHistory";
+NSString* const kApiIdentificationDataForLogin = @"kApiIdentificationDataForLogin";
+NSString* const kApiIdentificationDataForApnsRegistration = @"kApiIdentificationDataForApnsRegistration";
+
+
+NSString* const kApnsClientNameDev = @"alias-dev";
 
 
 // API
@@ -137,6 +142,11 @@ NSString* const kMainButtonNotification = @"kMainButtonNotification";
 NSString* const kMainButtonLogout = @"kMainButtonLogout";
 NSString* const kMainButtonContact = @"kMainButtonContact";
 NSString* const kMainButtonSettings = @"kMainButtonSettings";
+
+// APNS
+NSString* const kApiApns = @"apns";
+NSString* const kApiApnsRegister = @"register";
+NSString* const kApiApnsTest = @"test";
 
 
 

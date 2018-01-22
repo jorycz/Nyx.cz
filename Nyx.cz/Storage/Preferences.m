@@ -217,6 +217,30 @@
     }
 }
 
++ (NSString *)apnsDeviceToken:(NSString *)value
+{
+    NSString *key = @"_APNSDEVICETOKEN";
+    if (value) {
+        [[NSUserDefaults standardUserDefaults] setObject:value forKey:key];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        return nil;
+    } else {
+        return [[NSUserDefaults standardUserDefaults] objectForKey:key];
+    }
+}
+
++ (NSString *)apnsRegistrationStatus:(NSString *)value
+{
+    NSString *key = @"_APNSREGSTATUS";
+    if (value) {
+        [[NSUserDefaults standardUserDefaults] setObject:value forKey:key];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        return nil;
+    } else {
+        return [[NSUserDefaults standardUserDefaults] objectForKey:key];
+    }
+}
+
 
 @end
 

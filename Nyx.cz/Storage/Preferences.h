@@ -42,6 +42,9 @@
 + (CGFloat)statusBarHeigh:(CGFloat)value;
 // Save / Load time of background refresh
 + (NSString *)actualDateOfBackgroundRefresh:(NSString *)value;
+// Save / Load TOKEN for PUSH APNS notifications
++ (NSString *)apnsDeviceToken:(NSString *)value;
++ (NSString *)apnsRegistrationStatus:(NSString *)value;
 
 
 @end

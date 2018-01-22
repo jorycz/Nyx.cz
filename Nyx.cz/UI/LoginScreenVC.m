@@ -144,6 +144,7 @@
         return;
     }
     self.sc = [[ServerConnector alloc] init];
+    self.sc.identifitaion = kApiIdentificationDataForLogin;
     self.sc.delegate = self;
     NSString *api = [ApiBuilder apiAuthorizeForUser:auth_user];
     [self.sc downloadDataForApiRequest:api];
@@ -160,35 +161,53 @@
         JSONParser *jp = [[JSONParser alloc] initWithData:data];
         if (!jp.jsonDictionary)
         {
+            [self presentErrorWithTitle:@"Chyba při parsování" andMessage:jp.jsonErrorString];
             NSLog(@"%@ - %@ : ERROR [%@]", self, NSStringFromSelector(_cmd), jp.jsonErrorString);
             NSLog(@"%@ - %@ : ERROR [%@]", self, NSStringFromSelector(_cmd), jp.jsonErrorDataString);
-            [self presentErrorWithTitle:@"Chyba při parsování" andMessage:jp.jsonErrorString];
         }
         else
         {
 //            NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), jp.jsonDictionary);
-            if ([[jp.jsonDictionary objectForKey:@"result"] isEqualToString:@"error"])
+            
+            if ([identification isEqualToString:kApiIdentificationDataForLogin])
             {
-                if ([[jp.jsonDictionary objectForKey:@"code"] isEqualToString:@"401"]) {
-                    // App is not authorized.
-                    if ([[jp.jsonDictionary objectForKey:@"auth_state"] isEqualToString:@"AUTH_EXISTING"]) {
-                        // Tell user that they need to cancel authorization on web.
-                        [self authorizationExistCancelExistingFirst];
+                if ([[jp.jsonDictionary objectForKey:@"result"] isEqualToString:@"error"])
+                {
+                    if ([[jp.jsonDictionary objectForKey:@"code"] isEqualToString:@"401"]) {
+                        // App is not authorized.
+                        if ([[jp.jsonDictionary objectForKey:@"auth_state"] isEqualToString:@"AUTH_EXISTING"]) {
+                            // Tell user that they need to cancel authorization on web.
+                            [self authorizationExistCancelExistingFirst];
+                        } else {
+                            [Preferences auth_token:[jp.jsonDictionary objectForKey:@"auth_token"]];
+                            [_auth_code setString:[jp.jsonDictionary objectForKey:@"auth_code"]];
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [self showActivationOrChangeNickAlert];
+                            });
+                        }
                     } else {
-                        [Preferences auth_token:[jp.jsonDictionary objectForKey:@"auth_token"]];
-                        [_auth_code setString:[jp.jsonDictionary objectForKey:@"auth_code"]];
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [self showActivationOrChangeNickAlert];
-                        });
+                        [self presentErrorWithTitle:@"Chyba ze serveru:" andMessage:[jp.jsonDictionary objectForKey:@"error"]];
                     }
-                } else {
-                    [self presentErrorWithTitle:@"Chyba ze serveru:" andMessage:[jp.jsonDictionary objectForKey:@"error"]];
+                }
+                else
+                {
+                    //                NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), jp.jsonDictionary);
+                    [self presentNyxScreen];
                 }
             }
-            else
+            
+            if ([identification isEqualToString:kApiIdentificationDataForApnsRegistration])
             {
+//                NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @" --- NYX REGISTRATION DATA --- ");
 //                NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), jp.jsonDictionary);
-                [self presentNyxScreen];
+                if ([[jp.jsonDictionary objectForKey:@"result"] isEqualToString:@"ok"])
+                {
+                    NSString *status = [NSString stringWithFormat:@"ok_%@", [[jp.jsonDictionary objectForKey:@"system"] objectForKey:@"apns_token_md5_substr10"]];
+                    [Preferences apnsRegistrationStatus:status];
+                } else {
+                    NSLog(@"%@ - %@ : ERROR [%@]", self, NSStringFromSelector(_cmd), @"Can't PARSE MD5 from JSON response (system/apns_token_md5_substr10 fields)!");
+                }
+//                NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @" --- NYX REGISTRATION DATA --- ");
             }
         }
     }
@@ -275,6 +294,25 @@
 
 - (void)presentNyxScreen
 {
+    NSString *dToken = [Preferences apnsDeviceToken:nil];
+    if (dToken && [dToken length] > 0)
+    {
+        NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"APNS Token already exist.");
+        if ([Preferences apnsRegistrationStatus:nil] && [[Preferences apnsRegistrationStatus:nil] length] > 0)
+        {
+            NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"APNS Registration already exist.");
+        } else {
+            NSString *api = [ApiBuilder apiApnsRegisterWithClientName:kApnsClientNameDev andDeviceToken:dToken];
+//            NSLog(@"%@ - %@ : APNS REGISTER [%@]", self, NSStringFromSelector(_cmd), api);
+            ServerConnector *sc = [[ServerConnector alloc] init];
+            sc.identifitaion = kApiIdentificationDataForApnsRegistration;
+            sc.delegate = self;
+            [sc downloadDataForApiRequest:api];
+        }
+    } else {
+        NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"APNS Device Token NOT exist!");
+    }
+    
     dispatch_async(dispatch_get_main_queue(), ^{
         self.userIsLoggedIn = YES;
         [self showHideSpinner];

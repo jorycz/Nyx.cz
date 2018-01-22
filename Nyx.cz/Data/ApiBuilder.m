@@ -247,6 +247,12 @@
     return [NSString stringWithFormat:@"%@&id=%@&filter_user=%@&filter_text=%@&id_wu=%@&direction=older", [self defaultApiRequestWithL:kApiDiscussion andL2:kApiDiscussionMessages], dId, nick, text, fromWuId];
 }
 
+#pragma mark - APNS
+
++ (NSString *)apiApnsRegisterWithClientName:(NSString *)clientName andDeviceToken:(NSString *)token
+{
+    return [NSString stringWithFormat:@"%@&apns_token=%@&client=%@", [self defaultApiRequestWithL:kApiApns andL2:kApiApnsRegister], token, clientName];
+}
 
 #pragma mark - UTIL
 

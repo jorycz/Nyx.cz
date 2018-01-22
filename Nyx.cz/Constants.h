@@ -71,6 +71,10 @@ extern NSString* const kApiIdentificationDataForSearchDiscussion;
 extern NSString* const kApiIdentificationDataForSearchDiscussionOlder;
 extern NSString* const kApiIdentificationDataForBookmarks;
 extern NSString* const kApiIdentificationDataForHistory;
+extern NSString* const kApiIdentificationDataForLogin;
+extern NSString* const kApiIdentificationDataForApnsRegistration;
+
+extern NSString* const kApnsClientNameDev;
 
 
 // API
@@ -138,6 +142,11 @@ extern NSString* const kMainButtonNotification;
 extern NSString* const kMainButtonLogout;
 extern NSString* const kMainButtonContact;
 extern NSString* const kMainButtonSettings;
+
+// APNS
+extern NSString* const kApiApns;
+extern NSString* const kApiApnsRegister;
+extern NSString* const kApiApnsTest;
 
 
 // MACROS

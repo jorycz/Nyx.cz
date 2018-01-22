@@ -104,6 +104,17 @@
     // Set background fetch interval - when set to "Minimum", it's enabled.
     [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
     
+    // HANDLE LAUNCH FROM NOTIFICATION
+    if (launchOptions != nil)
+    {
+        NSDictionary *dictionary = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
+        if (dictionary != nil)
+        {
+            NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"Launched from push notification.");
+            [self manageRemoteNotification:dictionary];
+        }
+    }
+    
     return YES;
 }
 
@@ -136,40 +147,75 @@
     [self saveContext];
 }
 
+#pragma mark - DEVICE TOKEN DATA TO STRING
+
+- (NSString *)stringWithDeviceToken:(NSData *)deviceToken
+{
+    const char *data = [deviceToken bytes];
+    NSMutableString *token = [NSMutableString string];
+    
+    for (NSUInteger i = 0; i < [deviceToken length]; i++) {
+        [token appendFormat:@"%02.2hhX", data[i]];
+    }
+    return [token copy];
+}
 
 #pragma mark - PUSH NOTIFICATIONS
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
-    // Do I need something here? Not yet.
+//    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), deviceToken);
+    NSString *token = [self stringWithDeviceToken:deviceToken];
+    if (token && [token length] > 0)
+    {
+//        NSLog(@"%@ - %@ : APNS DEVICE TOKEN [%@]", self, NSStringFromSelector(_cmd), token);
+        [Preferences apnsDeviceToken:token];
+    }
 }
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
 {
-    NSLog(@"%@ - %@ : ERROR [%@]", self, NSStringFromSelector(_cmd), @"!!! ERROR REGISTERING REMOTE PUSH NOTIFICATIONS !!!");
-    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), error.localizedDescription);
-    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), error.localizedRecoveryOptions);
-    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), error.localizedRecoverySuggestion);
-}
-
-- (void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions))completionHandler
-{
-    NSLog( @"Handle push from foreground" );
-    // custom code to handle push while app is in the foreground
-    NSLog(@"%@", notification.request.content.userInfo);
-}
-
-- (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)(void))completionHandler
-{
-    NSLog( @"Handle push from background or closed" );
-    // if you set a member variable in didReceiveRemoteNotification, you  will know if this is from closed or background
-    NSLog(@"%@", response.notification.request.content.userInfo);
+    NSLog(@"%@ - %@ : ERROR [%@]", self, NSStringFromSelector(_cmd), @"!!! ERROR REGISTERING REMOTE PUSH NOTIFICATIONS - NO TOKEN !!!");
+    NSLog(@"%@ - %@ : ERROR [%@]", self, NSStringFromSelector(_cmd), error.localizedDescription);
+    NSLog(@"%@ - %@ : ERROR [%@]", self, NSStringFromSelector(_cmd), error.localizedRecoveryOptions);
+    NSLog(@"%@ - %@ : ERROR [%@]", self, NSStringFromSelector(_cmd), error.localizedRecoverySuggestion);
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
     NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"REMOTE SILENT NOTIFICATION ARRIVED.");
-    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), userInfo);
+    
+    if(application.applicationState == UIApplicationStateInactive)
+    {
+        NSLog(@"Inactive - the user has tapped in the notification when app was closed or in background");
+        //do some tasks
+        [self manageRemoteNotification:userInfo];
+        completionHandler(UIBackgroundFetchResultNewData);
+    }
+    else if (application.applicationState == UIApplicationStateBackground)
+    {
+        NSLog(@"application Background - notification has arrived when app was in background");
+        NSString* contentAvailable = [NSString stringWithFormat:@"%@", [[userInfo valueForKey:@"aps"] valueForKey:@"content-available"]];
+        if([contentAvailable isEqualToString:@"1"]) {
+            // do tasks
+            [self manageRemoteNotification:userInfo];
+            NSLog(@"content-available is equal to 1");
+            completionHandler(UIBackgroundFetchResultNewData);
+        }
+    }
+    else
+    {
+        NSLog(@"application Active - notication has arrived while app was opened");
+        //Show an in-app banner
+        //do tasks
+        [self manageRemoteNotification:userInfo];
+        completionHandler(UIBackgroundFetchResultNewData);
+    }
+}
+
+- (void)manageRemoteNotification:(NSDictionary *)userInfo
+{
+    NSLog(@"%@ - %@ : ==> NOTIFICATION DATA [%@]", self, NSStringFromSelector(_cmd), userInfo);
 }
 
 #pragma mark - Core Data stack
@@ -257,23 +303,23 @@
     NSString *dateStr = [dateFormatter stringFromDate:[NSDate date]];
     [Preferences actualDateOfBackgroundRefresh:dateStr];
     
-    [[UNUserNotificationCenter currentNotificationCenter] getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
-        
-        switch (settings.authorizationStatus) {
-            case UNAuthorizationStatusAuthorized:
-            {
-                dispatch_sync(dispatch_get_main_queue(), ^{
-                    self.bgd = [[BackgroundDownloader alloc] init];
-                    [self.bgd getNewData];
-                });
-                completionHandler(UIBackgroundFetchResultNewData);
-            }
-                break;
-            default:
-                completionHandler(UIBackgroundFetchResultNoData);
-                break;
-        }
-    }];
+//    [[UNUserNotificationCenter currentNotificationCenter] getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
+//
+//        switch (settings.authorizationStatus) {
+//            case UNAuthorizationStatusAuthorized:
+//            {
+//                dispatch_sync(dispatch_get_main_queue(), ^{
+//                    self.bgd = [[BackgroundDownloader alloc] init];
+//                    [self.bgd getNewData];
+//                });
+//                completionHandler(UIBackgroundFetchResultNewData);
+//            }
+//                break;
+//            default:
+//                completionHandler(UIBackgroundFetchResultNoData);
+//                break;
+//        }
+//    }];
 }
 
 

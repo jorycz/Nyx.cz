@@ -55,6 +55,9 @@
 + (NSString *)apiSearchDiscussionFor:(NSString *)nick andText:(NSString *)text discussionId:(NSString *)dId;
 + (NSString *)apiSearchDiscussionFor:(NSString *)nick andText:(NSString *)text discussionId:(NSString *)dId fromWuId:(NSString *)fromWuId;
 
++ (NSString *)apiApnsRegisterWithClientName:(NSString *)clientName andDeviceToken:(NSString *)token;
+
+
 + (NSString *)apiUtilMakeInactive;
 + (NSString *)apiUtilRemoveAuthorization;
 
