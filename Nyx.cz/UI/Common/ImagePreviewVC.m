@@ -21,7 +21,7 @@
 {
     self = [super init];
     if (self) {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(adjustFrameForCurrentStatusBar) name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statusBarChanged) name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
     }
     return self;
 }
@@ -82,14 +82,6 @@
     [self adjustFrameForCurrentStatusBar];
 }
 
-- (void)adjustFrameForCurrentStatusBar
-{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        CGRect f = self.view.bounds;
-        self.pageController.view.frame = CGRectMake(0, kNavigationBarHeight + kStatusBarStandardHeight, f.size.width, f.size.height - (kNavigationBarHeight + kStatusBarStandardHeight));
-    });
-}
-
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -98,6 +90,27 @@
 - (void)dismiss
 {
     [self dismissViewControllerAnimated:YES completion:^{}];
+}
+
+#pragma mark - STATUS BAR HEIGHT - IN CALL
+
+- (void)adjustFrameForCurrentStatusBar
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        _mainScreen = self.view.bounds;
+        CGFloat navigationBarHeight = self.nc.navigationBar.frame.size.height;
+        CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
+        self.pageController.view.frame = CGRectMake(0, navigationBarHeight + statusBarHeight, _mainScreen.size.width, _mainScreen.size.height - (navigationBarHeight + statusBarHeight));
+    });
+}
+
+- (void)statusBarChanged
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        CGFloat navigationBarHeight = self.nc.navigationBar.frame.size.height;
+        CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
+        self.pageController.view.frame = CGRectMake(0, self.pageController.view.frame.origin.y, self.pageController.view.frame.size.width, self.pageController.view.frame.size.height - (navigationBarHeight + statusBarHeight));
+    });
 }
 
 #pragma mark - PAGEVIEW CONTROLLER

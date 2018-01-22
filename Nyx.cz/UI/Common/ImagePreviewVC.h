@@ -13,12 +13,15 @@
 @interface ImagePreviewVC : UIViewController <UIPageViewControllerDataSource>
 {
     NSInteger _imagesCount;
+    CGRect _mainScreen;
 }
 
 
 @property (strong, nonatomic) UIPageViewController *pageController;
 //@property (nonatomic, strong) NSArray *images;
 @property (nonatomic, strong) NSArray *imageUrls;
+
+@property (nonatomic , strong) UINavigationController *nc;
 
 
 @end

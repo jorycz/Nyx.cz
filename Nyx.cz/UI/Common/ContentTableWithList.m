@@ -168,7 +168,6 @@
     
     NSDictionary *userPostData = [[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
 //    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), userPostData);
-    
     self.nestedPeopleTable.title = [userPostData objectForKey:@"jmeno"];
     
     if ([userPostData objectForKey:@"id_klub"]) {

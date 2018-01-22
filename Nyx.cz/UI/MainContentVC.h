@@ -16,6 +16,7 @@
 @interface MainContentVC : UIViewController
 {
     CGFloat _widthForTableCellBodyTextView;
+    CGRect _mainScreen;
 }
 
 

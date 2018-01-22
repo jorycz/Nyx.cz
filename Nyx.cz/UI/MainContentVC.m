@@ -28,7 +28,7 @@
     if (self)
     {
         self.menuKey = [[NSMutableString alloc] init];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(adjustFrameForCurrentStatusBar) name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statusBarChanged) name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(composeNewMessageFor:) name:kNotificationMailboxNewMessageFor object:nil];
     }
@@ -60,12 +60,21 @@
 - (void)adjustFrameForCurrentStatusBar
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-//        CGFloat navigationBarHeight = self.nc.navigationBar.frame.size.height;
-//        CGFloat statusBarHeigh = [UIApplication sharedApplication].statusBarFrame.size.height;
-//        NSLog(@"- navigation bar height %li - status bar height %li - ", (long)navigationBarHeight, (long)statusBarHeigh);
-        CGRect f = self.view.bounds;
-        self.peopleTable.view.frame = CGRectMake(0, kNavigationBarHeight + kStatusBarStandardHeight, f.size.width, f.size.height - (kNavigationBarHeight + [Preferences statusBarHeigh:0]));
-        self.listTable.view.frame = CGRectMake(0, kNavigationBarHeight + kStatusBarStandardHeight, f.size.width, f.size.height - (kNavigationBarHeight + [Preferences statusBarHeigh:0]));
+        _mainScreen = self.view.bounds;
+        CGFloat navigationBarHeight = self.nc.navigationBar.frame.size.height;
+        CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
+        self.peopleTable.view.frame = CGRectMake(0, navigationBarHeight + statusBarHeight, _mainScreen.size.width, _mainScreen.size.height - (navigationBarHeight + statusBarHeight));
+        self.listTable.view.frame = CGRectMake(0, navigationBarHeight + statusBarHeight, _mainScreen.size.width, _mainScreen.size.height - (navigationBarHeight + statusBarHeight));
+    });
+}
+
+- (void)statusBarChanged
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        CGFloat navigationBarHeight = self.nc.navigationBar.frame.size.height;
+        CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
+        self.peopleTable.view.frame = CGRectMake(0, self.peopleTable.view.frame.origin.y, self.peopleTable.view.frame.size.width, _mainScreen.size.height - (navigationBarHeight + statusBarHeight));
+        self.listTable.view.frame = CGRectMake(0, self.listTable.view.frame.origin.y, self.listTable.view.frame.size.width, _mainScreen.size.height - (navigationBarHeight + statusBarHeight));
     });
 }
 

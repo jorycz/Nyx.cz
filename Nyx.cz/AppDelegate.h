@@ -27,6 +27,7 @@
 @property (nonatomic, strong) MainVC *mainScreen;
 @property (nonatomic, strong) MemCache *memoryCache;
 @property (nonatomic, strong) BackgroundDownloader *bgd;
+@property (nonatomic, strong) UINavigationController *mainNavigationController;
 
 @property (readonly, strong) NSPersistentContainer *persistentContainer;
 

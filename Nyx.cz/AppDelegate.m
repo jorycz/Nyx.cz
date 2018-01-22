@@ -21,18 +21,13 @@
 
 @implementation AppDelegate
 
-#pragma mark - IN CALL STATUS BAR
-
-//- (void)inCallBar:(NSNotification *)notification
-//{
-//}
+#pragma mark - STATUS BAR HEIGHT CHANGE
 
 - (void)application:(UIApplication *)application willChangeStatusBarFrame:(CGRect)newStatusBarFrame
 {
 //    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), NSStringFromCGRect(newStatusBarFrame));
-    NSLog(@"%@ - %@ : StatusBar height will change to [%li]", self, NSStringFromSelector(_cmd), (long)newStatusBarFrame.size.height);
-    CGFloat c = newStatusBarFrame.size.height;
-    [Preferences statusBarHeigh:c];
+//    NSLog(@"%@ - %@ : StatusBar height will change to [%li]", self, NSStringFromSelector(_cmd), (long)newStatusBarFrame.size.height);
+//    CGFloat newHeight = newStatusBarFrame.size.height;
 }
 
 //- (void)application:(UIApplication *)application didChangeStatusBarFrame:(CGRect)oldStatusBarFrame
@@ -46,11 +41,6 @@
 {
     [Preferences setupPreferences];
     
-    // IN CALL STATUS BAR
-    // Not needed with willChangeStatusBarFrame and didChangeStatusBarFrame methods above.
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(inCallBar:) name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(inCallBar:) name:UIApplicationDidChangeStatusBarFrameNotification object:nil];
-
 //    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
 //    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), [paths objectAtIndex:0]);
 
@@ -94,14 +84,16 @@
         }
     }];
     
+//    NSLog(@"%@ - %@ : launchOptions [%@]", self, NSStringFromSelector(_cmd), launchOptions);
+    
     // UI
     self.mainScreen = [[MainVC alloc] init];
-    UINavigationController *mainNavigationController = [[UINavigationController alloc] initWithRootViewController:self.mainScreen];
-    mainNavigationController.navigationBar.tintColor = COLOR_SYSTEM_TURQUOISE;
+    self.mainNavigationController = [[UINavigationController alloc] initWithRootViewController:self.mainScreen];
+    self.mainNavigationController.navigationBar.tintColor = COLOR_SYSTEM_TURQUOISE;
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = UIColorFromRGB(0xBAE0FF);
-    self.window.rootViewController = mainNavigationController;
+    self.window.rootViewController = self.mainNavigationController;
     [self.window makeKeyAndVisible];
     
     // Set background fetch interval - when set to "Minimum", it's enabled.
@@ -174,8 +166,9 @@
     
     if(application.applicationState == UIApplicationStateInactive)
     {
+        // User tapped notification (or notification arrived in call situation...).
 //        NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @" === UIApplicationStateInactive");
-        [self showNotificationAppBanner:userInfo];
+//        [self showBoardWithResponse:userInfo];
     }
     else if (application.applicationState == UIApplicationStateBackground)
     {
@@ -198,6 +191,22 @@
 {
     NSString *body = [[userInfo objectForKey:@"aps"] objectForKey:@"alert"];
     PRESENT_INFO(@"Nová zpráva", body)
+}
+
+- (void)showBoardWithResponse:(NSDictionary *)userInfo
+{
+    ContentTableWithPeople *content = [[ContentTableWithPeople alloc] initWithRowHeight:70];
+    content.nController = self.mainNavigationController;
+    content.allowsSelection = YES;
+    content.canEditFirstRow = YES;
+    content.widthForTableCellBodyTextView = [[[UIApplication sharedApplication] delegate] window].rootViewController.view.frame.size.width - kWidthForTableCellBodyTextViewSubstract;
+    content.peopleTableMode = kPeopleTableModeDiscussion;
+    
+    //    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), userPostData);
+//    self.nestedPeopleTable.title = [userPostData objectForKey:@"jmeno"];
+    
+    [self.mainNavigationController pushViewController:content animated:YES];
+    [content getDataForDiscussion:[userInfo objectForKey:@"topic"] loadMoreToShowAllUnreadFromId:@""];
 }
 
 
