@@ -24,7 +24,7 @@
     CGFloat _alphaMenuIncrement;
     BOOL _firstShow, _gettingNewNotifications;
     
-    NSString *_identificationDataRefresh, *_identificationRemoveAuth, *_identificationLogout;
+    NSString *_identificationDataRefresh, *_identificationRemoveAuth;
 }
 
 @property (nonatomic, strong) LoginScreenVC *loginScreen;

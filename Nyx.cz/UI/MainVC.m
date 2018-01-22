@@ -31,7 +31,6 @@
         
         _identificationDataRefresh = @"dataRefresh";
         _identificationRemoveAuth = @"removeAuth";
-        _identificationLogout = @"loGout";
     }
     return self;
 }
@@ -227,8 +226,8 @@
 
 - (void)mainButtonPressedLogout
 {
-    NSString *m = @"Zrušení autorizace odstraní z nyxu autorizační token a bude nutné zadat nový a aplikaci znovu autorizovat jako při prvním spuštění aplikace!\n\nOdhlášení pouze zneaktivní nyní přihlášenou session.";
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Zrušit autorizaci nebo odhlásit"
+    NSString *m = @"Zrušení autorizace odstraní z nyxu autorizační token a bude nutné zadat nový a aplikaci znovu autorizovat jako při prvním spuštění aplikace!";
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Zrušit autorizaci?"
                                                                    message:m
                                                             preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *remove = [UIAlertAction actionWithTitle:@"Zrušit autorizaci"
@@ -241,20 +240,9 @@
         [sc downloadDataForApiRequest:api];
         [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     }];
-    UIAlertAction *logout = [UIAlertAction actionWithTitle:@"Odhlásit"
-                                                     style:UIAlertActionStyleDefault
-                                                   handler:^(UIAlertAction * action) {
-        NSString *api = [ApiBuilder apiUtilMakeInactive];
-        ServerConnector *sc = [[ServerConnector alloc] init];
-        sc.identifitaion = _identificationLogout;
-        sc.delegate = self;
-        [sc downloadDataForApiRequest:api];
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-    }];
     UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Zrušit" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
     }];
     [alert addAction:remove];
-    [alert addAction:logout];
     [alert addAction:cancel];
     [self presentViewController:alert animated:YES completion:^{}];
 }
@@ -284,12 +272,6 @@
     [self presentViewController:self.loginScreen animated:YES completion:^{}];
 }
 
-#pragma mark - LOGOUT
-
-- (void)logoutDone
-{
-    PRESENT_ERROR(@"Odhlášení úspěšné", @"Aktivita tě zpět přihlásí.")
-}
 
 #pragma mark - NYX NOTIFICATIONS CHECK
 
@@ -339,11 +321,6 @@
                 if ([identification isEqualToString:_identificationRemoveAuth]) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [self authorizationRemoved];
-                    });
-                }
-                if ([identification isEqualToString:_identificationLogout]) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [self logoutDone];
                     });
                 }
             }
