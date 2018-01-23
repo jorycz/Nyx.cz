@@ -73,8 +73,8 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         CGFloat navigationBarHeight = self.nc.navigationBar.frame.size.height;
         CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
-        self.peopleTable.view.frame = CGRectMake(0, self.peopleTable.view.frame.origin.y, self.peopleTable.view.frame.size.width, _mainScreen.size.height - (navigationBarHeight + statusBarHeight));
-        self.listTable.view.frame = CGRectMake(0, self.listTable.view.frame.origin.y, self.listTable.view.frame.size.width, _mainScreen.size.height - (navigationBarHeight + statusBarHeight));
+        self.peopleTable.view.frame = CGRectMake(0, self.peopleTable.view.frame.origin.y, _mainScreen.size.width, _mainScreen.size.height - (navigationBarHeight + statusBarHeight));
+        self.listTable.view.frame = CGRectMake(0, self.listTable.view.frame.origin.y, _mainScreen.size.width, _mainScreen.size.height - (navigationBarHeight + statusBarHeight));
     });
 }
 
