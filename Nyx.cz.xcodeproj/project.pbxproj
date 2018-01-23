@@ -85,6 +85,8 @@
 		2B8FECCE1FD8226A004CCED8 /* Colors.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B8FECCD1FD8226A004CCED8 /* Colors.m */; };
 		2B8FECD11FD848F6004CCED8 /* ImagePreviewVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B8FECD01FD848F6004CCED8 /* ImagePreviewVC.m */; };
 		2B8FECD41FD8495A004CCED8 /* ImageVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B8FECD31FD8495A004CCED8 /* ImageVC.m */; };
+		2BA80E9820172D2700DD9ED2 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2BA80E9620172D2500DD9ED2 /* Fabric.framework */; };
+		2BA80E9920172D2700DD9ED2 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2BA80E9720172D2600DD9ED2 /* Crashlytics.framework */; };
 		2BC82C88200CF05800FFB3BC /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 2BC82C87200CF05800FFB3BC /* Settings.bundle */; };
 		2BD251C21FC0CBFB00BE6272 /* CloseCoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BD251C11FC0CBFB00BE6272 /* CloseCoverView.m */; };
 		2BD251C51FC0D28600BE6272 /* MainContentVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BD251C41FC0D28600BE6272 /* MainContentVC.m */; };
@@ -259,6 +261,8 @@
 		2B8FECD01FD848F6004CCED8 /* ImagePreviewVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ImagePreviewVC.m; sourceTree = "<group>"; };
 		2B8FECD21FD8495A004CCED8 /* ImageVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImageVC.h; sourceTree = "<group>"; };
 		2B8FECD31FD8495A004CCED8 /* ImageVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ImageVC.m; sourceTree = "<group>"; };
+		2BA80E9620172D2500DD9ED2 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = SOURCE_ROOT; };
+		2BA80E9720172D2600DD9ED2 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = SOURCE_ROOT; };
 		2BC82C87200CF05800FFB3BC /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		2BD251C01FC0CBFB00BE6272 /* CloseCoverView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CloseCoverView.h; sourceTree = "<group>"; };
 		2BD251C11FC0CBFB00BE6272 /* CloseCoverView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CloseCoverView.m; sourceTree = "<group>"; };
@@ -285,6 +289,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2BA80E9920172D2700DD9ED2 /* Crashlytics.framework in Frameworks */,
+				2BA80E9820172D2700DD9ED2 /* Fabric.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -329,6 +335,8 @@
 		2B0D5D8E1FBC40F20052D63C /* Nyx.cz */ = {
 			isa = PBXGroup;
 			children = (
+				2BA80E9720172D2600DD9ED2 /* Crashlytics.framework */,
+				2BA80E9620172D2500DD9ED2 /* Fabric.framework */,
 				2B822AB22011E8770060FABE /* Nyx.cz.entitlements */,
 				2B38C3061FE162D60099D2FF /* Share */,
 				2B2303701FBC59C400286062 /* Images */,
@@ -582,6 +590,7 @@
 				2B0D5D891FBC40F20052D63C /* Frameworks */,
 				2B0D5D8A1FBC40F20052D63C /* Resources */,
 				2B8B7F812016545900A000C6 /* Embed App Extensions */,
+				2BA80E9520172CFF00DD9ED2 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -744,6 +753,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		2BA80E9520172CFF00DD9ED2 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "./Fabric.framework/run 1e76139d86c555d1cbc4bf60cc0daf9c933dd65d 4c1fb827fb311aafde886be92ee66ec70978481d38d42f32e126f5909329de28";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		2B0D5D881FBC40F20052D63C /* Sources */ = {
@@ -955,6 +980,10 @@
 				CODE_SIGN_ENTITLEMENTS = Nyx.cz/Nyx.cz.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = HPAHZ9LC8R;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = Nyx.cz/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -971,6 +1000,10 @@
 				CODE_SIGN_ENTITLEMENTS = Nyx.cz/Nyx.cz.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = HPAHZ9LC8R;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = Nyx.cz/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

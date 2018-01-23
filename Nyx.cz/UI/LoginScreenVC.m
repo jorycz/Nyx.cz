@@ -13,6 +13,11 @@
 #import "Preferences.h"
 #import "Colors.h"
 
+// Fabric/Crashlitics - set user identifier after login.
+#import <Fabric/Fabric.h>
+#import <Crashlytics/Crashlytics.h>
+
+
 
 @interface LoginScreenVC ()
 
@@ -315,6 +320,7 @@
     
     dispatch_async(dispatch_get_main_queue(), ^{
         self.userIsLoggedIn = YES;
+        [CrashlyticsKit setUserIdentifier:[Preferences auth_nick:nil]];
         [self showHideSpinner];
         [self dismissViewControllerAnimated:NO completion:^{}];
     });
