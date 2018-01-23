@@ -31,7 +31,7 @@
                              @"Zobrazovat obrázky",
                              @"Otevřít v Safari",
                              @"Sdílet původní obrázky",
-                             @"Obnova dat na pozadí",
+                             @"Spuštění na pozadí",
                              @"Uložená zpráva",
                              @"Limit pro načtení nepřečtených",
                              @"Kopírovat HTML kód"
