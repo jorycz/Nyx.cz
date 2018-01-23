@@ -19,7 +19,8 @@
     if (self)
     {
         self.backgroundColor = COLOR_BACKGROUND_WHITE;
-        self.menuEntries = @[kMenuOverview, kMenuMail, kMenuBookmarks, kMenuHistory, kMenuFriendList, kMenuNotifications, kMenuSearchPosts, kMenuMarket, kMenuCalendar];
+//        self.menuEntries = @[kMenuOverview, kMenuMail, kMenuBookmarks, kMenuHistory, kMenuFriendList, kMenuNotifications, kMenuSearchPosts, kMenuMarket, kMenuCalendar];
+        self.menuEntries = @[kMenuOverview, kMenuMail, kMenuBookmarks, kMenuHistory, kMenuFriendList, kMenuNotifications, kMenuSearchPosts];
         
         self.table = [[UITableView alloc] init];
         [self.table setDelegate:self];
