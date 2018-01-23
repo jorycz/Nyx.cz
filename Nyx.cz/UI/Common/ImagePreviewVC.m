@@ -98,7 +98,7 @@
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         _mainScreen = self.view.bounds;
-        CGFloat navigationBarHeight = self.nc.navigationBar.frame.size.height;
+        CGFloat navigationBarHeight = self.nController.navigationBar.frame.size.height;
         CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
         self.pageController.view.frame = CGRectMake(0, navigationBarHeight + statusBarHeight, _mainScreen.size.width, _mainScreen.size.height - (navigationBarHeight + statusBarHeight));
     });
@@ -107,7 +107,7 @@
 - (void)statusBarChanged
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        CGFloat navigationBarHeight = self.nc.navigationBar.frame.size.height;
+        CGFloat navigationBarHeight = self.nController.navigationBar.frame.size.height;
         CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
         self.pageController.view.frame = CGRectMake(0, self.pageController.view.frame.origin.y, self.pageController.view.frame.size.width, self.pageController.view.frame.size.height - (navigationBarHeight + statusBarHeight));
     });

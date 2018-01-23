@@ -61,7 +61,7 @@
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         _mainScreen = self.view.bounds;
-        CGFloat navigationBarHeight = self.nc.navigationBar.frame.size.height;
+        CGFloat navigationBarHeight = self.nController.navigationBar.frame.size.height;
         CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
         self.peopleTable.view.frame = CGRectMake(0, navigationBarHeight + statusBarHeight, _mainScreen.size.width, _mainScreen.size.height - (navigationBarHeight + statusBarHeight));
         self.listTable.view.frame = CGRectMake(0, navigationBarHeight + statusBarHeight, _mainScreen.size.width, _mainScreen.size.height - (navigationBarHeight + statusBarHeight));
@@ -71,7 +71,7 @@
 - (void)statusBarChanged
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        CGFloat navigationBarHeight = self.nc.navigationBar.frame.size.height;
+        CGFloat navigationBarHeight = self.nController.navigationBar.frame.size.height;
         CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
         self.peopleTable.view.frame = CGRectMake(0, self.peopleTable.view.frame.origin.y, _mainScreen.size.width, _mainScreen.size.height - (navigationBarHeight + statusBarHeight));
         self.listTable.view.frame = CGRectMake(0, self.listTable.view.frame.origin.y, _mainScreen.size.width, _mainScreen.size.height - (navigationBarHeight + statusBarHeight));
@@ -82,19 +82,19 @@
 
 - (void)loadContentWithNavigationController:(UINavigationController *)navController
 {
-    self.nc = navController;
+    self.nController = navController;
     
     // - 65 is there because there is big avatar left of table cell body text view.
     _widthForTableCellBodyTextView = self.view.frame.size.width - kWidthForTableCellBodyTextViewSubstract;
     
-    self.nc.topViewController.navigationItem.rightBarButtonItems = nil;
+    self.nController.topViewController.navigationItem.rightBarButtonItems = nil;
     self.peopleTable = nil;
     self.listTable = nil;
     
     if ([self.menuKey isEqualToString:kMenuOverview])
     {
         self.peopleTable = [[ContentTableWithPeople alloc] initWithRowHeight:70];
-        self.peopleTable.nController = self.nc;
+        self.peopleTable.nController = self.nController;
         self.peopleTable.allowsSelection = YES;
         self.peopleTable.peopleTableMode = kPeopleTableModeFeed;
         self.peopleTable.widthForTableCellBodyTextView = _widthForTableCellBodyTextView;
@@ -102,16 +102,16 @@
 
         [self adjustFrameForCurrentStatusBar];
         
-        self.nc.topViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
-                                                                                                                    target:self
-                                                                                                                    action:@selector(composeNewPost:)];
+        self.nController.topViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
+                                                                                                                             target:self
+                                                                                                                             action:@selector(composeNewPost:)];
         [self.peopleTable getDataForFeedOfFriends];
     }
     
     if ([self.menuKey isEqualToString:kMenuMail])
     {
         self.peopleTable = [[ContentTableWithPeople alloc] initWithRowHeight:70];
-        self.peopleTable.nController = self.nc;
+        self.peopleTable.nController = self.nController;
         self.peopleTable.allowsSelection = YES;
         self.peopleTable.peopleTableMode = kPeopleTableModeMailbox;
         self.peopleTable.widthForTableCellBodyTextView = _widthForTableCellBodyTextView;
@@ -125,7 +125,7 @@
         UIBarButtonItem *searchMessage = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch
                                                                                        target:self.peopleTable
                                                                                        action:@selector(showSearchAlert:)];
-        self.nc.topViewController.navigationItem.rightBarButtonItems = @[searchMessage, composeMessage];
+        self.nController.topViewController.navigationItem.rightBarButtonItems = @[searchMessage, composeMessage];
         
         [self.peopleTable getDataForMailbox];
     }
@@ -133,7 +133,7 @@
     if ([self.menuKey isEqualToString:kMenuBookmarks])
     {
         self.listTable = [[ContentTableWithList alloc] initWithRowHeight:30];
-        self.listTable.nController = self.nc;
+        self.listTable.nController = self.nController;
         self.listTable.listTableMode = kListTableModeBookmarks;
         self.listTable.widthForTableCellBodyTextView = _widthForTableCellBodyTextView;
         [self.view addSubview:self.listTable.view];
@@ -149,7 +149,7 @@
     if ([self.menuKey isEqualToString:kMenuHistory])
     {
         self.listTable = [[ContentTableWithList alloc] initWithRowHeight:30];
-        self.listTable.nController = self.nc;
+        self.listTable.nController = self.nController;
         self.listTable.listTableMode = kListTableModeHistory;
         self.listTable.widthForTableCellBodyTextView = _widthForTableCellBodyTextView;
         [self.view addSubview:self.listTable.view];
@@ -165,7 +165,7 @@
     if ([self.menuKey isEqualToString:kMenuFriendList])
     {
         self.peopleTable = [[ContentTableWithPeople alloc] initWithRowHeight:70];
-        self.peopleTable.nController = self.nc;
+        self.peopleTable.nController = self.nController;
         self.peopleTable.allowsSelection = YES;
         self.peopleTable.peopleTableMode = kPeopleTableModeFriends;
         self.peopleTable.widthForTableCellBodyTextView = _widthForTableCellBodyTextView;
@@ -182,7 +182,7 @@
     if ([self.menuKey isEqualToString:kMenuNotifications])
     {
         self.peopleTable = [[ContentTableWithPeople alloc] initWithRowHeight:70];
-        self.peopleTable.nController = self.nc;
+        self.peopleTable.nController = self.nController;
         self.peopleTable.allowsSelection = YES;
         self.peopleTable.peopleTableMode = kPeopleTableModeNotices;
         self.peopleTable.widthForTableCellBodyTextView = _widthForTableCellBodyTextView;
@@ -199,7 +199,7 @@
     if ([self.menuKey isEqualToString:kMenuSearchPosts])
     {
         self.peopleTable = [[ContentTableWithPeople alloc] initWithRowHeight:70];
-        self.peopleTable.nController = self.nc;
+        self.peopleTable.nController = self.nController;
         self.peopleTable.allowsSelection = YES;
         self.peopleTable.peopleTableMode = kPeopleTableModeSearch;
         self.peopleTable.widthForTableCellBodyTextView = _widthForTableCellBodyTextView;
@@ -207,9 +207,9 @@
         
         [self adjustFrameForCurrentStatusBar];
         
-        self.nc.topViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch
-                                                                                                                    target:self.peopleTable
-                                                                                                                    action:@selector(showSearchAlert:)];
+        self.nController.topViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch
+                                                                                                                             target:self.peopleTable
+                                                                                                                             action:@selector(showSearchAlert:)];
         [self.peopleTable showSearchAlert:nil];
     }
 }
@@ -220,7 +220,7 @@
 {
     NewFeedPostVC *new = [[NewFeedPostVC alloc] init];
     UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:new];
-    [self.nc presentViewController:nc animated:YES completion:^{}];
+    [self.nController presentViewController:nc animated:YES completion:^{}];
 }
 
 #pragma mark - COMPOSE NEW MAIL MESSAGE
@@ -229,7 +229,7 @@
 {
     PeopleAutocompleteVC *pAuto = [[PeopleAutocompleteVC alloc] init];
     UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:pAuto];
-    [self.nc presentViewController:nc animated:YES completion:^{}];
+    [self.nController presentViewController:nc animated:YES completion:^{}];
 }
 
 - (void)composeNewMessageFor:(NSNotification *)notification
@@ -255,9 +255,9 @@
     response.bodyHeight = 80;
     response.postId = @"";
     response.postData = @{@"other_nick": nick};
-    response.nController = self.nc;
+    response.nController = self.nController;
     response.peopleRespondMode = kPeopleTableModeMailbox;
-    [self.nc pushViewController:response animated:YES];
+    [self.nController pushViewController:response animated:YES];
 }
 
 

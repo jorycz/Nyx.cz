@@ -124,6 +124,10 @@
         return;
     }
     [_table setFrame:self.view.bounds];
+    
+    CGFloat navigationBarHeight = self.nController.navigationBar.frame.size.height;
+    CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
+    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), [NSString stringWithFormat:@"n %li s %li", (long)navigationBarHeight, (long)statusBarHeight]);
 }
 
 - (void)didReceiveMemoryWarning
@@ -1254,7 +1258,7 @@
         {
             ImagePreviewVC *ip = [[ImagePreviewVC alloc] init];
             ip.imageUrls = urlsWithImagesOnly;
-            ip.nc = self.nController;
+            ip.nController = self.nController;
             UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:ip];
             nc.modalPresentationStyle = UIModalPresentationCustom;
             [self presentViewController:nc animated:YES completion:^{}];

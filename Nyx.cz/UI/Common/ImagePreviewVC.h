@@ -21,7 +21,7 @@
 //@property (nonatomic, strong) NSArray *images;
 @property (nonatomic, strong) NSArray *imageUrls;
 
-@property (nonatomic , strong) UINavigationController *nc;
+@property (nonatomic , strong) UINavigationController *nController;
 
 
 @end

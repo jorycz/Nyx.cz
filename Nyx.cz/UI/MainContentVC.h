@@ -20,7 +20,7 @@
 }
 
 
-@property (nonatomic , strong) UINavigationController *nc;
+@property (nonatomic , strong) UINavigationController *nController;
 
 @property (nonatomic, strong) NSMutableString *menuKey;
 
