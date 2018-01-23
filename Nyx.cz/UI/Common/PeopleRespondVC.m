@@ -60,7 +60,6 @@
     [super loadView];
     self.view = [[UIView alloc] init];
     self.view.backgroundColor = COLOR_BACKGROUND_WHITE;
-    self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 }
 
 - (void)viewDidLoad
@@ -103,7 +102,7 @@
     self.responseView.backgroundColor = COLOR_BACKGROUND_WHITE;
     self.responseView.clipsToBounds = YES;
     self.responseView.font = [UIFont systemFontOfSize:13];
-    self.responseView.layer.cornerRadius = 6.0f;
+    self.responseView.layer.cornerRadius = 20.0f;
     
     self.sendButton = [[UIButton alloc] init];
     self.sendButton.backgroundColor = COLOR_CLEAR;
@@ -217,8 +216,8 @@
             self.sendButton.frame = CGRectMake(_bottomFrame.size.width - maxButtonSize - edgeInsect, (bottomBarHeight / 2) - (maxButtonSize / 2), maxButtonSize, maxButtonSize);
         }
         
-        // 64 = navigation bar + status bar
-        self.table.view.frame = CGRectMake(0, 64, f.size.width, f.size.height - 64 - bottomBarHeight);
+        // 64 / 84 ... = navigation bar + status bar
+        self.table.view.frame = CGRectMake(0, [Preferences statusNavigationBarsHeights:0], f.size.width, f.size.height - [Preferences statusNavigationBarsHeights:0] - bottomBarHeight);
         _tableFrame = self.table.view.frame;
     }
 }
@@ -477,6 +476,7 @@
 {
 //    NSLog(@"K NEW %li", (long)[[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size.height);
 //    NSLog(@"NOW %li", (long)_keyboardSize.height);
+    
     if ([[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size.height == _keyboardSize.height)
         return;
     // Last keyboard position was higher than current ? Move table first so user can't see empty space.

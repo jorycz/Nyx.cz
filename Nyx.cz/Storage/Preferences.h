@@ -43,6 +43,8 @@
 // Save / Load TOKEN for PUSH APNS notifications
 + (NSString *)apnsDeviceToken:(NSString *)value;
 + (NSString *)apnsRegistrationStatus:(NSString *)value;
+// BASE STATUS BAR and NAVIGATION BAR Height
++ (CGFloat)statusNavigationBarsHeights:(CGFloat)value;
 
 
 @end

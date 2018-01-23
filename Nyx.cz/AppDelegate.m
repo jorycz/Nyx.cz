@@ -27,12 +27,11 @@
 
 #pragma mark - STATUS BAR HEIGHT CHANGE
 
-- (void)application:(UIApplication *)application willChangeStatusBarFrame:(CGRect)newStatusBarFrame
-{
+//- (void)application:(UIApplication *)application willChangeStatusBarFrame:(CGRect)newStatusBarFrame
+//{
 //    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), NSStringFromCGRect(newStatusBarFrame));
 //    NSLog(@"%@ - %@ : StatusBar height will change to [%li]", self, NSStringFromSelector(_cmd), (long)newStatusBarFrame.size.height);
-//    CGFloat newHeight = newStatusBarFrame.size.height;
-}
+//}
 
 //- (void)application:(UIApplication *)application didChangeStatusBarFrame:(CGRect)oldStatusBarFrame
 //{

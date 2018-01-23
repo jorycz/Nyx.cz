@@ -70,7 +70,7 @@
     [super viewWillLayoutSubviews];
     
     CGRect f = self.view.frame;
-    _tv.frame = CGRectMake(10, 64 + 10, f.size.width - 20, f.size.height / 3.3);
+    _tv.frame = CGRectMake(10, [Preferences statusNavigationBarsHeights:0] + 10, f.size.width - 20, f.size.height / 3.3);
     _button.frame = CGRectMake(f.size.width - 80, _tv.frame.size.height + _tv.frame.origin.y + 10, 60, 60);
     _info.frame = CGRectMake(10, (f.size.height / 2) + 20, f.size.width - 20, f.size.height / 3.3);
 }

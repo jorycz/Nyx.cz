@@ -87,9 +87,15 @@
     [super viewWillAppear:animated];
 }
 
+- (void)viewWillLayoutSubviews
+{
+    [super viewWillLayoutSubviews];
+}
+
 - (void)viewDidLayoutSubviews
 {
     [super viewDidLayoutSubviews];
+    
     self.sideMenu.frame = self.view.bounds;
     self.contentVc.view.frame = self.view.bounds;
     _viewCenter = self.view.center;
@@ -107,6 +113,14 @@
     
     if (self.loginScreen.userIsLoggedIn && _firstShow) {
         _firstShow = NO;
+        
+        // Store initial Status and Navigation Bar Heights.
+        CGFloat navigationBarHeight = self.navigationController.navigationBar.frame.size.height;
+        CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
+        NSLog(@"%@ - %@ : Navigation Bar >> [%li]", self, NSStringFromSelector(_cmd), (long)navigationBarHeight);
+        NSLog(@"%@ - %@ : Status Bar >> [%li]", self, NSStringFromSelector(_cmd), (long)statusBarHeight);
+        [Preferences statusNavigationBarsHeights:(navigationBarHeight + statusBarHeight)];
+        
         NSString *preferredMenyKey = [Preferences preferredStartingLocation:nil];
         NSString *lastMenuKey = [Preferences lastUserPosition:nil];
         if (!preferredMenyKey && !lastMenuKey) {
@@ -257,15 +271,15 @@
 
 - (void)mainButtonPressedContact
 {
-    ContactVC *contact = [[ContactVC alloc] init];
-    UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:contact];
+    ContactVC *contactScreen = [[ContactVC alloc] init];
+    UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:contactScreen];
     [self presentViewController:nc animated:YES completion:^{}];
 }
 
 - (void)mainButtonPressedSettings
 {
-    SettingsVC *settings = [[SettingsVC alloc] init];
-    UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:settings];
+    SettingsVC *settingsSceen = [[SettingsVC alloc] init];
+    UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:settingsSceen];
     [self presentViewController:nc animated:YES completion:^{}];
 }
 

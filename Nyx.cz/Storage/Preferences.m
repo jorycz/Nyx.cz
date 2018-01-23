@@ -229,6 +229,17 @@
     }
 }
 
++ (CGFloat)statusNavigationBarsHeights:(CGFloat)value
+{
+    NSString *key = @"_STATUSANDNAVIGATIONBARHEIGHTS";
+    if (value > 0) {
+        [[NSUserDefaults standardUserDefaults] setFloat:value forKey:key];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        return 0;
+    } else {
+        return [[NSUserDefaults standardUserDefaults] floatForKey:key];
+    }
+}
 
 @end
 

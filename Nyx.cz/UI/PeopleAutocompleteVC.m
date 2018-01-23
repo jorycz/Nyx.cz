@@ -89,7 +89,7 @@
     if (_firstInit) {
         _firstInit = NO;
         
-        CGFloat bars = 64; // 64 = navigation bar + status bar
+        CGFloat bars = [Preferences statusNavigationBarsHeights:0]; // 64 / 84 ... = navigation bar + status bar
         CGFloat composeView = 50;
         CGRect f = self.view.bounds;
         

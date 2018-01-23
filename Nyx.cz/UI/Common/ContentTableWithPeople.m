@@ -1252,10 +1252,10 @@
     {
         UIAlertAction *showImages = [UIAlertAction actionWithTitle:@"Zobrazit obrázky" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action)
         {
-            ImagePreviewVC *ip = [[ImagePreviewVC alloc] init];
-            ip.imageUrls = urlsWithImagesOnly;
-            ip.nController = self.nController;
-            UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:ip];
+            ImagePreviewVC *imagePreviewScreen = [[ImagePreviewVC alloc] init];
+            imagePreviewScreen.imageUrls = urlsWithImagesOnly;
+            imagePreviewScreen.nController = self.nController;
+            UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:imagePreviewScreen];
             nc.modalPresentationStyle = UIModalPresentationCustom;
             [self presentViewController:nc animated:YES completion:^{}];
         }];
