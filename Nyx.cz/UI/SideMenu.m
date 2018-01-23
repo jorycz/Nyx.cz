@@ -9,6 +9,7 @@
 #import "SideMenu.h"
 #import "SideMenuCell.h"
 #import "Colors.h"
+#import "Preferences.h"
 
 
 @implementation SideMenu
@@ -58,7 +59,7 @@
     NSInteger fuckingIos11UIKitBugConstantForIphone8Plus = 50;
     self.table.frame = CGRectMake(0, yPosTable, self.sideMenuMaxShift + fuckingIos11UIKitBugConstantForIphone8Plus, heightTable);
     
-    self.topSection.frame = CGRectMake(0, 66, self.sideMenuMaxShift, yPosTable - 67);
+    self.topSection.frame = CGRectMake(0, [Preferences statusNavigationBarsHeights:0], self.sideMenuMaxShift, yPosTable - [Preferences statusNavigationBarsHeights:0]);
     self.bottomSection.frame = CGRectMake(0, yPosTable + heightTable + 1, self.sideMenuMaxShift, f.size.height - yPosTable - heightTable - 2);
     
     _topBorder.frame = CGRectMake(5, yPosTable - 2, self.sideMenuMaxShift - 10, 1);
