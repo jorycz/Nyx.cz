@@ -50,6 +50,7 @@
 - (void)layoutSubviews
 {
     [super layoutSubviews];
+    
     CGRect f = self.frame;
     
     CGFloat avatarWidth = 40;

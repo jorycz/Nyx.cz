@@ -82,16 +82,6 @@
         [Preferences lastUserPosition:[Preferences preferredStartingLocation:nil]];
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-}
-
-- (void)viewWillLayoutSubviews
-{
-    [super viewWillLayoutSubviews];
-}
-
 - (void)viewDidLayoutSubviews
 {
     [super viewDidLayoutSubviews];
@@ -113,6 +103,8 @@
     
     if (self.loginScreen.userIsLoggedIn && _firstShow) {
         _firstShow = NO;
+        
+        [self.sideMenu setNeedsLayout];
         
         // Store initial Status and Navigation Bar Heights.
         CGFloat navigationBarHeight = self.navigationController.navigationBar.frame.size.height;
