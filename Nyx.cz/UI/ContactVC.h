@@ -10,6 +10,8 @@
 
 @interface ContactVC : UIViewController
 {
+    UITextView *_tv;
+    UIButton *_button;
     UITextView *_info;
 }
 

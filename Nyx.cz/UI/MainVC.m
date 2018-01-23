@@ -128,6 +128,8 @@
     [super didReceiveMemoryWarning];
 }
 
+#pragma mark - NAVIGATION BUTTONS
+
 #pragma mark - SIDE MENU
 
 - (void)coverViewWouldLikeToCloseMenu
