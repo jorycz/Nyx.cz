@@ -130,6 +130,14 @@
 
 #pragma mark - NAVIGATION BUTTONS
 
+- (void)enableNavigationButtons:(BOOL)b
+{
+    for (UIBarButtonItem *item in self.navigationItem.rightBarButtonItems)
+        [item setEnabled:b];
+    for (UIBarButtonItem *item in self.navigationItem.leftBarButtonItems)
+        [item setEnabled:b];
+}
+
 #pragma mark - SIDE MENU
 
 - (void)coverViewWouldLikeToCloseMenu
@@ -142,8 +150,7 @@
     if (!self.closeCoverView)
     {
         [self getNewNyxNotifications];
-        self.navigationItem.rightBarButtonItem.enabled = NO;
-        self.navigationItem.leftBarButtonItem.enabled = NO;
+        [self enableNavigationButtons:NO];
         [UIView animateWithDuration:.15 animations:^{
             self.contentVc.view.center = CGPointMake(_viewCenter.x + _sideMenuMaxShift, _viewCenter.y);
             self.sideMenu.alpha = 1;
@@ -164,8 +171,7 @@
     } completion:^(BOOL finished) {
         [self.closeCoverView removeFromSuperview];
         self.closeCoverView = nil;
-        self.navigationItem.rightBarButtonItem.enabled = YES;
-        self.navigationItem.leftBarButtonItem.enabled = YES;
+        [self enableNavigationButtons:YES];
     }];
 }
 
