@@ -24,21 +24,18 @@
         _logoutButton = [[UIButton alloc] init];
         [_logoutButton setImage:[UIImage imageNamed:@"logout"] forState:(UIControlStateNormal)];
         [_logoutButton addTarget:self action:@selector(openLogout) forControlEvents:(UIControlEventTouchUpInside)];
-        [_logoutButton setShowsTouchWhenHighlighted:YES];
         _logoutButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
         [self addSubview:_logoutButton];
         
         _contactButton = [[UIButton alloc] init];
         [_contactButton setImage:[UIImage imageNamed:@"contact"] forState:(UIControlStateNormal)];
         [_contactButton addTarget:self action:@selector(openContact) forControlEvents:(UIControlEventTouchUpInside)];
-        [_contactButton setShowsTouchWhenHighlighted:YES];
         _contactButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
         [self addSubview:_contactButton];
         
         _settingsButton = [[UIButton alloc] init];
         [_settingsButton setImage:[UIImage imageNamed:@"settings"] forState:(UIControlStateNormal)];
         [_settingsButton addTarget:self action:@selector(openSettings) forControlEvents:(UIControlEventTouchUpInside)];
-        [_settingsButton setShowsTouchWhenHighlighted:YES];
         _settingsButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
         [self addSubview:_settingsButton];
     }
