@@ -615,12 +615,13 @@
         return;
     }
     
+    _preserveIndexPathAfterLoadFromId = indexPath;
+    
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeMailbox] && !_showingSearchResult)
     {
         // Load more mails when reach end.
         if (indexPath.row + 1 == [[self.nyxRowsForSections objectAtIndex:0] count])
         {
-            _preserveIndexPathAfterLoadFromId = indexPath;
             NSString *fromID = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"id_mail"];
             [self getDataForMailboxFromId:fromID];
         }
@@ -630,7 +631,6 @@
         // Load more SEARCH in mails when reach end.
         if (indexPath.row + 1 == [[self.nyxRowsForSections objectAtIndex:0] count])
         {
-            _preserveIndexPathAfterLoadFromId = indexPath;
             NSString *fromID = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"id_mail"];
             [self getDataForSearchMailboxNick:_searchNick andText:_searchText fromId:fromID];
         }
@@ -641,7 +641,6 @@
         // Load more posts when reach end.
         if (indexPath.row + 1 == [[self.nyxRowsForSections objectAtIndex:0] count])
         {
-            _preserveIndexPathAfterLoadFromId = indexPath;
             NSString *fromID = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"id_wu"];
             NSString *discussionId = [self.disscussionClubData objectForKey:@"id_klub"];
             [self getDataForDiscussion:discussionId fromId:fromID];
@@ -651,7 +650,6 @@
     {
         if (indexPath.row + 1 == [[self.nyxRowsForSections objectAtIndex:0] count])
         {
-            _preserveIndexPathAfterLoadFromId = indexPath;
             NSString *fromID = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"id_wu"];
             [self getDataForSearchDiscussionNick:_searchNick andText:_searchText fromWuId:fromID];
         }
@@ -662,7 +660,6 @@
         // Load more SEARCH when reach end.
         if (indexPath.row + 1 == [[self.nyxRowsForSections objectAtIndex:0] count])
         {
-            _preserveIndexPathAfterLoadFromId = indexPath;
             _globalSearchPage += 20;
             [self getDataForSearchNick:_searchNick andText:_searchText page:_globalSearchPage];
         }
