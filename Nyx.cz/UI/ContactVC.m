@@ -42,6 +42,7 @@
     _tv.backgroundColor = COLOR_BACKGROUND_WHITE;
     _tv.clipsToBounds = YES;
     _tv.layer.cornerRadius = 8.0f;
+    _tv.textContainerInset = UIEdgeInsetsMake(6, 4, 6, 4);
     [self.view addSubview:_tv];
     
     _button = [[UIButton alloc] init];

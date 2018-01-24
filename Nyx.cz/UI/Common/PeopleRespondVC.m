@@ -98,11 +98,11 @@
     self.bottomView.backgroundColor = COLOR_BACKGROUND_RESPOND_VIEW;
     
     self.responseView = [[UITextView alloc] init];
-//    [self.responseView setTextContainerInset:(UIEdgeInsetsZero)];
     self.responseView.backgroundColor = COLOR_BACKGROUND_WHITE;
     self.responseView.clipsToBounds = YES;
     self.responseView.font = [UIFont systemFontOfSize:13];
     self.responseView.layer.cornerRadius = 20.0f;
+    self.responseView.textContainerInset = UIEdgeInsetsMake(6, 4, 6, 4);
     
     self.sendButton = [[UIButton alloc] init];
     self.sendButton.backgroundColor = COLOR_CLEAR;
