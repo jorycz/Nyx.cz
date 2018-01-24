@@ -1124,6 +1124,11 @@
                         [[self.nyxRowsForSections objectAtIndex:_indexPathToDelete.section] removeObjectAtIndex:_indexPathToDelete.row];
                         [[self.nyxPostsRowHeights objectAtIndex:_indexPathToDelete.section] removeObjectAtIndex:_indexPathToDelete.row];
                         [[self.nyxPostsRowBodyTexts objectAtIndex:_indexPathToDelete.section] removeObjectAtIndex:_indexPathToDelete.row];
+                        if (_preserveIndexPathAfterLoadFromId) {
+                            NSInteger row = [_preserveIndexPathAfterLoadFromId row];
+                            row > 0 ? (row -= 1) : (row) ;
+                            _preserveIndexPathAfterLoadFromId = [NSIndexPath indexPathForRow:row inSection:_preserveIndexPathAfterLoadFromId.section];
+                        }
                         // !!! TODO TO DO - smazat sekci, pokud k ni jiz nepatri zadne bunky !!! ?? nebo znovy vytvorit ? ...
                         // !!! TOFIX TO FIX - pokud postnu neco na Friend feed tesne po pulnoci a pak to smazu, apka zatim asi jebne. !!!
                         [_table deleteRowsAtIndexPaths:@[_indexPathToDelete] withRowAnimation:UITableViewRowAnimationFade];
