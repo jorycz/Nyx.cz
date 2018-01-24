@@ -856,6 +856,10 @@
     [self serverApiCall:apiRequest andIdentification:kApiIdentificationDataForSearchDiscussionOlder];
 }
 
+// Direct enter to discussion from TABLE LIST
+// This method is called with empty postId when entering from list table.
+// If there are ALL unread posts in returned data, it's called repeatedly with postId filled by last post id
+// until unread limit for post is reached or last unread post is found.
 - (void)getDataForDiscussion:(NSString *)disId loadMoreToShowAllUnreadFromId:(NSString *)postId
 {
     if (postId && [postId length] > 0)
@@ -869,6 +873,7 @@
     }
 }
 
+// Called when table scrolled down or from search / notices.
 - (void)getDataForDiscussion:(NSString *)dId fromId:(NSString *)fromId
 {
     NSString *apiRequest = [ApiBuilder apiMessagesForDiscussion:dId loadMoreFromId:fromId];
@@ -891,6 +896,7 @@
 
 - (void)downloadFinishedWithData:(NSData *)data withIdentification:(NSString *)identification
 {
+    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"");
     dispatch_async(dispatch_get_main_queue(), ^{
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
     });
