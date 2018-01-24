@@ -81,6 +81,7 @@
 		2B6736061FBCE8F500DA728E /* SideMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B6736051FBCE8F500DA728E /* SideMenu.m */; };
 		2B6736091FBCED2100DA728E /* MainVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B6736081FBCED2100DA728E /* MainVC.m */; };
 		2B67360C1FBCFAEF00DA728E /* SideMenuCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B67360B1FBCFAEF00DA728E /* SideMenuCell.m */; };
+		2B703FAD20193C7F001D3D27 /* newPost@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B703FAC20193C7E001D3D27 /* newPost@2x.png */; };
 		2B70FB512010FA25004735EF /* UnreadLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B70FB502010FA25004735EF /* UnreadLabel.m */; };
 		2B8FECCE1FD8226A004CCED8 /* Colors.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B8FECCD1FD8226A004CCED8 /* Colors.m */; };
 		2B8FECD11FD848F6004CCED8 /* ImagePreviewVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B8FECD01FD848F6004CCED8 /* ImagePreviewVC.m */; };
@@ -252,6 +253,7 @@
 		2B6736081FBCED2100DA728E /* MainVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainVC.m; sourceTree = "<group>"; };
 		2B67360A1FBCFAEF00DA728E /* SideMenuCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SideMenuCell.h; sourceTree = "<group>"; };
 		2B67360B1FBCFAEF00DA728E /* SideMenuCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SideMenuCell.m; sourceTree = "<group>"; };
+		2B703FAC20193C7E001D3D27 /* newPost@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "newPost@2x.png"; sourceTree = "<group>"; };
 		2B70FB4F2010FA25004735EF /* UnreadLabel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UnreadLabel.h; sourceTree = "<group>"; };
 		2B70FB502010FA25004735EF /* UnreadLabel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UnreadLabel.m; sourceTree = "<group>"; };
 		2B822AB22011E8770060FABE /* Nyx.cz.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Nyx.cz.entitlements; sourceTree = "<group>"; };
@@ -404,6 +406,7 @@
 				2B3180281FC76B680063B9EE /* burger@2x.png */,
 				2B1D595E1FD016FA009E4A88 /* email@2x.png */,
 				2B1D59601FD079C3009E4A88 /* chat@2x.png */,
+				2B703FAC20193C7E001D3D27 /* newPost@2x.png */,
 				2BF6504B1FD4339900A43793 /* disclosure@2x.png */,
 				2B26F22C20091811008A8BA5 /* refresh@2x.png */,
 			);
@@ -708,6 +711,7 @@
 				2B2E00971FD1739B00C0639C /* thumbup@2x.png in Resources */,
 				2B42D41A1FC8CD3E009F751D /* 13.png in Resources */,
 				2BD251D61FC108E200BE6272 /* settings@2x.png in Resources */,
+				2B703FAD20193C7F001D3D27 /* newPost@2x.png in Resources */,
 				2B2E00991FD1739B00C0639C /* thumbdown@2x.png in Resources */,
 				2B42D41D1FC8CD3E009F751D /* 9.png in Resources */,
 				2BD251D81FC108E200BE6272 /* logout@2x.png in Resources */,

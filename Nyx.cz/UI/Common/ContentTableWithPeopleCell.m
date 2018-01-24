@@ -200,7 +200,7 @@
     }
     else
     {
-        _avatarView.image = [UIImage imageNamed:@"chat"];
+        _avatarView.image = [UIImage imageNamed:@"newPost"];
     }
 }
 
