@@ -179,7 +179,7 @@
     {
         // User tapped notification (or notification arrived in call situation...).
 //        NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @" === UIApplicationStateInactive");
-//        [self showBoardWithResponse:userInfo];
+        [self showBoardWithResponse:userInfo];
     }
     else if (application.applicationState == UIApplicationStateBackground)
     {
@@ -206,18 +206,45 @@
 
 - (void)showBoardWithResponse:(NSDictionary *)userInfo
 {
-    ContentTableWithPeople *content = [[ContentTableWithPeople alloc] initWithRowHeight:70];
-    content.nController = self.mainNavigationController;
-    content.allowsSelection = YES;
-    content.canEditFirstRow = YES;
-    content.widthForTableCellBodyTextView = [[[UIApplication sharedApplication] delegate] window].rootViewController.view.frame.size.width - kWidthForTableCellBodyTextViewSubstract;
-    content.peopleTableMode = kPeopleTableModeDiscussion;
-    
-    //    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), userPostData);
-//    self.nestedPeopleTable.title = [userPostData objectForKey:@"jmeno"];
-    
-    [self.mainNavigationController pushViewController:content animated:YES];
-    [content getDataForDiscussion:[userInfo objectForKey:@"topic"] loadMoreToShowAllUnreadFromId:@""];
+    NSString *typ = [userInfo objectForKey:@"type"];
+    if (typ && [typ length] > 0)
+    {
+        if ([typ isEqualToString:@"new_mail"])
+        {
+            ContentTableWithPeople *content = [[ContentTableWithPeople alloc] initWithRowHeight:70];
+            content.nController = self.mainNavigationController;
+            content.allowsSelection = YES;
+            content.canEditFirstRow = YES;
+            content.widthForTableCellBodyTextView = [[[UIApplication sharedApplication] delegate] window].rootViewController.view.frame.size.width - kWidthForTableCellBodyTextViewSubstract;
+            content.peopleTableMode = kPeopleTableModeMailbox;
+            content.title = kMenuMail;
+            
+            [self.mainNavigationController dismissViewControllerAnimated:NO completion:^{}];
+            
+            [self.mainNavigationController pushViewController:content animated:YES];
+            [content getDataForMailbox];
+        }
+        if ([typ isEqualToString:@"reply"])
+        {
+            NSString *alert = [[userInfo objectForKey:@"aps"] objectForKey:@"alert"];
+            NSRange range = [alert rangeOfString:@"to you in "];
+            NSString *name = [alert substringFromIndex:range.location + range.length];
+            
+            ContentTableWithPeople *content = [[ContentTableWithPeople alloc] initWithRowHeight:70];
+            content.nController = self.mainNavigationController;
+            content.allowsSelection = YES;
+            content.canEditFirstRow = YES;
+            content.widthForTableCellBodyTextView = [[[UIApplication sharedApplication] delegate] window].rootViewController.view.frame.size.width - kWidthForTableCellBodyTextViewSubstract;
+            content.peopleTableMode = kPeopleTableModeDiscussion;
+            content.title = name;
+            
+            [self.mainNavigationController dismissViewControllerAnimated:NO completion:^{}];
+            
+            [self.mainNavigationController pushViewController:content animated:YES];
+            [content getDataForDiscussion:[userInfo objectForKey:@"topic"] loadMoreToShowAllUnreadFromId:@""];
+
+        }
+    }
 }
 
 
