@@ -48,6 +48,8 @@
 
 @property (nonatomic, assign) CGFloat widthForTableCellBodyTextView;
 
+@property (nonatomic, assign) BOOL scrollToTopAfterReloadUntilUserScrolls;
+
 
 // Load Discussion (people table) from Notices (into this people table)
 @property (nonatomic, strong) ContentTableWithPeople *nestedPeopleTable;

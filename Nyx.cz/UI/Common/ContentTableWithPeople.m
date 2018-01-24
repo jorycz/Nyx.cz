@@ -48,6 +48,8 @@
         _searchNick = [[NSMutableString alloc] init];
         _searchText = [[NSMutableString alloc] init];
         _globalSearchPage = 0;
+        // Regular Table set this to NO. In case comming from Notices with Big display, set it to YES.
+        self.scrollToTopAfterReloadUntilUserScrolls = NO;
     }
     return self;
 }
@@ -606,6 +608,13 @@
     [self.nController pushViewController:respondVC animated:YES];
 }
 
+#pragma mark - AFTER USER SCROLS - ENABLE keep scroll at current position of last cell when loading LAST CELL
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+    self.scrollToTopAfterReloadUntilUserScrolls = NO;
+}
+
 #pragma mark - SCROLL REACH END (mailbox, discussion) - LOAD MORE CELL INTO TABLE
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
@@ -615,56 +624,50 @@
         return;
     }
     
-    if ([self.peopleTableMode isEqualToString:kPeopleTableModeMailbox] && !_showingSearchResult)
+    // Are we on the LAST CELL ?
+    if (indexPath.row + 1 == [[self.nyxRowsForSections objectAtIndex:0] count])
     {
-        // Load more mails when reach end.
-        if (indexPath.row + 1 == [[self.nyxRowsForSections objectAtIndex:0] count])
+        // Is this LAST CELL for REGULAR TABLE or SEARCH ?
+        if (!_showingSearchResult) // Regular Table.
         {
-            _preserveIndexPathAfterLoadFromId = indexPath;
-            NSString *fromID = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"id_mail"];
-            [self getDataForMailboxFromId:fromID];
+            if ([self.peopleTableMode isEqualToString:kPeopleTableModeMailbox])
+            {
+                _preserveIndexPathAfterLoadFromId = indexPath;
+                NSString *fromID = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"id_mail"];
+                [self getDataForMailboxFromId:fromID];
+            }
+            
+            if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion])
+            {
+                _preserveIndexPathAfterLoadFromId = indexPath;
+                NSString *fromID = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"id_wu"];
+                NSString *discussionId = [self.disscussionClubData objectForKey:@"id_klub"];
+                [self getDataForDiscussion:discussionId fromId:fromID];
+            }
         }
-    }
-    else if ([self.peopleTableMode isEqualToString:kPeopleTableModeMailbox] && _showingSearchResult)
-    {
-        // Load more SEARCH in mails when reach end.
-        if (indexPath.row + 1 == [[self.nyxRowsForSections objectAtIndex:0] count])
+        else // Search Table.
         {
-            _preserveIndexPathAfterLoadFromId = indexPath;
-            NSString *fromID = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"id_mail"];
-            [self getDataForSearchMailboxNick:_searchNick andText:_searchText fromId:fromID];
-        }
-    }
-    
-    if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion] && !_showingSearchResult)
-    {
-        // Load more posts when reach end.
-        if (indexPath.row + 1 == [[self.nyxRowsForSections objectAtIndex:0] count])
-        {
-            _preserveIndexPathAfterLoadFromId = indexPath;
-            NSString *fromID = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"id_wu"];
-            NSString *discussionId = [self.disscussionClubData objectForKey:@"id_klub"];
-            [self getDataForDiscussion:discussionId fromId:fromID];
-        }
-    }
-    else if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion] && _showingSearchResult)
-    {
-        if (indexPath.row + 1 == [[self.nyxRowsForSections objectAtIndex:0] count])
-        {
-            _preserveIndexPathAfterLoadFromId = indexPath;
-            NSString *fromID = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"id_wu"];
-            [self getDataForSearchDiscussionNick:_searchNick andText:_searchText fromWuId:fromID];
-        }
-    }
-    
-    if ([self.peopleTableMode isEqualToString:kPeopleTableModeSearch] && _showingSearchResult)
-    {
-        // Load more SEARCH when reach end.
-        if (indexPath.row + 1 == [[self.nyxRowsForSections objectAtIndex:0] count])
-        {
-            _preserveIndexPathAfterLoadFromId = indexPath;
-            _globalSearchPage += 20;
-            [self getDataForSearchNick:_searchNick andText:_searchText page:_globalSearchPage];
+            if ([self.peopleTableMode isEqualToString:kPeopleTableModeMailbox])
+            {
+                _preserveIndexPathAfterLoadFromId = indexPath;
+                NSString *fromID = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"id_mail"];
+                [self getDataForSearchMailboxNick:_searchNick andText:_searchText fromId:fromID];
+            }
+            
+            if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion])
+            {
+                _preserveIndexPathAfterLoadFromId = indexPath;
+                NSString *fromID = [[[self.nyxRowsForSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"id_wu"];
+                [self getDataForSearchDiscussionNick:_searchNick andText:_searchText fromWuId:fromID];
+            }
+            
+            // Only in Search Table.
+            if ([self.peopleTableMode isEqualToString:kPeopleTableModeSearch])
+            {
+                _preserveIndexPathAfterLoadFromId = indexPath;
+                _globalSearchPage += 20;
+                [self getDataForSearchNick:_searchNick andText:_searchText page:_globalSearchPage];
+            }
         }
     }
 }
@@ -680,6 +683,7 @@
     self.nestedPeopleTable.canEditFirstRow = YES;
     self.nestedPeopleTable.widthForTableCellBodyTextView = self.widthForTableCellBodyTextView;
     self.nestedPeopleTable.peopleTableMode = kPeopleTableModeDiscussion;
+    self.nestedPeopleTable.scrollToTopAfterReloadUntilUserScrolls = YES;
     [self.nController pushViewController:self.nestedPeopleTable animated:YES];
     [self.nestedPeopleTable getDataForDiscussion:dId fromId:postId];
 }
@@ -896,7 +900,6 @@
 
 - (void)downloadFinishedWithData:(NSData *)data withIdentification:(NSString *)identification
 {
-    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"");
     dispatch_async(dispatch_get_main_queue(), ^{
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
     });
@@ -1098,7 +1101,7 @@
                     
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [self enableNavigationButtons:YES];
-                        [self reloadTableDataWithScrollToTop:NO];
+                        [self reloadTableDataWithScrollToTop:self.scrollToTopAfterReloadUntilUserScrolls];
                     });
                 }
                 if ([identification isEqualToString:kApiIdentificationDataForDiscussionRefreshAfterPost])
