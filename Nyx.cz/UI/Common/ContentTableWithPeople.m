@@ -12,6 +12,8 @@
 #import "LoadingView.h"
 #import "Colors.h"
 #import "RichTextProcessor.h"
+#import "NewFeedPostVC.h"
+#import "PeopleAutocompleteVC.h"
 // Post content
 #import "WebVC.h"
 #import "ImagePreviewVC.h"
@@ -72,6 +74,8 @@
     
     // Refresh after new FEED POST.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getDataForFeedOfFriends) name:kNotificationFriendsFeedChanged object:nil];
+    // When MAIL RECIPIENT is choosen
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(composeNewMessageFor:) name:kNotificationMailboxNewMessageFor object:nil];
     // Refresh after new mail message is sent.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getDataForMailbox) name:kNotificationMailboxChanged object:nil];
     // Refresh and load newer posts after new POST is send to discussion.
@@ -86,6 +90,24 @@
     [_table setDelegate:self];
     [_table setRowHeight:_rh];
     _table.allowsSelection = self.allowsSelection;
+    
+    self.nController.topViewController.navigationItem.rightBarButtonItems = nil;
+    
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeed]) {
+        self.nController.topViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
+                                                                                                                             target:self
+                                                                                                                             action:@selector(composeNewPost:)];
+    }
+    
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeMailbox]) {
+        UIBarButtonItem *composeMessage = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
+                                                                                        target:self
+                                                                                        action:@selector(chooseNickname:)];
+        UIBarButtonItem *searchMessage = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch
+                                                                                       target:self
+                                                                                       action:@selector(showSearchAlert:)];
+        self.nController.topViewController.navigationItem.rightBarButtonItems = @[searchMessage, composeMessage];
+    }
     
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion]) {
         UIBarButtonItem *searchMessage = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch
@@ -1453,6 +1475,58 @@
         textField.placeholder = @"Text";
     }];
     [self.nController presentViewController:alert animated:YES completion:^{}];
+}
+
+
+#pragma mark - NEW FEED POST
+
+- (void)composeNewPost:(id)sender
+{
+    NewFeedPostVC *newFeedPostVC = [[NewFeedPostVC alloc] init];
+    UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:newFeedPostVC];
+    [self.nController presentViewController:nc animated:YES completion:^{}];
+}
+
+
+#pragma mark - COMPOSE NEW MAIL MESSAGE
+
+- (void)chooseNickname:(id)sender
+{
+    PeopleAutocompleteVC *mailPeopleFindNick = [[PeopleAutocompleteVC alloc] init];
+    UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:mailPeopleFindNick];
+    [self.nController presentViewController:nc animated:YES completion:^{}];
+}
+
+- (void)composeNewMessageFor:(NSNotification *)notification
+{
+    // When responding from notification, this method opened from NSNotificationCenter could open 2 windows - one on window below.
+    if (!self.view.window)
+        return;
+    
+    //    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), notification);
+    NSDictionary *userData = [[notification userInfo] objectForKey:@"nKey"];
+    NSString *nick = [userData objectForKey:@"nick"];
+    NSString *lastActiveTimestamp = [[userData objectForKey:@"active"] objectForKey:@"time"];
+    NSString *location = [[userData objectForKey:@"active"] objectForKey:@"location"];
+    
+    NSMutableString *body = [[NSMutableString alloc] initWithString:@"\nNová zpráva pro uživatele."];
+    if (lastActiveTimestamp) {
+        Timestamp *ts = [[Timestamp alloc] initWithTimestamp:lastActiveTimestamp];
+        [body appendString:[NSString stringWithFormat:@"\nPoslední aktivita: %@", [ts getTime]]];
+    }
+    if (location) {
+        [body appendString:[NSString stringWithFormat:@"\nPoslední lokace: %@", location]];
+    }
+    
+    PeopleRespondVC *response = [[PeopleRespondVC alloc] init];
+    response.nick = nick;
+    response.bodyText = [[NSAttributedString alloc] initWithString:body];
+    response.bodyHeight = 80;
+    response.postId = @"";
+    response.postData = @{@"other_nick": nick};
+    response.nController = self.nController;
+    response.peopleRespondMode = kPeopleTableModeMailbox;
+    [self.nController pushViewController:response animated:YES];
 }
 
 
