@@ -22,7 +22,7 @@ NSInteger const kWidthForTableCellBodyTextViewSubstract = 60;
 NSInteger const kMinimumPeopleTableCellHeight = 45;
 NSInteger const kNavigationBarHeight = 44;
 NSInteger const kStatusBarStandardHeight = 20;
-NSInteger const kHTTPRequestTimeout = 6;
+NSInteger const kHTTPRequestTimeout = 15;
 
 NSString* const kNotificationShowError = @"kNotificationShowError";
 NSString* const kNotificationShowInfo = @"kNotificationShowInfo";
