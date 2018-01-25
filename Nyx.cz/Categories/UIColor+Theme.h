@@ -21,6 +21,7 @@
 + (UIColor *)themeColorMainBackgroundDefault;
 + (UIColor *)themeColorMainBackgroundStyledElement;
 + (UIColor *)themeColorMainBackgroundUnreadHilight;
++ (UIColor *)themeColorBackgroundEmailSeen;
 + (UIColor *)themeColorBackgroundAlert;
 + (UIColor *)themeColorBackgroundInfo;
 + (UIColor *)themeColorBackgroundLoadingCoverView;
@@ -32,7 +33,6 @@
 
 + (UIColor *)themeColorRatingPositive;
 + (UIColor *)themeColorRatingNegative;
-+ (UIColor *)themeColorEmailSeen;
 + (UIColor *)themeColorStandardText;
 + (UIColor *)themeColorAlertText;
 + (UIColor *)themeColorTimestampText;

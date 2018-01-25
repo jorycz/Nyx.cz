@@ -27,13 +27,13 @@
     if (self) {
         self.menuEntries = @[@"Spočítat velikost cache",
                              @"Počáteční lokace",
-                             @"Smazat nastavení",
+                             @"Limit pro načtení nepřečtených",
                              @"Zobrazovat obrázky",
                              @"Otevřít v Safari",
                              @"Sdílet původní obrázky",
                              @"Spuštění na pozadí",
                              @"Uložená zpráva",
-                             @"Limit pro načtení nepřečtených",
+                             @"Smazat nastavení",
                              @"Kopírovat HTML kód"
                              ];
         self.menuSubtitles = @[@"Spočítá a případně umožní vymazat obsah mezipaměti.",
@@ -139,7 +139,11 @@
         NSString *missingLocation = [NSString stringWithFormat:@"Neurčena. Poslední navštívená: %@", last];
         (startingLocation && [startingLocation length] > 0) ? [cell.detailTextLabel setText:startingLocation] : [cell.detailTextLabel setText:missingLocation];
     }
-    
+    if (indexPath.row == 2) {
+        if ([Preferences maximumUnreadPostsLoad:nil]) {
+            [cell.detailTextLabel setText:[Preferences maximumUnreadPostsLoad:nil]];
+        }
+    }
     if (indexPath.row == 3) {
         cell.settingsSwitch = [self placeSwitchWithTag:indexPath.row];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -166,11 +170,7 @@
             [cell.detailTextLabel setText:@"Žádná uložená zpráva."];
         }
     }
-    if (indexPath.row == 8) {
-        if ([Preferences maximumUnreadPostsLoad:nil]) {
-            [cell.detailTextLabel setText:[Preferences maximumUnreadPostsLoad:nil]];
-        }
-    }
+    // 8 ...
     if (indexPath.row == 9) {
         cell.settingsSwitch = [self placeSwitchWithTag:indexPath.row];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -190,7 +190,7 @@
             [self chooseStartingLocation];
             break;
         case 2:
-            [self deleteSettings];
+            [self chooseMaximumUnreadLoad];
             break;
             
         // NO ACTION FOR CELL TAP FOR SWITCH BASED CELLS ...
@@ -235,7 +235,7 @@
         }
             break;
         case 8:
-            [self chooseMaximumUnreadLoad];
+            [self deleteSettings];
             break;
         default:
             break;
