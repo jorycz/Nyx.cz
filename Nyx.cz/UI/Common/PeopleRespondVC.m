@@ -139,9 +139,9 @@
                     [self.attachmentNames addObject:[d objectForKey:@"attachment"]];
             }
             if (_respondTo && [_respondTo length] > 0) {
-                self.responseView.text = [NSString stringWithFormat:@"%@\n%@", tmp, _respondTo];
+                self.responseView.text = [NSString stringWithFormat:@"%@\n\n%@", tmp, _respondTo];
             } else {
-                self.responseView.text = [NSString stringWithFormat:@"%@\n", tmp];
+                self.responseView.text = [NSString stringWithFormat:@"%@\n\n", tmp];
             }
         }
         else

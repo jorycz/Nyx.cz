@@ -33,7 +33,7 @@
                              @"Zobrazovat obrázky",
                              @"Spuštění na pozadí",
                              @"Uložená zpráva",
-                             @"Smazat nastavení",
+                             @"Reset nastavení",
                              @"Kopírovat HTML kód",
                              @"Grafické téma"
                              ];
@@ -451,6 +451,7 @@
         NSString *token = [Preferences auth_token:nil];
         [Preferences resetPreferences];
         [Preferences setupPreferences];
+        [Preferences username:nick];
         [Preferences auth_nick:nick];
         [Preferences auth_token:token];
         [self dismissSettings];

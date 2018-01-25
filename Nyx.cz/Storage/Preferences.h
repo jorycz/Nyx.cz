@@ -16,6 +16,7 @@
 
 + (void)resetPreferences;
 
+
 // SIMULATOR ONLY -----------------------
 + (NSString *)username:(NSString *)value;
 + (NSString *)password:(NSString *)value;

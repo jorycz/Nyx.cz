@@ -12,6 +12,7 @@
 #import "Constants.h"
 #import "Preferences.h"
 #import "Colors.h"
+#import "VersionDetector.h"
 
 // Fabric/Crashlitics - set user identifier after login.
 #import <Fabric/Fabric.h>
@@ -307,7 +308,12 @@
         {
             NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"APNS Registration already exist.");
         } else {
-            NSString *api = [ApiBuilder apiApnsRegisterWithClientName:kApnsClientNameDev andDeviceToken:dToken];
+            NSString *api;
+            if ([VersionDetector isAppStoreVersionInstalled]) {
+                api = [ApiBuilder apiApnsRegisterWithClientName:kApnsClientNameProd andDeviceToken:dToken];
+            } else {
+                api = [ApiBuilder apiApnsRegisterWithClientName:kApnsClientNameDev andDeviceToken:dToken];
+            }
 //            NSLog(@"%@ - %@ : APNS REGISTER [%@]", self, NSStringFromSelector(_cmd), api);
             ServerConnector *sc = [[ServerConnector alloc] init];
             sc.identifitaion = kApiIdentificationDataForApnsRegistration;

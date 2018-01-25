@@ -44,7 +44,7 @@
 + (UIColor *)themeColorMainBackgroundUnreadHilight
 {
     if ([self dark])
-        return UIColorFromRGB(0x364040);
+        return UIColorFromRGB(0x1F3636);
     return UIColorFromRGB(0xEBFFFF);
 }
 
