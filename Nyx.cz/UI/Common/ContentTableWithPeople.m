@@ -232,7 +232,12 @@
     cell.commentsCount = nil;
     cell.mailboxDirection = nil;
     cell.mailboxMailStatus = nil;
-    [cell.rating setString:[cellData objectForKey:@"wu_rating"] ? [cellData objectForKey:@"wu_rating"] : @""];
+    [cell.rating setString:@""];
+    
+    NSString *rating = [cellData objectForKey:@"wu_rating"];
+    if (rating && [rating length] > 0) {
+        [cell.rating setString:rating];
+    }
     
     if (cellData)
     {
