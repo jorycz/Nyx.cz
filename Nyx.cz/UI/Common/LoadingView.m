@@ -36,7 +36,7 @@
             [images addObject:[UIImage imageNamed:[imageNames objectAtIndex:i]]];
         }
         // Normal Animation
-        UIImageView *animationImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 200, 200)];
+        UIImageView *animationImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 140, 140)];
         animationImageView.center = self.center;
         animationImageView.animationImages = images;
         animationImageView.animationDuration = 0.5;
