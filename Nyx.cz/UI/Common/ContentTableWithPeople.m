@@ -90,13 +90,12 @@
     [_table setDelegate:self];
     [_table setRowHeight:_rh];
     _table.allowsSelection = self.allowsSelection;
-    
-    self.nController.topViewController.navigationItem.rightBarButtonItems = nil;
-    
+        
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeed]) {
-        self.nController.topViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
-                                                                                                                             target:self
-                                                                                                                             action:@selector(composeNewPost:)];
+        UIBarButtonItem *composeNewPost = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
+                                                                                        target:self
+                                                                                        action:@selector(composeNewPost:)];
+        self.nController.topViewController.navigationItem.rightBarButtonItems = @[composeNewPost];
     }
     
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeMailbox]) {
@@ -119,10 +118,18 @@
         self.nController.topViewController.navigationItem.rightBarButtonItems = @[searchMessage, newPost];
     }
     
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeSearch]) {
+        UIBarButtonItem *searchMessage = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch
+                                                                                       target:self
+                                                                                       action:@selector(showSearchAlert:)];
+        self.nController.topViewController.navigationItem.rightBarButtonItems = @[searchMessage];
+    }
+    
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeRatingInfo]) {
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop
-                                                                                               target:self
-                                                                                               action:@selector(dismiss)];
+        UIBarButtonItem *dismiss = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop
+                                                                                        target:self
+                                                                                        action:@selector(dismiss:)];
+        self.navigationItem.rightBarButtonItems = @[dismiss];
     }
     
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeMailbox] ||
@@ -1532,7 +1539,7 @@
 
 #pragma mark - DISMISS
 
-- (void)dismiss
+- (void)dismiss:(id)sender
 {
     [self dismissViewControllerAnimated:YES completion:^{}];
 }
