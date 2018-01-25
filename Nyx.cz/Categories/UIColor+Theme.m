@@ -22,7 +22,7 @@
 }
 
 
-// BACKGROUNDS
+#pragma mark - BACKGROUNDS
 
 + (UIColor *)themeColorClear
 {
@@ -107,7 +107,7 @@
 }
 
 
-// FOREGROUNDS
+#pragma mark - FOREGROUNDS
 
 + (UIColor *)themeColorRatingPositive
 {
@@ -122,7 +122,7 @@
 + (UIColor *)themeColorStandardText
 {
     if ([self dark])
-        return UIColorFromRGB(0xFFFFFF);
+        return UIColorFromRGB(0xE3E3E3);
     return UIColorFromRGB(0x000000);
 }
 

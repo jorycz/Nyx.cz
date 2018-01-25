@@ -39,13 +39,13 @@
                              ];
         self.menuSubtitles = @[@"Spočítá a případně umožní vymazat obsah mezipaměti.",
                                @"",
-                               @"Smaže veškeré nastavení kromě autorizace.",
+                               @"",
                                @"Zobrazovat v postech originál obrázky.",
                                @"Otevře URL linky v Safari místo v aplikaci.",
                                @"Před sdílením stáhne originální obrázky.",
                                @"",
                                @"Zobrazí uloženou zprávu, pokud existuje.",
-                               @"",
+                               @"Smaže veškeré nastavení kromě autorizace.",
                                @"Zobrazí možnost zkopírovat HTML kód.",
                                @""
                                ];
@@ -126,6 +126,8 @@
     
     cell.tag = (int)indexPath.row;
     cell.textLabel.text = [self.menuEntries objectAtIndex:indexPath.row];
+    cell.detailTextLabel.text = [self.menuSubtitles objectAtIndex:indexPath.row];
+    
     cell.accessoryType = UITableViewCellAccessoryNone;
     cell.selectionStyle = UITableViewCellSelectionStyleDefault;
     cell.textLabel.textColor = [UIColor themeColorStandardText];
@@ -133,9 +135,6 @@
     
     [cell.settingsSwitch removeFromSuperview];
     cell.settingsSwitch = nil;
-    
-    NSString *subtitle = [self.menuSubtitles objectAtIndex:indexPath.row];
-    [subtitle length] > 0 ? cell.detailTextLabel.text = subtitle : NULL ;
     
     if (indexPath.row == 1) {
         NSString *startingLocation = [Preferences preferredStartingLocation:nil];

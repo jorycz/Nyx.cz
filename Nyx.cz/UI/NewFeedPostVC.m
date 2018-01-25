@@ -44,6 +44,7 @@
     
     _tv = [[UITextView alloc] init];
     _tv.backgroundColor = [UIColor themeColorMainBackgroundDefault];
+    _tv.textColor = [UIColor themeColorStandardText];
     _tv.clipsToBounds = YES;
     _tv.layer.cornerRadius = 8.0f;
     _tv.textContainerInset = UIEdgeInsetsMake(6, 4, 6, 4);

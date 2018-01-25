@@ -589,7 +589,7 @@
     NSString *clubDescription = [NSString stringWithFormat:@"%@\n%@",
                                  [self.disscussionClubData objectForKey:@"name_main"],
                                  [self.disscussionClubData objectForKey:@"name_sub"]];
-    NSAttributedString *club = [[NSAttributedString alloc] initWithString:clubDescription];
+    NSAttributedString *club = [[NSAttributedString alloc] initWithString:clubDescription attributes:@{NSForegroundColorAttributeName : [UIColor themeColorStandardText]}];
     
     [self showRespondViewWithNick:@""
                          bodyText:club
@@ -1527,7 +1527,7 @@
     
     PeopleRespondVC *response = [[PeopleRespondVC alloc] init];
     response.nick = nick;
-    response.bodyText = [[NSAttributedString alloc] initWithString:body];
+    response.bodyText = [[NSAttributedString alloc] initWithString:body attributes:@{NSForegroundColorAttributeName : [UIColor themeColorStandardText]}];
     response.bodyHeight = 80;
     response.postId = @"";
     response.postData = @{@"other_nick": nick};
