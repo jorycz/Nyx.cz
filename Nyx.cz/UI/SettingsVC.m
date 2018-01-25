@@ -28,13 +28,14 @@
         self.menuEntries = @[@"Spočítat velikost cache",
                              @"Počáteční lokace",
                              @"Limit pro načtení nepřečtených",
-                             @"Zobrazovat obrázky",
-                             @"Otevřít v Safari",
                              @"Sdílet původní obrázky",
+                             @"Otevřít v Safari",
+                             @"Zobrazovat obrázky",
                              @"Spuštění na pozadí",
                              @"Uložená zpráva",
                              @"Smazat nastavení",
-                             @"Kopírovat HTML kód"
+                             @"Kopírovat HTML kód",
+                             @"Grafické téma"
                              ];
         self.menuSubtitles = @[@"Spočítá a případně umožní vymazat obsah mezipaměti.",
                                @"",
@@ -45,7 +46,8 @@
                                @"",
                                @"Zobrazí uloženou zprávu, pokud existuje.",
                                @"",
-                               @"Zobrazí možnost zkopírovat HTML kód."
+                               @"Zobrazí možnost zkopírovat HTML kód.",
+                               @""
                                ];
     }
     return self;
@@ -126,6 +128,8 @@
     cell.textLabel.text = [self.menuEntries objectAtIndex:indexPath.row];
     cell.accessoryType = UITableViewCellAccessoryNone;
     cell.selectionStyle = UITableViewCellSelectionStyleDefault;
+    cell.textLabel.textColor = [UIColor themeColorStandardText];
+    cell.detailTextLabel.textColor = [UIColor themeColorStandardText];
     
     [cell.settingsSwitch removeFromSuperview];
     cell.settingsSwitch = nil;
@@ -174,6 +178,11 @@
     if (indexPath.row == 9) {
         cell.settingsSwitch = [self placeSwitchWithTag:indexPath.row];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    }
+    if (indexPath.row == 10) {
+        if ([Preferences theme:nil]) {
+            [cell.detailTextLabel setText:[Preferences theme:nil]];
+        }
     }
     
     return cell;
@@ -237,9 +246,41 @@
         case 8:
             [self deleteSettings];
             break;
+        case 10:
+        {
+            UIAlertController *a = [UIAlertController alertControllerWithTitle:@"Vyber téma aplikace"
+                                                                       message:@"Po zvolení tématu se aplikace ukončí a bude nutné ji znovu spustit."
+                                                                preferredStyle:(UIAlertControllerStyleAlert)];
+            UIAlertAction *light = [UIAlertAction actionWithTitle:kThemeLight style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+                [Preferences theme:kThemeLight];
+                [self changedThemeWarning];
+            }];
+            [a addAction:light];
+            UIAlertAction *dark = [UIAlertAction actionWithTitle:kThemeDark style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+                [Preferences theme:kThemeDark];
+                [self changedThemeWarning];
+            }];
+            [a addAction:dark];
+            UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Zrušit" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {}];
+            [a addAction:cancel];
+            [self presentViewController:a animated:YES completion:^{}];
+        }
+            break;
         default:
             break;
     }
+}
+
+- (void)changedThemeWarning
+{
+    UIAlertController *a = [UIAlertController alertControllerWithTitle:@"Ukončení aplikace"
+                                                               message:@"Po kliknutí na OK se aplikace ukončí. Po spuštění bude aplikováno nově zvolené téma."
+                                                        preferredStyle:(UIAlertControllerStyleAlert)];
+    UIAlertAction *ok = [UIAlertAction actionWithTitle:@"OK" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+        exit(0);
+    }];
+    [a addAction:ok];
+    [self presentViewController:a animated:YES completion:^{}];
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
@@ -263,11 +304,11 @@
     
     // INITIAL STATE
     if (tag == 3)
-        [[Preferences showImagesInlineInPost:nil] length] > 0 ? [s setOn:YES] : [s setOn:NO] ;
+        [[Preferences shareFullSizeImages:nil] length] > 0 ? [s setOn:YES] : [s setOn:NO] ;
     if (tag == 4)
         [[Preferences openUrlsInSafari:nil] length] > 0 ? [s setOn:YES] : [s setOn:NO] ;
     if (tag == 5)
-        [[Preferences shareFullSizeImages:nil] length] > 0 ? [s setOn:YES] : [s setOn:NO] ;
+        [[Preferences showImagesInlineInPost:nil] length] > 0 ? [s setOn:YES] : [s setOn:NO] ;
     if (tag == 9)
         [[Preferences allowCopyOfHTMLSourceCode:nil] length] > 0 ? [s setOn:YES] : [s setOn:NO] ;
     
@@ -279,11 +320,11 @@
     UISwitch *s = (UISwitch *)sender;
     
     if (s.tag == 3)
-        s.isOn ? [Preferences showImagesInlineInPost:@"yes"] : [Preferences showImagesInlineInPost:@""] ;
+        s.isOn ? [Preferences shareFullSizeImages:@"yes"] : [Preferences shareFullSizeImages:@""] ;
     if (s.tag == 4)
         s.isOn ? [Preferences openUrlsInSafari:@"yes"] : [Preferences openUrlsInSafari:@""] ;
     if (s.tag == 5)
-        s.isOn ? [Preferences shareFullSizeImages:@"yes"] : [Preferences shareFullSizeImages:@""] ;
+        s.isOn ? [Preferences showImagesInlineInPost:@"yes"] : [Preferences showImagesInlineInPost:@""] ;
     if (s.tag == 9)
         s.isOn ? [Preferences allowCopyOfHTMLSourceCode:@"yes"] : [Preferences allowCopyOfHTMLSourceCode:@""] ;
 }

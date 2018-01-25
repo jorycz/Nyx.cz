@@ -24,12 +24,13 @@
 + (UIColor *)themeColorBackgroundEmailSeen;
 + (UIColor *)themeColorBackgroundAlert;
 + (UIColor *)themeColorBackgroundInfo;
-+ (UIColor *)themeColorBackgroundLoadingCoverView;
++ (UIColor *)themeColorBackgroundMainContentCoverView;
 + (UIColor *)themeColorBackgroundRespondElement;
 + (UIColor *)themeColorBackgroundCircleAttention;
 + (UIColor *)themeColorBackgroundSideMenuTopBottomBorderLines;
 + (UIColor *)themeColorBackgroundCellThumbUp;
 + (UIColor *)themeColorBackgroundCellThumbDown;
++ (UIColor *)themeColorBackgroundLoadingView;
 
 // FOREGROUNDS
 

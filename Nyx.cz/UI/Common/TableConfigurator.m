@@ -11,6 +11,7 @@
 #import "ComputeRowHeight.h"
 #import "Preferences.h"
 #import "Timestamp.h"
+#import "Colors.h"
 
 
 @implementation TableConfigurator
@@ -222,7 +223,7 @@
                 NSMutableString *body = [[NSMutableString alloc] initWithString:@""];
                 [body appendString:[NSString stringWithFormat:@"Poslední aktivita: %@", [ts getTime]]];
                 [body appendString:[NSString stringWithFormat:@"\nPoslední lokace: %@", location]];
-                NSAttributedString *atStr = [[NSAttributedString alloc] initWithString:body];
+                NSAttributedString *atStr = [[NSAttributedString alloc] initWithString:body attributes:@{NSForegroundColorAttributeName : [UIColor themeColorStandardText]}];
                 [tempArrayForRowBodyText addObject:atStr];
             } else {
                 [tempArrayForRowBodyText addObject:[[NSAttributedString alloc] initWithString:@""]];

@@ -8,6 +8,8 @@
 
 #import "LoadingView.h"
 #import "Constants.h"
+#import "Colors.h"
+
 
 @implementation LoadingView
 
@@ -17,7 +19,7 @@
     if (self)
     {
         self.tag = kLoadingCoverViewTag;
-        self.backgroundColor = [UIColor colorWithWhite:1 alpha:.9];
+        self.backgroundColor = [UIColor themeColorBackgroundLoadingView];
         
 //        UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:(UIActivityIndicatorViewStyleGray)];
 //        [self addSubview:spinner];

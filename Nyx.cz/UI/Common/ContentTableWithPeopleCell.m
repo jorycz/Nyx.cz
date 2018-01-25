@@ -20,6 +20,7 @@
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])
     {
         self.backgroundColor = [UIColor themeColorMainBackgroundDefault];
+        self.textLabel.textColor = [UIColor themeColorStandardText];
         
         _avatarView = [[UIImageView alloc] init];
         _avatarView.backgroundColor = [UIColor themeColorClear];

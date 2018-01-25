@@ -10,6 +10,7 @@
 #import "Constants.h"
 #import "Preferences.h"
 #import "ComputeRowHeightTextAttachment.h"
+#import "UIColor+Theme.h"
 
 
 @implementation ComputeRowHeight
@@ -31,7 +32,8 @@
         
         NSError *error = nil;
         self.attributedText = [[NSMutableAttributedString alloc] initWithData:textData options:@{NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
-                                                                                                 NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding)}
+                                                                                                 NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding)
+                                                                                                 }
                                                            documentAttributes:nil
                                                                         error:&error];
         if (error) {
@@ -68,6 +70,16 @@
              } else {
              }
          }];
+        
+        // Replace TEXT COLOR.
+        [self.attributedText enumerateAttribute:NSForegroundColorAttributeName
+                                        inRange:NSMakeRange(0, [self.attributedText length])
+                                        options:0
+                                     usingBlock:^(id  _Nullable value, NSRange range, BOOL * _Nonnull stop)
+        {
+            [self.attributedText removeAttribute:NSForegroundColorAttributeName range:range];
+            [self.attributedText addAttribute:NSForegroundColorAttributeName value:[UIColor themeColorStandardText] range:range];
+        }];
                 
         CGSize constraintSize = CGSizeMake(currentWidth, MAXFLOAT);
         CGRect rect = [self.attributedText boundingRectWithSize:constraintSize options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) context:nil];

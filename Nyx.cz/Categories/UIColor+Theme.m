@@ -7,8 +7,20 @@
 //
 
 #import "UIColor+Theme.h"
+#import "Preferences.h"
+#import "Constants.h"
+
 
 @implementation UIColor (Theme)
+
+
++ (BOOL)dark
+{
+    if ([[Preferences theme:nil] isEqualToString:kThemeDark])
+        return YES;
+    return NO;
+}
+
 
 // BACKGROUNDS
 
@@ -19,6 +31,8 @@
 
 + (UIColor *)themeColorMainBackgroundDefault
 {
+    if ([self dark])
+        return UIColorFromRGB(0x000000);
     return UIColorFromRGB(0xFFFFFF);
 }
 
@@ -29,11 +43,15 @@
 
 + (UIColor *)themeColorMainBackgroundUnreadHilight
 {
+    if ([self dark])
+        return UIColorFromRGB(0x364040);
     return UIColorFromRGB(0xEBFFFF);
 }
 
 + (UIColor *)themeColorBackgroundEmailSeen
 {
+    if ([self dark])
+        return UIColorFromRGB(0x383838);
     return UIColorFromRGB(0xF0F0F0);
 }
 
@@ -47,13 +65,17 @@
     return UIColorFromRGB(0x287874);
 }
 
-+ (UIColor *)themeColorBackgroundLoadingCoverView
++ (UIColor *)themeColorBackgroundMainContentCoverView
 {
+    if ([self dark])
+        return UIColorFromRGB(0xFFFFFF);
     return UIColorFromRGB(0x000000);
 }
 
 + (UIColor *)themeColorBackgroundRespondElement
 {
+    if ([self dark])
+        return UIColorFromRGB(0x4A4A4A);
     return UIColorFromRGB(0xF2F2F2);
 }
 
@@ -77,6 +99,14 @@
     return UIColorFromRGB(0xEB0000);
 }
 
++ (UIColor *)themeColorBackgroundLoadingView
+{
+    if ([self dark])
+        return [UIColor colorWithWhite:0.1 alpha:.9];
+    return  [UIColor colorWithWhite:1 alpha:.9];
+}
+
+
 // FOREGROUNDS
 
 + (UIColor *)themeColorRatingPositive
@@ -91,6 +121,8 @@
 
 + (UIColor *)themeColorStandardText
 {
+    if ([self dark])
+        return UIColorFromRGB(0xFFFFFF);
     return UIColorFromRGB(0x000000);
 }
 
@@ -106,6 +138,8 @@
 
 + (UIColor *)themeColorURL
 {
+    if ([self dark])
+        return UIColorFromRGB(0x5252FF);
     return UIColorFromRGB(0x0000FF);
 }
 
