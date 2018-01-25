@@ -16,7 +16,7 @@
 {
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])
     {
-        self.backgroundColor = COLOR_BACKGROUND_WHITE;
+        self.backgroundColor = [UIColor themeColorMainBackgroundDefault];
         
         _separator = [[UIView alloc] init];
         _separator.backgroundColor = [UIColor colorWithWhite:.5 alpha:.5];
@@ -44,7 +44,7 @@
     if (self.settingsSwitch)
     {
         self.settingsSwitch.tintColor = [UIColor lightGrayColor];
-        self.settingsSwitch.onTintColor = COLOR_SYSTEM_TURQUOISE;
+        self.settingsSwitch.onTintColor = [UIColor themeColorMainBackgroundStyledElement];
         CGRect f = self.frame;
         CGRect sf = self.settingsSwitch.frame;
         [self addSubview:self.settingsSwitch];

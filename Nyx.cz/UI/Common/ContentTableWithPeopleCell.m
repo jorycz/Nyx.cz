@@ -19,10 +19,10 @@
 {
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])
     {
-        self.backgroundColor = COLOR_BACKGROUND_WHITE;
+        self.backgroundColor = [UIColor themeColorMainBackgroundDefault];
         
         _avatarView = [[UIImageView alloc] init];
-        _avatarView.backgroundColor = COLOR_CLEAR;
+        _avatarView.backgroundColor = [UIColor themeColorClear];
         _avatarView.contentMode = UIViewContentModeCenter;
         _avatarView.layer.cornerRadius = 5;
         _avatarView.layer.masksToBounds = YES;
@@ -30,38 +30,38 @@
         [self addSubview:_avatarView];
         
         _nickLabel = [[UILabel alloc] init];
-        _nickLabel.backgroundColor = COLOR_CLEAR;
-        _nickLabel.textColor = COLOR_TEXT_BLACK;
+        _nickLabel.backgroundColor = [UIColor themeColorClear];
+        _nickLabel.textColor = [UIColor themeColorStandardText];
         _nickLabel.userInteractionEnabled = NO;
         _nickLabel.textAlignment = NSTextAlignmentLeft;
         _nickLabel.font = [UIFont boldSystemFontOfSize:14];
         [self addSubview:_nickLabel];
         
         _timeLabel = [[UILabel alloc] init];
-        _timeLabel.backgroundColor = COLOR_CLEAR;
+        _timeLabel.backgroundColor = [UIColor themeColorClear];
         _timeLabel.userInteractionEnabled = NO;
         _timeLabel.textAlignment = NSTextAlignmentRight;
-        _timeLabel.textColor = COLOR_TIMELABEL;
+        _timeLabel.textColor = [UIColor themeColorTimestampText];
         _timeLabel.font = [UIFont systemFontOfSize:12];
         [self addSubview:_timeLabel];
         
         _ratingLabel = [[UILabel alloc] init];
-        _ratingLabel.backgroundColor = COLOR_CLEAR;
+        _ratingLabel.backgroundColor = [UIColor themeColorClear];
         _ratingLabel.userInteractionEnabled = NO;
         _ratingLabel.textAlignment = NSTextAlignmentCenter;
         _ratingLabel.font = [UIFont boldSystemFontOfSize:12];
         [self addSubview:_ratingLabel];
         
         _bodyView = [[UITextView alloc] init];
-        _bodyView.backgroundColor = COLOR_CLEAR;
-        _bodyView.textColor = COLOR_TEXT_BLACK;
+        _bodyView.backgroundColor = [UIColor themeColorClear];
+        _bodyView.textColor = [UIColor themeColorStandardText];
         _bodyView.userInteractionEnabled = NO;
         [_bodyView setTextContainerInset:UIEdgeInsetsZero];
         _bodyView.textContainer.lineFragmentPadding = 0;
         [self addSubview:_bodyView];
         
-        NSDictionary *linkAttributes = @{NSForegroundColorAttributeName: COLOR_URL,
-                                         NSUnderlineColorAttributeName: COLOR_CLEAR,
+        NSDictionary *linkAttributes = @{NSForegroundColorAttributeName: [UIColor themeColorURL],
+                                         NSUnderlineColorAttributeName: [UIColor themeColorClear],
                                          NSUnderlineStyleAttributeName: @(NSUnderlineStyleNone)};
         _bodyView.linkTextAttributes = linkAttributes;
         
@@ -76,7 +76,7 @@
         
         _disclosure = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"disclosure"]];
         _disclosure.contentMode = UIViewContentModeCenter;
-        _disclosure.backgroundColor = COLOR_CLEAR;
+        _disclosure.backgroundColor = [UIColor themeColorClear];
         [self addSubview:_disclosure];
         
         self.rating = [[NSMutableString alloc] initWithString:@""];
@@ -136,22 +136,22 @@
     _nickLabel.alpha = 1;
     _bodyView.alpha = 1;
     
-    self.backgroundColor = COLOR_BACKGROUND_WHITE;
+    self.backgroundColor = [UIColor themeColorMainBackgroundDefault];
     
     if (self.mailboxDirection && [self.mailboxDirection isEqualToString:@"to"]) {
         _avatarView.alpha = .35;
     }
     if (self.mailboxMailStatus && [self.mailboxMailStatus isEqualToString:@"read"]) {
-        self.backgroundColor = COLOR_MAIL_READ;
+        self.backgroundColor = [UIColor themeColorBackgroundEmailSeen];
     }
     if (self.commentsCount && [self.commentsCount intValue] > 0) {
-        self.backgroundColor = COLOR_SYSTEM_TURQUOISE_LIGHT;
+        self.backgroundColor = [UIColor themeColorMainBackgroundUnreadHilight];
     }
     if (self.activeFriendStatus) {
-        self.backgroundColor = COLOR_SYSTEM_TURQUOISE_LIGHT;
+        self.backgroundColor = [UIColor themeColorMainBackgroundUnreadHilight];
     }
     if (self.discussionNewPost && [self.discussionNewPost isEqualToString:@"yes"]) {
-        self.backgroundColor = COLOR_SYSTEM_TURQUOISE_LIGHT;
+        self.backgroundColor = [UIColor themeColorMainBackgroundUnreadHilight];
     }
     if (self.time && [self.time length] > 0) {
         _timeLabel.text = self.time;
@@ -164,7 +164,7 @@
     {
         NSInteger r = [self.rating integerValue];
         if (r < 0) {
-            _ratingLabel.textColor = COLOR_RATING_NEGATIVE;
+            _ratingLabel.textColor = [UIColor themeColorRatingNegative];
             _ratingLabel.text = self.rating;
             if (r < -5)
             {
@@ -173,7 +173,7 @@
                 _bodyView.alpha = .3;
             }
         } else {
-            _ratingLabel.textColor = COLOR_RATING_POSITIVE;
+            _ratingLabel.textColor = [UIColor themeColorRatingPositive];
             _ratingLabel.text = [NSString stringWithFormat:@"+%@", self.rating];
         }
     } else {
@@ -229,15 +229,15 @@
     NewNoticesForPost *np = [[NewNoticesForPost alloc] initWithPost:post forLastVisit:self.noticesLastVisit];
     
     if (np.nPosts && [np.nPosts count] > 0) {
-        self.backgroundColor = COLOR_SYSTEM_TURQUOISE_LIGHT;
+        self.backgroundColor = [UIColor themeColorMainBackgroundUnreadHilight];
         if ([self.peopleCellMode isEqualToString:kPeopleTableModeNotices])
             _disclosure.alpha = 1;
     }
     
     if (np.nThumbup && [np.nThumbup count] > 0)
-        self.backgroundColor = COLOR_SYSTEM_TURQUOISE_LIGHT;
+        self.backgroundColor = [UIColor themeColorMainBackgroundUnreadHilight];
     if (np.nThumbsdown && [np.nThumbsdown count] > 0)
-        self.backgroundColor = COLOR_SYSTEM_TURQUOISE_LIGHT;
+        self.backgroundColor = [UIColor themeColorMainBackgroundUnreadHilight];
     
     // Show disclosure indicator even for old posts.
     if (np.oPosts && [np.oPosts count] > 0) {
@@ -252,7 +252,7 @@
         NSInteger last = [self.noticesLastVisit integerValue];
         NSInteger postTime = [replyTime integerValue];
         if (postTime > last) {
-            self.backgroundColor = COLOR_SYSTEM_TURQUOISE_LIGHT;
+            self.backgroundColor = [UIColor themeColorMainBackgroundUnreadHilight];
         }
     }
 }

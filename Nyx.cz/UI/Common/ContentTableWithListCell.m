@@ -17,17 +17,17 @@
 {
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])
     {
-        self.backgroundColor = COLOR_BACKGROUND_WHITE;
+        self.backgroundColor = [UIColor themeColorMainBackgroundDefault];
         
         _unreadLabel = [[UnreadLabel alloc] init];
         [self addSubview:_unreadLabel];
         
         _boardNameLabel = [[UILabel alloc] init];
-        _boardNameLabel.backgroundColor = COLOR_BACKGROUND_WHITE;
+        _boardNameLabel.backgroundColor = [UIColor themeColorMainBackgroundDefault];
         _boardNameLabel.userInteractionEnabled = NO;
         _boardNameLabel.textAlignment = NSTextAlignmentLeft;
         _boardNameLabel.font = [UIFont systemFontOfSize:12];
-        _boardNameLabel.textColor = COLOR_TEXT_BLACK;
+        _boardNameLabel.textColor = [UIColor themeColorStandardText];
         [self addSubview:_boardNameLabel];
         
         _separator = [[UIView alloc] init];
@@ -42,7 +42,7 @@
 {
     [super setSelected:selected animated:animated];
     // Preserver background colors.
-    _unreadLabel.backgroundColor = COLOR_SYSTEM_TURQUOISE;
+    _unreadLabel.backgroundColor = [UIColor themeColorMainBackgroundStyledElement];
     _separator.backgroundColor = _sepColor;
 }
 
@@ -50,7 +50,7 @@
 {
     [super setHighlighted:highlighted animated:animated];
     // Preserver background colors.
-    _unreadLabel.backgroundColor = COLOR_SYSTEM_TURQUOISE;
+    _unreadLabel.backgroundColor = [UIColor themeColorMainBackgroundStyledElement];
     _separator.backgroundColor = _sepColor;
 }
 
@@ -79,7 +79,7 @@
     if (unread < 1)
         _unreadLabel.alpha = .2;
     _boardNameLabel.text = self.boardName;
-    self.backgroundColor = COLOR_BACKGROUND_WHITE;
+    self.backgroundColor = [UIColor themeColorMainBackgroundDefault];
 }
 
 

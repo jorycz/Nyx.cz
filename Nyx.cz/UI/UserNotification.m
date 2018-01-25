@@ -56,7 +56,7 @@
     NotificationTopBar *nt = [[NotificationTopBar alloc] init];
     nt.notificationTitle = title;
     nt.notificationMessage = message;
-    [nt showNotificationWithBackgroundColor:COLOR_BACKGROUND_ALERT_BAR];
+    [nt showNotificationWithBackgroundColor:[UIColor themeColorBackgroundAlert]];
 }
 
 - (void)processInfoNotification:(id)sender
@@ -76,7 +76,7 @@
     NotificationTopBar *nt = [[NotificationTopBar alloc] init];
     nt.notificationTitle = title;
     nt.notificationMessage = message;
-    [nt showNotificationWithBackgroundColor:COLOR_BACKGROUND_INFO_BAR];
+    [nt showNotificationWithBackgroundColor:[UIColor themeColorBackgroundInfo]];
 }
 
 @end

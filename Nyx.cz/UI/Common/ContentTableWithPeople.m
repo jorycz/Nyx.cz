@@ -65,7 +65,7 @@
 {
     [super loadView];
     self.view = [[UIView alloc] init];
-    self.view.backgroundColor = COLOR_BACKGROUND_WHITE;
+    self.view.backgroundColor = [UIColor themeColorMainBackgroundDefault];
 }
 
 - (void)viewDidLoad
@@ -84,7 +84,7 @@
     _table = [[UITableView alloc] init];
     [self.view addSubview:_table];
 
-    [_table setBackgroundColor:COLOR_BACKGROUND_WHITE];
+    [_table setBackgroundColor:[UIColor themeColorMainBackgroundDefault]];
     [_table setSeparatorStyle:(UITableViewCellSeparatorStyleNone)];
     [_table setDataSource:self];
     [_table setDelegate:self];
@@ -318,9 +318,9 @@
 {
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeRatingInfo]) {
         if (section == 0) {
-            view.tintColor = COLOR_RATING_POSITIVE;
+            view.tintColor = [UIColor themeColorRatingPositive];
         } else {
-            view.tintColor = COLOR_RATING_NEGATIVE;
+            view.tintColor = [UIColor themeColorRatingNegative];
         }
     }
 }

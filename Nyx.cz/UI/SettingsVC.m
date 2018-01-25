@@ -55,7 +55,7 @@
 {
     [super loadView];
     self.view = [[UIView alloc] init];
-    self.view.backgroundColor = COLOR_BACKGROUND_WHITE;
+    self.view.backgroundColor = [UIColor themeColorMainBackgroundDefault];
 }
 
 - (void)viewDidLoad
@@ -72,7 +72,7 @@
     self.table = [[UITableView alloc] init];
     [self.table setDelegate:self];
     [self.table setDataSource:self];
-    [self.table setBackgroundColor:COLOR_BACKGROUND_WHITE];
+    [self.table setBackgroundColor:[UIColor themeColorMainBackgroundDefault]];
     [self.table setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     [self.table setRowHeight:80];
     [self.view addSubview:self.table];
@@ -118,7 +118,7 @@
     if (cell == nil)
     {
         cell = [[SettingsVCCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdForReuse];
-        cell.backgroundColor = COLOR_BACKGROUND_WHITE;
+        cell.backgroundColor = [UIColor themeColorMainBackgroundDefault];
         cell.textLabel.font = [UIFont boldSystemFontOfSize:22];
     }
     
@@ -249,7 +249,7 @@
 
 - (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section
 {
-    view.tintColor = COLOR_BACKGROUND_SETTINGS_DELETE_WARNING;
+    view.tintColor = [UIColor themeColorBackgroundAlert];
 }
 
 

@@ -74,8 +74,8 @@
 - (UILabel *)createLabel
 {
     UILabel *notificationView = [[UILabel alloc] initWithFrame:_title];
-    notificationView.backgroundColor = COLOR_CLEAR;
-    notificationView.textColor = COLOR_TEXT_ALERT_BAR;
+    notificationView.backgroundColor = [UIColor themeColorClear];
+    notificationView.textColor = [UIColor themeColorAlertText];
     notificationView.font = [UIFont systemFontOfSize:22];
     notificationView.textAlignment = NSTextAlignmentLeft;
     notificationView.adjustsFontSizeToFitWidth = YES;
@@ -88,8 +88,8 @@
 - (UILabel *)createMessage
 {
     UILabel *notificationView = [[UILabel alloc] initWithFrame:_message];
-    notificationView.backgroundColor = COLOR_CLEAR;
-    notificationView.textColor = COLOR_TEXT_ALERT_BAR;
+    notificationView.backgroundColor = [UIColor themeColorClear];
+    notificationView.textColor = [UIColor themeColorAlertText];
     notificationView.font = [UIFont systemFontOfSize:16];
     notificationView.textAlignment = NSTextAlignmentLeft;
     notificationView.adjustsFontSizeToFitWidth = YES;
@@ -105,8 +105,8 @@
     int viewWidth = self.frame.size.width;
     CGRect _closeInfo = CGRectMake(viewWidth - width - 10, 23, width, 20);
     UILabel *notificationView = [[UILabel alloc] initWithFrame:_closeInfo];
-    notificationView.backgroundColor = COLOR_CLEAR;
-    notificationView.textColor = COLOR_TEXT_ALERT_BAR;
+    notificationView.backgroundColor = [UIColor themeColorClear];
+    notificationView.textColor = [UIColor themeColorAlertText];
     notificationView.font = [UIFont systemFontOfSize:11];
     notificationView.textAlignment = NSTextAlignmentRight;
     notificationView.adjustsFontSizeToFitWidth = YES;

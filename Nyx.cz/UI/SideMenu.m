@@ -19,14 +19,14 @@
     self = [super initWithFrame:frame];
     if (self)
     {
-        self.backgroundColor = COLOR_BACKGROUND_WHITE;
+        self.backgroundColor = [UIColor themeColorMainBackgroundDefault];
 //        self.menuEntries = @[kMenuOverview, kMenuMail, kMenuBookmarks, kMenuHistory, kMenuFriendList, kMenuNotifications, kMenuSearchPosts, kMenuMarket, kMenuCalendar];
         self.menuEntries = @[kMenuOverview, kMenuMail, kMenuBookmarks, kMenuHistory, kMenuFriendList, kMenuNotifications, kMenuSearchPosts];
         
         self.table = [[UITableView alloc] init];
         [self.table setDelegate:self];
         [self.table setDataSource:self];
-        [self.table setBackgroundColor:COLOR_BACKGROUND_WHITE];
+        [self.table setBackgroundColor:[UIColor themeColorMainBackgroundDefault]];
         [self.table setSeparatorStyle:UITableViewCellSeparatorStyleNone];
         [self.table setRowHeight:40];
         [self addSubview:self.table];
@@ -38,10 +38,10 @@
         [self addSubview:self.bottomSection];
         
         _topBorder = [[UIView alloc] init];
-        _topBorder.backgroundColor = COLOR_SIDE_MENU_BORDER_LINES;
+        _topBorder.backgroundColor = [UIColor themeColorBackgroundSideMenuTopBottomBorderLines];
         _topBorder.alpha = .3;
         _bottomBorder = [[UIView alloc] init];
-        _bottomBorder.backgroundColor = COLOR_SIDE_MENU_BORDER_LINES;
+        _bottomBorder.backgroundColor = [UIColor themeColorBackgroundSideMenuTopBottomBorderLines];
         _bottomBorder.alpha = .3;
         [self addSubview:_topBorder];
         [self addSubview:_bottomBorder];

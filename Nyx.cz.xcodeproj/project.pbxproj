@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2B02B5D42019EC3F00B47451 /* UIColor+Theme.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B02B5D32019EC3F00B47451 /* UIColor+Theme.m */; };
+		2B02B5D72019EC5A00B47451 /* UIImage+Theme.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B02B5D62019EC5A00B47451 /* UIImage+Theme.m */; };
 		2B0D5D911FBC40F20052D63C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B0D5D901FBC40F20052D63C /* AppDelegate.m */; };
 		2B0D5D9A1FBC40F30052D63C /* Nyx_cz.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2B0D5D981FBC40F30052D63C /* Nyx_cz.xcdatamodeld */; };
 		2B0D5D9C1FBC40F30052D63C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2B0D5D9B1FBC40F30052D63C /* Assets.xcassets */; };
@@ -18,7 +20,6 @@
 		2B1D594F1FCB4EAD009E4A88 /* ComputeRowHeightTextAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B1D594E1FCB4EAD009E4A88 /* ComputeRowHeightTextAttachment.m */; };
 		2B1D59551FCCB3DD009E4A88 /* WebVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B1D59541FCCB3DD009E4A88 /* WebVC.m */; };
 		2B1D595F1FD016FD009E4A88 /* email@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B1D595E1FD016FA009E4A88 /* email@2x.png */; };
-		2B1D59611FD079C3009E4A88 /* chat@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B1D59601FD079C3009E4A88 /* chat@2x.png */; };
 		2B2303721FBC59DC00286062 /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B2303711FBC59DC00286062 /* logo.png */; };
 		2B23037A1FBC5BE700286062 /* Post.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B2303791FBC5BE700286062 /* Post.m */; };
 		2B23037D1FBC5C7F00286062 /* ServerConnector.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B23037C1FBC5C7F00286062 /* ServerConnector.m */; };
@@ -133,6 +134,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2B02B5D22019EC3F00B47451 /* UIColor+Theme.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIColor+Theme.h"; sourceTree = "<group>"; };
+		2B02B5D32019EC3F00B47451 /* UIColor+Theme.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Theme.m"; sourceTree = "<group>"; };
+		2B02B5D52019EC5A00B47451 /* UIImage+Theme.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIImage+Theme.h"; sourceTree = "<group>"; };
+		2B02B5D62019EC5A00B47451 /* UIImage+Theme.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Theme.m"; sourceTree = "<group>"; };
 		2B0D5D8C1FBC40F20052D63C /* Nyx.cz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Nyx.cz.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2B0D5D8F1FBC40F20052D63C /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		2B0D5D901FBC40F20052D63C /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -154,7 +159,6 @@
 		2B1D59531FCCB3DD009E4A88 /* WebVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WebVC.h; sourceTree = "<group>"; };
 		2B1D59541FCCB3DD009E4A88 /* WebVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WebVC.m; sourceTree = "<group>"; };
 		2B1D595E1FD016FA009E4A88 /* email@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "email@2x.png"; sourceTree = "<group>"; };
-		2B1D59601FD079C3009E4A88 /* chat@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "chat@2x.png"; sourceTree = "<group>"; };
 		2B2303711FBC59DC00286062 /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logo.png; path = Nyx.cz/Images/logo.png; sourceTree = SOURCE_ROOT; };
 		2B2303781FBC5BE700286062 /* Post.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Post.h; sourceTree = "<group>"; };
 		2B2303791FBC5BE700286062 /* Post.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Post.m; sourceTree = "<group>"; };
@@ -313,6 +317,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2B02B5C82019EB5400B47451 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				2B02B5D22019EC3F00B47451 /* UIColor+Theme.h */,
+				2B02B5D32019EC3F00B47451 /* UIColor+Theme.m */,
+				2B02B5D52019EC5A00B47451 /* UIImage+Theme.h */,
+				2B02B5D62019EC5A00B47451 /* UIImage+Theme.m */,
+			);
+			path = Categories;
+			sourceTree = "<group>";
+		};
 		2B0D5D831FBC40F20052D63C = {
 			isa = PBXGroup;
 			children = (
@@ -340,6 +355,7 @@
 				2BA80E9720172D2600DD9ED2 /* Crashlytics.framework */,
 				2BA80E9620172D2500DD9ED2 /* Fabric.framework */,
 				2B822AB22011E8770060FABE /* Nyx.cz.entitlements */,
+				2B02B5C82019EB5400B47451 /* Categories */,
 				2B38C3061FE162D60099D2FF /* Share */,
 				2B2303701FBC59C400286062 /* Images */,
 				2B317FD81FC21B8F0063B9EE /* Utils */,
@@ -405,7 +421,6 @@
 				2B3180261FC70C5A0063B9EE /* attachment@2x.png */,
 				2B3180281FC76B680063B9EE /* burger@2x.png */,
 				2B1D595E1FD016FA009E4A88 /* email@2x.png */,
-				2B1D59601FD079C3009E4A88 /* chat@2x.png */,
 				2B703FAC20193C7E001D3D27 /* newPost@2x.png */,
 				2BF6504B1FD4339900A43793 /* disclosure@2x.png */,
 				2B26F22C20091811008A8BA5 /* refresh@2x.png */,
@@ -735,7 +750,6 @@
 				2B42D41F1FC8CD3E009F751D /* 6.png in Resources */,
 				2B42D4141FC8CD3E009F751D /* 0.png in Resources */,
 				2B42D4161FC8CD3E009F751D /* 4.png in Resources */,
-				2B1D59611FD079C3009E4A88 /* chat@2x.png in Resources */,
 				2B42D4121FC8CD3E009F751D /* 1.png in Resources */,
 				2B42D4111FC8CD3E009F751D /* 19.png in Resources */,
 				2B3180271FC70C5B0063B9EE /* attachment@2x.png in Resources */,
@@ -809,10 +823,12 @@
 				2B317FDB1FC21BB00063B9EE /* Timestamp.m in Sources */,
 				2B1D59491FCB06CF009E4A88 /* SettingsVCCell.m in Sources */,
 				2B3180061FC32F8E0063B9EE /* ContentTableWithPeopleCell.m in Sources */,
+				2B02B5D42019EC3F00B47451 /* UIColor+Theme.m in Sources */,
 				2B6736061FBCE8F500DA728E /* SideMenu.m in Sources */,
 				2B38C30F1FE287F40099D2FF /* RichTextProcessor.m in Sources */,
 				2B23038A1FBC62F400286062 /* CoreData.m in Sources */,
 				2B23037D1FBC5C7F00286062 /* ServerConnector.m in Sources */,
+				2B02B5D72019EC5A00B47451 /* UIImage+Theme.m in Sources */,
 				2B3180091FC33AB20063B9EE /* MemCache.m in Sources */,
 				2BD251C21FC0CBFB00BE6272 /* CloseCoverView.m in Sources */,
 				2B23037A1FBC5BE700286062 /* Post.m in Sources */,

@@ -24,6 +24,9 @@
 + (NSString *)auth_nick:(NSString *)value;
 + (NSString *)auth_token:(NSString *)value;
 
+
+// USER PREFERENCES
+
 + (void)setupPreferences;
 + (NSString *)lastUserPosition:(NSString *)value;
 + (NSString *)preferredStartingLocation:(NSString *)value;
@@ -32,6 +35,7 @@
 + (NSString *)shareFullSizeImages:(NSString *)value;
 + (NSString *)maximumUnreadPostsLoad:(NSString *)value;
 + (NSString *)allowCopyOfHTMLSourceCode:(NSString *)value;
++ (NSString *)theme:(NSString *)value;
 
 
 // UTILITY

@@ -94,7 +94,7 @@
     // UI
     self.mainScreen = [[MainVC alloc] init];
     self.mainNavigationController = [[UINavigationController alloc] initWithRootViewController:self.mainScreen];
-    self.mainNavigationController.navigationBar.tintColor = COLOR_SYSTEM_TURQUOISE;
+    self.mainNavigationController.navigationBar.tintColor = [UIColor themeColorMainBackgroundStyledElement];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = UIColorFromRGB(0xBAE0FF);
@@ -219,6 +219,7 @@
             content.peopleTableMode = kPeopleTableModeMailbox;
             content.title = kMenuMail;
             
+            // Dismis modal VC - settings, contact, image preview, rating, etc ...
             [self.mainNavigationController dismissViewControllerAnimated:NO completion:^{}];
             
             [self.mainNavigationController pushViewController:content animated:YES];
@@ -238,6 +239,7 @@
             content.peopleTableMode = kPeopleTableModeDiscussion;
             content.title = name;
             
+            // Dismis modal VC - settings, contact, image preview, rating, etc ...
             [self.mainNavigationController dismissViewControllerAnimated:NO completion:^{}];
             
             [self.mainNavigationController pushViewController:content animated:YES];

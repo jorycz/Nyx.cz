@@ -18,8 +18,8 @@
     self = [super init];
     if (self) {
         
-        self.backgroundColor = COLOR_SYSTEM_TURQUOISE;
-        self.textColor = COLOR_BACKGROUND_WHITE;
+        self.backgroundColor = [UIColor themeColorMainBackgroundStyledElement];
+        self.textColor = [UIColor themeColorMainBackgroundDefault];
         self.userInteractionEnabled = NO;
         self.numberOfLines = 1;
         self.textAlignment = NSTextAlignmentCenter;

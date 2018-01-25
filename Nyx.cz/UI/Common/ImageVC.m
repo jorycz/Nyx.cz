@@ -22,7 +22,7 @@
 {
     [super loadView];
     self.view = [[UIView alloc] init];
-    self.view.backgroundColor = COLOR_CLEAR;
+    self.view.backgroundColor = [UIColor themeColorClear];
 }
 
 - (void)viewDidLoad
@@ -30,7 +30,7 @@
     [super viewDidLoad];
     
     _zoomView = [[UIScrollView alloc] init];
-    _zoomView.backgroundColor = COLOR_CLEAR;
+    _zoomView.backgroundColor = [UIColor themeColorClear];
     _zoomView.showsHorizontalScrollIndicator = NO;
     _zoomView.showsVerticalScrollIndicator = NO;
     _zoomView.delegate = self;
@@ -38,7 +38,7 @@
     [self.view addSubview:_zoomView];
     
     _imageView = [[UIImageView alloc] init];
-    _imageView.backgroundColor = COLOR_CLEAR;
+    _imageView.backgroundColor = [UIColor themeColorClear];
     _imageView.contentMode = UIViewContentModeScaleAspectFit;
     [_zoomView addSubview:_imageView];
     

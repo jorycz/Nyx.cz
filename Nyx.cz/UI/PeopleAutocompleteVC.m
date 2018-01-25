@@ -44,7 +44,7 @@
 {
     [super loadView];
     self.view = [[UIView alloc] init];
-    self.view.backgroundColor = COLOR_BACKGROUND_WHITE;
+    self.view.backgroundColor = [UIColor themeColorMainBackgroundDefault];
 }
 
 - (void)viewDidLoad
@@ -53,7 +53,7 @@
     _table = [[UITableView alloc] init];
     [self.view addSubview:_table];
     
-    [_table setBackgroundColor:COLOR_BACKGROUND_WHITE];
+    [_table setBackgroundColor:[UIColor themeColorMainBackgroundDefault]];
     [_table setSeparatorStyle:(UITableViewCellSeparatorStyleNone)];
     [_table setDataSource:self];
     [_table setDelegate:self];
@@ -63,7 +63,7 @@
     
     _searchField = [[UITextField alloc] init];
     _searchField.delegate = self;
-    _searchField.backgroundColor = COLOR_BACKGROUND_WHITE;
+    _searchField.backgroundColor = [UIColor themeColorMainBackgroundDefault];
     _searchField.clipsToBounds = YES;
     _searchField.layer.cornerRadius = 6.0f;
     [_searchField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
@@ -73,7 +73,7 @@
     [_searchField setLeftView:spacerView];
     
     _topView = [[UIView alloc] init];
-    _topView.backgroundColor = COLOR_BACKGROUND_RESPOND_VIEW;
+    _topView.backgroundColor = [UIColor themeColorBackgroundRespondElement];
     [_topView addSubview:_searchField];
     [self.view addSubview:_topView];
     

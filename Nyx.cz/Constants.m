@@ -24,7 +24,6 @@ NSInteger const kNavigationBarHeight = 44;
 NSInteger const kStatusBarStandardHeight = 20;
 NSInteger const kHTTPRequestTimeout = 6;
 
-
 NSString* const kNotificationShowError = @"kNotificationShowError";
 NSString* const kNotificationShowInfo = @"kNotificationShowInfo";
 NSString* const kNotificationFriendsFeedChanged = @"kNotificationFriendsFeedChanged";
@@ -77,7 +76,11 @@ NSString* const kApiIdentificationDataForApnsRegistration = @"kApiIdentification
 
 
 NSString* const kApnsClientNameDev = @"alias-dev";
+NSString* const kApnsClientNameProd = @"alias";
 
+// THEMES
+NSString* const kThemeLight = @"Světlé";
+NSString* const kThemeDark = @"Tmavé";
 
 // API
 NSString* const kApiLoguser = @"loguser";

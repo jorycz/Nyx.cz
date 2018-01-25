@@ -35,7 +35,7 @@
 {
     [super loadView];
     self.view = [[UIView alloc] init];
-    self.view.backgroundColor = COLOR_BACKGROUND_RESPOND_VIEW;
+    self.view.backgroundColor = [UIColor themeColorBackgroundRespondElement];
 }
 
 - (void)viewDidLoad
@@ -43,14 +43,14 @@
     [super viewDidLoad];
     
     _tv = [[UITextView alloc] init];
-    _tv.backgroundColor = COLOR_BACKGROUND_WHITE;
+    _tv.backgroundColor = [UIColor themeColorMainBackgroundDefault];
     _tv.clipsToBounds = YES;
     _tv.layer.cornerRadius = 8.0f;
     _tv.textContainerInset = UIEdgeInsetsMake(6, 4, 6, 4);
     [self.view addSubview:_tv];
     
     _button = [[UIButton alloc] init];
-    _button.backgroundColor = COLOR_CLEAR;
+    _button.backgroundColor = [UIColor themeColorClear];
     [_button setImage:[UIImage imageNamed:@"send"] forState:(UIControlStateNormal)];
     [_button addTarget:self action:@selector(post) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_button];

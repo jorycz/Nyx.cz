@@ -35,7 +35,7 @@
 {
     [super loadView];
     self.view = [[UIView alloc] init];
-    self.view.backgroundColor = COLOR_BACKGROUND_WHITE;
+    self.view.backgroundColor = [UIColor themeColorMainBackgroundDefault];
 }
 
 - (void)viewDidLoad
@@ -72,8 +72,8 @@
     [self.pageController didMoveToParentViewController:self];
     
     UIPageControl *pc = [UIPageControl appearanceWhenContainedInInstancesOfClasses:@[[ImagePreviewVC class]]];
-    pc.pageIndicatorTintColor = COLOR_PAGE_INDICATOR;
-    pc.currentPageIndicatorTintColor = COLOR_SYSTEM_TURQUOISE;
+    pc.pageIndicatorTintColor = [UIColor themeColorPageIndicatorInactive];
+    pc.currentPageIndicatorTintColor = [UIColor themeColorPageIndicatorActive];
 }
 
 - (void)viewWillLayoutSubviews

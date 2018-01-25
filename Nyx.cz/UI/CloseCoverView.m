@@ -17,7 +17,7 @@
     self = [super init];
     if (self)
     {
-        self.backgroundColor = COLOR_BACKGROUND_COVERVIEW;
+        self.backgroundColor = [UIColor themeColorBackgroundLoadingCoverView];
         self.alpha = 0.01;
         
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewTapped)];

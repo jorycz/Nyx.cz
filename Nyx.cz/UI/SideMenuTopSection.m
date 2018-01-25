@@ -18,11 +18,11 @@
 {
     self = [super init];
     if (self) {
-        self.backgroundColor = COLOR_BACKGROUND_WHITE;
+        self.backgroundColor = [UIColor themeColorMainBackgroundDefault];
         
         _userAvatarView = [[UIImageView alloc] init];
         _userAvatarView.contentMode = UIViewContentModeCenter;
-        _userAvatarView.backgroundColor = COLOR_BACKGROUND_WHITE;
+        _userAvatarView.backgroundColor = [UIColor themeColorMainBackgroundDefault];
         _userAvatarView.userInteractionEnabled = YES;
         _userAvatarView.layer.cornerRadius = 5;
         _userAvatarView.layer.masksToBounds = YES;
@@ -30,8 +30,8 @@
         
         _userName = [[UITextField alloc] init];
         _userName.userInteractionEnabled = NO;
-        _userName.backgroundColor = COLOR_BACKGROUND_WHITE;
-        _userName.textColor = COLOR_TEXT_BLACK;
+        _userName.backgroundColor = [UIColor themeColorMainBackgroundDefault];
+        _userName.textColor = [UIColor themeColorStandardText];
         _userName.textAlignment = NSTextAlignmentLeft;
         _userName.font = [UIFont boldSystemFontOfSize:18];
         [self addSubview:_userName];

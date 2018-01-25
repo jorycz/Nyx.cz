@@ -76,7 +76,12 @@ extern NSString* const kApiIdentificationDataForLogin;
 extern NSString* const kApiIdentificationDataForApnsRegistration;
 
 extern NSString* const kApnsClientNameDev;
+extern NSString* const kApnsClientNameProd;
 
+
+// THEMES
+extern NSString* const kThemeLight;
+extern NSString* const kThemeDark;
 
 // API
 extern NSString* const kApiLoguser;

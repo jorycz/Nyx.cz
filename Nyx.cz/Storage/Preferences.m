@@ -7,6 +7,7 @@
 //
 
 #import "Preferences.h"
+#import "Constants.h"
 
 @implementation Preferences
 
@@ -92,6 +93,8 @@
         [self maximumUnreadPostsLoad:@"500"];
     if (![self allowCopyOfHTMLSourceCode:nil])
         [self allowCopyOfHTMLSourceCode:@""];
+    if (![self theme:nil])
+        [self theme:kThemeLight];
 }
 
 + (NSString *)lastUserPosition:(NSString *)value
@@ -169,6 +172,18 @@
 + (NSString *)allowCopyOfHTMLSourceCode:(NSString *)value
 {
     NSString *key = @"_ALLOWCOPYHTMLSOURCE";
+    if (value) {
+        [[NSUserDefaults standardUserDefaults] setValue:value forKey:key];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        return nil;
+    } else {
+        return [[NSUserDefaults standardUserDefaults] stringForKey:key];
+    }
+}
+
++ (NSString *)theme:(NSString *)value
+{
+    NSString *key = @"_THEME";
     if (value) {
         [[NSUserDefaults standardUserDefaults] setValue:value forKey:key];
         [[NSUserDefaults standardUserDefaults] synchronize];
