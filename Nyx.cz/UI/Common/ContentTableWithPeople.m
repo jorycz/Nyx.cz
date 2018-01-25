@@ -511,7 +511,7 @@
         completionHandler(YES);
     }];
     thumbup.image = [UIImage imageNamed:@"thumbup"];
-    thumbup.backgroundColor = UIColorFromRGB(0x00EB08);
+    thumbup.backgroundColor = [UIColor themeColorBackgroundCellThumbUp];
     
     UIContextualAction *thumbdown = [UIContextualAction contextualActionWithStyle:UIContextualActionStyleNormal
                                                                             title:@"Ohodnotit"
@@ -528,7 +528,7 @@
         completionHandler(YES);
     }];
     thumbdown.image = [UIImage imageNamed:@"thumbdown"];
-    thumbdown.backgroundColor = UIColorFromRGB(0xEB0000);
+    thumbdown.backgroundColor = [UIColor themeColorBackgroundCellThumbDown];
     
     UIContextualAction *delete = [UIContextualAction contextualActionWithStyle:UIContextualActionStyleDestructive
                                                                          title:@"Smazat"

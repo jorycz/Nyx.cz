@@ -67,6 +67,16 @@
     return [self themeColorTimestampText];
 }
 
++ (UIColor *)themeColorBackgroundCellThumbUp
+{
+    return UIColorFromRGB(0x00EB08);
+}
+
++ (UIColor *)themeColorBackgroundCellThumbDown
+{
+    return UIColorFromRGB(0xEB0000);
+}
+
 // FOREGROUNDS
 
 + (UIColor *)themeColorRatingPositive
@@ -118,6 +128,12 @@
 {
     return UIColorFromRGB(0x7e7e7e);
 }
+
++ (UIColor *)themeColorSwitchTint
+{
+    return [self themeColorTimestampText];
+}
+
 
 
 

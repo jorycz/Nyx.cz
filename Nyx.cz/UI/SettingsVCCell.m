@@ -43,7 +43,7 @@
     
     if (self.settingsSwitch)
     {
-        self.settingsSwitch.tintColor = [UIColor lightGrayColor];
+        self.settingsSwitch.tintColor = [UIColor themeColorSwitchTint];
         self.settingsSwitch.onTintColor = [UIColor themeColorMainBackgroundStyledElement];
         CGRect f = self.frame;
         CGRect sf = self.settingsSwitch.frame;

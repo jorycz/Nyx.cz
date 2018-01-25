@@ -28,6 +28,8 @@
 + (UIColor *)themeColorBackgroundRespondElement;
 + (UIColor *)themeColorBackgroundCircleAttention;
 + (UIColor *)themeColorBackgroundSideMenuTopBottomBorderLines;
++ (UIColor *)themeColorBackgroundCellThumbUp;
++ (UIColor *)themeColorBackgroundCellThumbDown;
 
 // FOREGROUNDS
 
@@ -41,6 +43,7 @@
 + (UIColor *)themeColorPageIndicatorActive;
 + (UIColor *)themeColorTextCircleAttention;
 + (UIColor *)themeColorTextSideMenuCell;
++ (UIColor *)themeColorSwitchTint;
 
 
 @end

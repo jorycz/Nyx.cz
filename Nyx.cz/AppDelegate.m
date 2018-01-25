@@ -97,7 +97,7 @@
     self.mainNavigationController.navigationBar.tintColor = [UIColor themeColorMainBackgroundStyledElement];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    self.window.backgroundColor = UIColorFromRGB(0xBAE0FF);
+    self.window.backgroundColor = [UIColor themeColorMainBackgroundDefault];
     self.window.rootViewController = self.mainNavigationController;
     [self.window makeKeyAndVisible];
     
