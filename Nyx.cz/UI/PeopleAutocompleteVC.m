@@ -71,6 +71,7 @@
     UIView *spacerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10., 10.)];
     [_searchField setLeftViewMode:UITextFieldViewModeAlways];
     [_searchField setLeftView:spacerView];
+    _searchField.textColor = [UIColor themeColorStandardText];
     
     _topView = [[UIView alloc] init];
     _topView.backgroundColor = [UIColor themeColorBackgroundRespondElement];
@@ -149,6 +150,13 @@
         cell.detailTextLabel.text = [NSString stringWithFormat:@"Poslední aktivita: %@", [ts getTime]];
     }
     cell.imageView.image = [self.avatarImagesByNick objectForKey:nick];
+    cell.textLabel.textColor = [UIColor themeColorStandardText];
+    cell.textLabel.backgroundColor = [UIColor themeColorMainBackgroundDefault];
+    
+    cell.detailTextLabel.textColor = [UIColor themeColorStandardText];
+    cell.detailTextLabel.backgroundColor = [UIColor themeColorMainBackgroundDefault];
+    
+    cell.backgroundColor = [UIColor themeColorMainBackgroundDefault];
     return cell;
 }
 
