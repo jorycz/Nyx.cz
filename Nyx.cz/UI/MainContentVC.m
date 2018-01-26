@@ -45,6 +45,12 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    _pinocchio = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"pinocchio"]];
+    _pinocchio.userInteractionEnabled = NO;
+    _pinocchio.contentMode = UIViewContentModeCenter;
+    _pinocchio.backgroundColor = [UIColor themeColorClear];
+    [self.view addSubview:_pinocchio];
 }
 
 - (void)didReceiveMemoryWarning
@@ -57,6 +63,8 @@
     [super viewDidLayoutSubviews];
     
     _mainScreen = self.view.bounds;
+    _pinocchio.frame = self.view.bounds;
+    
     self.peopleTable.view.frame = CGRectMake(0, [Preferences statusNavigationBarsHeights:0], _mainScreen.size.width, _mainScreen.size.height - [Preferences statusNavigationBarsHeights:0]);
     self.listTable.view.frame = CGRectMake(0, [Preferences statusNavigationBarsHeights:0], _mainScreen.size.width, _mainScreen.size.height - [Preferences statusNavigationBarsHeights:0]);
 }

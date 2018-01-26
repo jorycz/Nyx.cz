@@ -252,12 +252,12 @@
                                                                 preferredStyle:(UIAlertControllerStyleAlert)];
             UIAlertAction *light = [UIAlertAction actionWithTitle:kThemeLight style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
                 [Preferences theme:kThemeLight];
-                [self changedThemeWarning];
+                [self applicationWillBeClosedWarning];
             }];
             [a addAction:light];
             UIAlertAction *dark = [UIAlertAction actionWithTitle:kThemeDark style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
                 [Preferences theme:kThemeDark];
-                [self changedThemeWarning];
+                [self applicationWillBeClosedWarning];
             }];
             [a addAction:dark];
             UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Zrušit" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {}];
@@ -270,10 +270,10 @@
     }
 }
 
-- (void)changedThemeWarning
+- (void)applicationWillBeClosedWarning
 {
     UIAlertController *a = [UIAlertController alertControllerWithTitle:@"Ukončení aplikace"
-                                                               message:@"Po kliknutí na OK se aplikace ukončí. Po spuštění bude aplikováno nově zvolené téma."
+                                                               message:@"Po kliknutí na OK se aplikace ukončí."
                                                         preferredStyle:(UIAlertControllerStyleAlert)];
     UIAlertAction *ok = [UIAlertAction actionWithTitle:@"OK" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
         exit(0);
@@ -448,7 +448,7 @@
     UIAlertAction *delete = [UIAlertAction actionWithTitle:@"Reset!" style:(UIAlertActionStyleDestructive) handler:^(UIAlertAction * _Nonnull action) {
         
         [Preferences setupPreferencesUsingForce:YES];
-        [self dismissSettings];
+        [self applicationWillBeClosedWarning];
     }];
     UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Zrušit" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {}];
     [alert addAction:delete];

@@ -17,6 +17,7 @@
 {
     CGFloat _widthForTableCellBodyTextView;
     CGRect _mainScreen;
+    UIImageView *_pinocchio;
 }
 
 
