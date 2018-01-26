@@ -442,18 +442,12 @@
 
 - (void)deleteSettings
 {
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Smazat veškeré nastavení?"
-                                                                   message:@"Opravdu chceš smazat veškeré nastavení?\nTuto operaci nelze vzít zpět!"
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Reset nastavení?"
+                                                                   message:@"Opravdu chceš nastavit standardní hodnoty?\nTuto operaci nelze vzít zpět. Po resetu se aplikace ukončí a je potřeba ji znovu spustit."
                                                             preferredStyle:(UIAlertControllerStyleAlert)];
-    UIAlertAction *delete = [UIAlertAction actionWithTitle:@"Smazat!" style:(UIAlertActionStyleDestructive) handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *delete = [UIAlertAction actionWithTitle:@"Reset!" style:(UIAlertActionStyleDestructive) handler:^(UIAlertAction * _Nonnull action) {
         
-        NSString *nick = [Preferences auth_nick:nil];
-        NSString *token = [Preferences auth_token:nil];
-        [Preferences resetPreferences];
-        [Preferences setupPreferences];
-        [Preferences username:nick];
-        [Preferences auth_nick:nick];
-        [Preferences auth_token:token];
+        [Preferences setupPreferencesUsingForce:YES];
         [self dismissSettings];
     }];
     UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Zrušit" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {}];

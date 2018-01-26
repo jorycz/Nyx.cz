@@ -143,7 +143,7 @@
     [sessionDataTask resume];
 }
 
-#pragma mark - API CALLS - ENCODED URL
+#pragma mark - API CALLS - ENCODED URL NYX API
 
 - (void)downloadDataForApiRequest:(NSString *)apiRequest
 {
@@ -180,6 +180,7 @@
 
 - (void)downloadDataFromURL:(NSString *)urlStr
 {
+//    NSLog(@"%@ - %@ : ERROR [%@]", self, NSStringFromSelector(_cmd), urlStr);
     NSURL *url = [NSURL URLWithString:[urlStr stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
     NSMutableURLRequest *mutableRequest = [NSMutableURLRequest requestWithURL:url
                                                                   cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData

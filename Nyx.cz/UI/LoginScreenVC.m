@@ -221,10 +221,15 @@
 
 - (void)showActivationOrChangeNickAlert
 {
+    NSDate *date = [NSDate date];
+    NSDateFormatter *dateformatter = [[NSDateFormatter alloc] init];
+    [dateformatter setDateFormat:@"HH:mm:ss"];
+    NSString *time = [dateformatter stringFromDate:date];
+    
     UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
     pasteboard.string = _auth_code;
     NSURL *authUrl = [NSURL URLWithString:@"https://www.nyx.cz/index.php?l=user;l2=2;section=authorizations"];
-    NSString *message = [NSString stringWithFormat:@"Zadejte autorizační kód %@ do svého účtu na www.nyx.cz do sekce OSOBNÍ / NASTAVENÍ / AUTORIZACE.\n\nTento kód je nyní uložen ve schránce a stačí jej vložit do nastavení a následně uložit nastavení na webu po přihlášení na NYX do příslušné sekce, která se otevře v prohlížeči po kliknutí na tlačítko Přihlásit na Nyx.", _auth_code];
+    NSString *message = [NSString stringWithFormat:@"Zadejte autorizační kód %@ z %@ do svého účtu na www.nyx.cz do sekce OSOBNÍ / NASTAVENÍ / AUTORIZACE.\n\nTento kód je nyní uložen ve schránce a stačí jej vložit do nastavení a následně uložit nastavení na webu po přihlášení na NYX do příslušné sekce, která se otevře v prohlížeči po kliknutí na tlačítko Přihlásit na Nyx.", _auth_code, time];
     
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Autorizační kód"
                                                                    message:message

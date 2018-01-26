@@ -104,6 +104,11 @@
     if (self.loginScreen.userIsLoggedIn && _firstShow) {
         _firstShow = NO;
         
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(cancelCurrentNyxSession)
+                                                     name:UIApplicationDidEnterBackgroundNotification
+                                                   object:nil];
+        
         [self.sideMenu setNeedsLayout];
         
         // Store initial Status and Navigation Bar Heights.
@@ -132,6 +137,17 @@
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
+}
+
+#pragma mark - CANCEL / INACTIVATE CURRENT SESSION
+
+- (void)cancelCurrentNyxSession
+{
+    NSString *api = [ApiBuilder apiUtilMakeInactive];
+    ServerConnector *sc = [[ServerConnector alloc] init];
+    sc.identifitaion = @"";
+    sc.delegate = nil;
+    [sc downloadDataForApiRequest:api];
 }
 
 #pragma mark - NAVIGATION BUTTONS

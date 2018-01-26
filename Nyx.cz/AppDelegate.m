@@ -44,7 +44,7 @@
 {
     [Fabric with:@[[Crashlytics class]]];
     
-    [Preferences setupPreferences];
+    [Preferences setupPreferencesUsingForce:NO];
     
 //    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
 //    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), [paths objectAtIndex:0]);
@@ -115,12 +115,6 @@
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-    
-    NSString *api = [ApiBuilder apiUtilMakeInactive];
-    ServerConnector *sc = [[ServerConnector alloc] init];
-    sc.identifitaion = @"";
-    sc.delegate = nil;
-    [sc downloadDataForApiRequest:api];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {

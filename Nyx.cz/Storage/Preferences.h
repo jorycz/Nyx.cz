@@ -14,7 +14,7 @@
 @interface Preferences : NSObject
 
 
-+ (void)resetPreferences;
+//+ (void)resetPreferences;
 
 
 // SIMULATOR ONLY -----------------------
@@ -24,20 +24,6 @@
 
 + (NSString *)auth_nick:(NSString *)value;
 + (NSString *)auth_token:(NSString *)value;
-
-
-// USER PREFERENCES
-
-+ (void)setupPreferences;
-+ (NSString *)lastUserPosition:(NSString *)value;
-+ (NSString *)preferredStartingLocation:(NSString *)value;
-+ (NSString *)showImagesInlineInPost:(NSString *)value;
-+ (NSString *)openUrlsInSafari:(NSString *)value;
-+ (NSString *)shareFullSizeImages:(NSString *)value;
-+ (NSString *)maximumUnreadPostsLoad:(NSString *)value;
-+ (NSString *)allowCopyOfHTMLSourceCode:(NSString *)value;
-+ (NSString *)theme:(NSString *)value;
-
 
 // UTILITY
 
@@ -50,6 +36,18 @@
 + (NSString *)apnsRegistrationStatus:(NSString *)value;
 // BASE STATUS BAR and NAVIGATION BAR Height
 + (CGFloat)statusNavigationBarsHeights:(CGFloat)value;
+
+// USER PREFERENCES / USER SETTINGS
+
++ (void)setupPreferencesUsingForce:(BOOL)force;
++ (NSString *)lastUserPosition:(NSString *)value;
++ (NSString *)preferredStartingLocation:(NSString *)value;
++ (NSString *)showImagesInlineInPost:(NSString *)value;
++ (NSString *)openUrlsInSafari:(NSString *)value;
++ (NSString *)shareFullSizeImages:(NSString *)value;
++ (NSString *)maximumUnreadPostsLoad:(NSString *)value;
++ (NSString *)allowCopyOfHTMLSourceCode:(NSString *)value;
++ (NSString *)theme:(NSString *)value;
 
 
 @end

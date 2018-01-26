@@ -13,11 +13,11 @@
 
 #pragma mark - !!! DELETE ALL PREFERENCES STORAGE !!!
 
-+ (void)resetPreferences
-{
-    NSString *appDomain = [[NSBundle mainBundle] bundleIdentifier];
-    [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:appDomain];
-}
+//+ (void)resetPreferences
+//{
+//    NSString *appDomain = [[NSBundle mainBundle] bundleIdentifier];
+//    [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:appDomain];
+//}
 
 + (void)dumpPreferences
 {
@@ -74,26 +74,96 @@
     }
 }
 
-#pragma mark - PREFERENCES / SETTINGS
+#pragma mark - UTILITY
 
-+ (void)setupPreferences
++ (NSArray *)messagesForDiscussion:(NSMutableArray *)value
+{
+    NSString *key = @"_STOREDMESSAGESFORDISCUSSION";
+    if (value) {
+        [[NSUserDefaults standardUserDefaults] setObject:value forKey:key];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        return nil;
+    } else {
+        return [[NSUserDefaults standardUserDefaults] objectForKey:key];
+    }
+}
+
++ (NSString *)actualDateOfBackgroundRefresh:(NSString *)value
+{
+    NSString *key = @"_TIMEOFBACKGROUNDREFRESH";
+    if (value) {
+        [[NSUserDefaults standardUserDefaults] setObject:value forKey:key];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        return nil;
+    } else {
+        return [[NSUserDefaults standardUserDefaults] objectForKey:key];
+    }
+}
+
++ (NSString *)apnsDeviceToken:(NSString *)value
+{
+    NSString *key = @"_APNSDEVICETOKEN";
+    if (value) {
+        [[NSUserDefaults standardUserDefaults] setObject:value forKey:key];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        return nil;
+    } else {
+        return [[NSUserDefaults standardUserDefaults] objectForKey:key];
+    }
+}
+
++ (NSString *)apnsRegistrationStatus:(NSString *)value
+{
+    NSString *key = @"_APNSREGSTATUS";
+    if (value) {
+        [[NSUserDefaults standardUserDefaults] setObject:value forKey:key];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        return nil;
+    } else {
+        return [[NSUserDefaults standardUserDefaults] objectForKey:key];
+    }
+}
+
++ (CGFloat)statusNavigationBarsHeights:(CGFloat)value
+{
+    NSString *key = @"_STATUSANDNAVIGATIONBARHEIGHTS";
+    if (value > 0) {
+        [[NSUserDefaults standardUserDefaults] setFloat:value forKey:key];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        return 0;
+    } else {
+        return [[NSUserDefaults standardUserDefaults] floatForKey:key];
+    }
+}
+
+
+#pragma mark - USER PREFERENCES / USER SETTINGS
+
++ (void)setupPreferencesUsingForce:(BOOL)force
 {
     NSString *key = @"_FIRST_RUN_";
     if ([[NSUserDefaults standardUserDefaults] objectForKey:key] == nil) {
         [[NSUserDefaults standardUserDefaults] setValue:@"NO" forKey:key];
-        // First run EVER SETUP !!!
-        
+        // First run EVER SETUP.
     }
     
-    // Setup DEFAULTS every app start IF NOT SET already:
+    // Setup DEFAULTS:
     
-    if (![self shareFullSizeImages:nil])
+    if (force)
+    {
+        [self lastUserPosition:@""];
+        [self preferredStartingLocation:@""];
+        [self showImagesInlineInPost:@""];
+        [self openUrlsInSafari:@""];
+    }
+    
+    if (![self shareFullSizeImages:nil] || force)
         [self shareFullSizeImages:@"yes"];
-    if (![self maximumUnreadPostsLoad:nil])
+    if (![self maximumUnreadPostsLoad:nil]  || force)
         [self maximumUnreadPostsLoad:@"500"];
-    if (![self allowCopyOfHTMLSourceCode:nil])
+    if (![self allowCopyOfHTMLSourceCode:nil]  || force)
         [self allowCopyOfHTMLSourceCode:@""];
-    if (![self theme:nil])
+    if (![self theme:nil]  || force)
         [self theme:kThemeLight];
 }
 
@@ -193,68 +263,6 @@
     }
 }
 
-
-#pragma mark - UTILITY
-
-+ (NSArray *)messagesForDiscussion:(NSMutableArray *)value
-{
-    NSString *key = @"_STOREDMESSAGESFORDISCUSSION";
-    if (value) {
-        [[NSUserDefaults standardUserDefaults] setObject:value forKey:key];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        return nil;
-    } else {
-        return [[NSUserDefaults standardUserDefaults] objectForKey:key];
-    }
-}
-
-+ (NSString *)actualDateOfBackgroundRefresh:(NSString *)value
-{
-    NSString *key = @"_TIMEOFBACKGROUNDREFRESH";
-    if (value) {
-        [[NSUserDefaults standardUserDefaults] setObject:value forKey:key];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        return nil;
-    } else {
-        return [[NSUserDefaults standardUserDefaults] objectForKey:key];
-    }
-}
-
-+ (NSString *)apnsDeviceToken:(NSString *)value
-{
-    NSString *key = @"_APNSDEVICETOKEN";
-    if (value) {
-        [[NSUserDefaults standardUserDefaults] setObject:value forKey:key];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        return nil;
-    } else {
-        return [[NSUserDefaults standardUserDefaults] objectForKey:key];
-    }
-}
-
-+ (NSString *)apnsRegistrationStatus:(NSString *)value
-{
-    NSString *key = @"_APNSREGSTATUS";
-    if (value) {
-        [[NSUserDefaults standardUserDefaults] setObject:value forKey:key];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        return nil;
-    } else {
-        return [[NSUserDefaults standardUserDefaults] objectForKey:key];
-    }
-}
-
-+ (CGFloat)statusNavigationBarsHeights:(CGFloat)value
-{
-    NSString *key = @"_STATUSANDNAVIGATIONBARHEIGHTS";
-    if (value > 0) {
-        [[NSUserDefaults standardUserDefaults] setFloat:value forKey:key];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        return 0;
-    } else {
-        return [[NSUserDefaults standardUserDefaults] floatForKey:key];
-    }
-}
 
 @end
 
