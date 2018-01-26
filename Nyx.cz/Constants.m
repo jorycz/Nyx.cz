@@ -31,6 +31,7 @@ NSString* const kNotificationMailboxChanged = @"kNotificationMailboxChanged";
 NSString* const kNotificationMailboxNewMessageFor = @"kNotificationMailboxNewMessageFor";
 NSString* const kNotificationDiscussionLoadNewerFrom = @"kNotificationDiscussionLoadNewerFrom";
 NSString* const kNotificationListTableChanged = @"kNotificationListTableChanged";
+NSString* const kNotificationAvatarTapped = @"kNotificationAvatarTapped";
 
 
 NSString* const kPeopleTableModeFeed = @"kPeopleTableModeFeed";

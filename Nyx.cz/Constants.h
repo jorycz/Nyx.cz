@@ -32,6 +32,7 @@ extern NSString* const kNotificationMailboxChanged;
 extern NSString* const kNotificationMailboxNewMessageFor;
 extern NSString* const kNotificationDiscussionLoadNewerFrom;
 extern NSString* const kNotificationListTableChanged;
+extern NSString* const kNotificationAvatarTapped;
 
 
 extern NSString* const kPeopleTableModeFeed;
@@ -169,6 +170,7 @@ extern NSString* const kApiApnsTest;
 
 #define POST_NOTIFICATION_LIST_TABLE_CHANGED [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationListTableChanged object:nil userInfo:nil];
 
+#define NOTIFICATION_AVATARTAPPED(s,ss) [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationAvatarTapped object:nil userInfo:@{@"idx" : (s), @"nick" : (ss)}];
 
 
 #define PERFSTART NSDate *now = [NSDate date];

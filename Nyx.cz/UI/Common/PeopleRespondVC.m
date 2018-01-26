@@ -74,22 +74,28 @@
     
     // Set content to "DETAIL" - ignore cell tap in nested table (otherwise it would be infinite loop)
     if ([self.peopleRespondMode isEqualToString:kPeopleTableModeFeed]) {
+        self.title = @"Nový příspěvek";
         self.table.peopleTableMode = kPeopleTableModeFeedDetail;
     }
     if ([self.peopleRespondMode isEqualToString:kPeopleTableModeMailbox]) {
+        self.title = @"Nová zpráva";
         self.table.peopleTableMode = kPeopleTableModeMailboxDetail;
     }
     if ([self.peopleRespondMode isEqualToString:kPeopleTableModeFriends]) {
+        self.title = @"Nová zpráva";
         self.table.peopleTableMode = kPeopleTableModeFriendsDetail;
     }
     if ([self.peopleRespondMode isEqualToString:kPeopleTableModeDiscussion]) {
+        self.title = @"Nový příspěvek";
         self.table.peopleTableMode = kPeopleTableModeDiscussionDetail;
         self.table.disscussionClubData = self.disscussionClubData;
     }
     if ([self.peopleRespondMode isEqualToString:kPeopleTableModeNotices]) {
+        self.title = @"Detail";
         self.table.peopleTableMode = kPeopleTableModeNoticesDetail;
     }
     if ([self.peopleRespondMode isEqualToString:kPeopleTableModeDiscussionDetail]) {
+        self.title = @"Detail";
         self.table.peopleTableMode = kPeopleTableModeDiscussionDetail;
         self.table.disscussionClubData = self.disscussionClubData;
     }

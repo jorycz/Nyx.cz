@@ -16,6 +16,7 @@
     UILabel *_nickLabel, *_timeLabel, *_ratingLabel;
     UITextView *_bodyView;
     UIView *_separator;
+    NSIndexPath *_currentIndexPath;
 }
 
 
@@ -30,7 +31,7 @@
 @property (nonatomic, strong) NSString *bodyTextSource;
 
 
-// Optional
+// Options
 @property (nonatomic, strong) NSString *commentsCount;
 @property (nonatomic, strong) NSString *mailboxDirection;
 @property (nonatomic, strong) NSString *mailboxMailStatus;

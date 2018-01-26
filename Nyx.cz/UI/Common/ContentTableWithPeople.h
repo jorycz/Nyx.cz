@@ -20,7 +20,7 @@
     
     NSIndexPath *_preserveIndexPathAfterLoadFromId;
     
-    NSMutableString *_lastVisitWuId;
+    NSMutableString *_lastVisitWuId, *_ownTitle;
     NSMutableDictionary *_temporaryDataStorageBeforeLastReadIsFound;
     
     NSMutableString __block *_searchNick, __block *_searchText;

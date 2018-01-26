@@ -52,6 +52,7 @@
         _globalSearchPage = 0;
         // Regular Table set this to NO. In case comming from Notices with Big display, set it to YES.
         self.scrollToTopAfterReloadUntilUserScrolls = NO;
+        _ownTitle = [[NSMutableString alloc] init];
     }
     return self;
 }
@@ -80,6 +81,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getDataForMailbox) name:kNotificationMailboxChanged object:nil];
     // Refresh and load newer posts after new POST is send to discussion.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getDataForDiscussionBeforeIdNotificationFromRespondVC:) name:kNotificationDiscussionLoadNewerFrom object:nil];
+    // Tap on Avatar in Discussion Table
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(avatarTapped:) name:kNotificationAvatarTapped object:nil];
     
     _table = [[UITableView alloc] init];
     [self.view addSubview:_table];
@@ -160,6 +163,17 @@
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    // TODO TOFIX Need to delete title later for smooth animation when pushing (respond) view. Restore it here when back.
+    if ([_ownTitle length] > 0)
+        self.title = _ownTitle;
+    if (self.title)
+        [_ownTitle setString:self.title];
 }
 
 #pragma mark - NAVIGATION BAR BUTTONS ENABLE
@@ -638,7 +652,7 @@
     respondVC.postData = userPostData;
     respondVC.nController = self.nController;
     respondVC.peopleRespondMode = self.peopleTableMode;
-//    respondVC.title = [self.disscussionClubData objectForKey:@"name"];
+    self.title = @"";
     [self.nController pushViewController:respondVC animated:YES];
 }
 
@@ -1539,6 +1553,14 @@
     response.nController = self.nController;
     response.peopleRespondMode = kPeopleTableModeMailbox;
     [self.nController pushViewController:response animated:YES];
+}
+
+#pragma mark - AVATAR TAPPED
+
+- (void)avatarTapped:(id)sender
+{
+    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"USE - (void)composeNewMessageFor:(NSNotification *)notification !!!!!! and autocomplete to get data about NICK maybe ...");
+    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), [sender userInfo]);
 }
 
 

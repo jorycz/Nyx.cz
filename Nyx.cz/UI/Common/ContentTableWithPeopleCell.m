@@ -129,6 +129,8 @@
 
 - (void)configureCellForIndexPath:(NSIndexPath *)idxPath
 {
+    _currentIndexPath = idxPath;
+    
     _nickLabel.text = self.nick;
     
     _bodyView.attributedText = self.bodyText;
@@ -220,7 +222,8 @@
 
 - (void)tapped:(UITapGestureRecognizer *)sender
 {
-    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"AVATAR TAPPED.");
+    NSInteger idx = [_currentIndexPath row];
+    NOTIFICATION_AVATARTAPPED([@(idx) stringValue], self.nick)
 }
 
 #pragma mark - NOTICES NEWS CHECK
