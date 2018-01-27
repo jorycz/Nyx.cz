@@ -1559,8 +1559,17 @@
 
 - (void)avatarTapped:(id)sender
 {
-    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), @"USE - (void)composeNewMessageFor:(NSNotification *)notification !!!!!! and autocomplete to get data about NICK maybe ...");
+//    NSString *nick = [[sender userInfo] objectForKey:@"nick"];
+//    [self composeNewMessageFor:<#(NSNotification *)#>]
+    
     NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), [sender userInfo]);
+    NSString *tmp = self.peopleTableMode;
+    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), [NSString stringWithFormat:@"Storing MODE %@", tmp]);
+    self.peopleTableMode = kPeopleTableModeMailbox;
+    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), [NSString stringWithFormat:@"Using MODE %@", self.peopleTableMode]);
+    [self tableView:_table didSelectRowAtIndexPath:[[sender userInfo] objectForKey:@"idxPath"]];
+    self.peopleTableMode = tmp;
+    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), [NSString stringWithFormat:@"Recovered MODE %@", self.peopleTableMode]);
 }
 
 

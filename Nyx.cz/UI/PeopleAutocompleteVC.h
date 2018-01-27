@@ -7,13 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ServerConnector.h"
-#import "ApiBuilder.h"
-#import "JSONParser.h"
 #import "CacheManager.h"
+#import "PeopleManager.h"
 
 
-@interface PeopleAutocompleteVC : UITableViewController <UITextFieldDelegate, CacheManagerDelegate, ServerConnectorDelegate>
+@interface PeopleAutocompleteVC : UITableViewController <UITextFieldDelegate, CacheManagerDelegate, PeopleManager>
 {
     BOOL _firstInit, _loadingInProgress;
     UITableView *_table;
@@ -31,6 +29,7 @@
 @property (nonatomic, strong) NSMutableDictionary *avatarImagesByNick;
 @property (nonatomic, strong) NSMutableArray *sections;
 
+@property (nonatomic, strong) PeopleManager *pm;
 @property (nonatomic, strong) CacheManager *cache;
 
 

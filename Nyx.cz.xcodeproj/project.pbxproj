@@ -93,6 +93,7 @@
 		2B703FAD20193C7F001D3D27 /* newPost@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B703FAC20193C7E001D3D27 /* newPost@2x.png */; };
 		2B70FB512010FA25004735EF /* UnreadLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B70FB502010FA25004735EF /* UnreadLabel.m */; };
 		2B7191FE201B7D5600BD2C6C /* pinocchio@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B7191FD201B7D5500BD2C6C /* pinocchio@2x.png */; };
+		2B719202201C92B200BD2C6C /* PeopleManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B719201201C92B200BD2C6C /* PeopleManager.m */; };
 		2B8FECCE1FD8226A004CCED8 /* Colors.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B8FECCD1FD8226A004CCED8 /* Colors.m */; };
 		2B8FECD11FD848F6004CCED8 /* ImagePreviewVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B8FECD01FD848F6004CCED8 /* ImagePreviewVC.m */; };
 		2B8FECD41FD8495A004CCED8 /* ImageVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B8FECD31FD8495A004CCED8 /* ImageVC.m */; };
@@ -279,6 +280,8 @@
 		2B70FB4F2010FA25004735EF /* UnreadLabel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UnreadLabel.h; sourceTree = "<group>"; };
 		2B70FB502010FA25004735EF /* UnreadLabel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UnreadLabel.m; sourceTree = "<group>"; };
 		2B7191FD201B7D5500BD2C6C /* pinocchio@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pinocchio@2x.png"; sourceTree = "<group>"; };
+		2B719200201C92B200BD2C6C /* PeopleManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PeopleManager.h; sourceTree = "<group>"; };
+		2B719201201C92B200BD2C6C /* PeopleManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PeopleManager.m; sourceTree = "<group>"; };
 		2B822AB22011E8770060FABE /* Nyx.cz.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Nyx.cz.entitlements; sourceTree = "<group>"; };
 		2B8FECCC1FD8226A004CCED8 /* Colors.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Colors.h; sourceTree = "<group>"; };
 		2B8FECCD1FD8226A004CCED8 /* Colors.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Colors.m; sourceTree = "<group>"; };
@@ -499,6 +502,8 @@
 				2B2303931FBC73AF00286062 /* JSONParser.m */,
 				2BF650481FD4293E00A43793 /* NewNoticesForPost.h */,
 				2BF650491FD4293E00A43793 /* NewNoticesForPost.m */,
+				2B719200201C92B200BD2C6C /* PeopleManager.h */,
+				2B719201201C92B200BD2C6C /* PeopleManager.m */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -840,6 +845,7 @@
 				2B70FB512010FA25004735EF /* UnreadLabel.m in Sources */,
 				2B42D44B1FCA2124009F751D /* ContentTableWithList.m in Sources */,
 				2B1D594F1FCB4EAD009E4A88 /* ComputeRowHeightTextAttachment.m in Sources */,
+				2B719202201C92B200BD2C6C /* PeopleManager.m in Sources */,
 				2B0D5D911FBC40F20052D63C /* AppDelegate.m in Sources */,
 				2B317FD71FC20AD90063B9EE /* ContactVC.m in Sources */,
 				2B1D59551FCCB3DD009E4A88 /* WebVC.m in Sources */,

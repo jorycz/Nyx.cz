@@ -170,7 +170,7 @@ extern NSString* const kApiApnsTest;
 
 #define POST_NOTIFICATION_LIST_TABLE_CHANGED [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationListTableChanged object:nil userInfo:nil];
 
-#define NOTIFICATION_AVATARTAPPED(s,ss) [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationAvatarTapped object:nil userInfo:@{@"idx" : (s), @"nick" : (ss)}];
+#define NOTIFICATION_AVATARTAPPED(s,ss) [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationAvatarTapped object:nil userInfo:@{@"idxPath" : (s), @"nick" : (ss)}];
 
 
 #define PERFSTART NSDate *now = [NSDate date];

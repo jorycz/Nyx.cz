@@ -218,13 +218,13 @@
     });
 }
 
-#pragma mark - TAP
+#pragma mark - AVATAR TAP
 
 - (void)tapped:(UITapGestureRecognizer *)sender
 {
-    NSInteger idx = [_currentIndexPath row];
-    NOTIFICATION_AVATARTAPPED([@(idx) stringValue], self.nick)
+    NOTIFICATION_AVATARTAPPED(_currentIndexPath, self.nick)
 }
+
 
 #pragma mark - NOTICES NEWS CHECK
 

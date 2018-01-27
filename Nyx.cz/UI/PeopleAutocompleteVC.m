@@ -178,61 +178,6 @@
     return [self.sections objectAtIndex:section];
 }
 
-#pragma mark - CREATE DS
-
-- (void)createAutocompleteDataWithDict:(NSDictionary *)d
-{
-    // insert all 3 fields to self.autocompleteData
-//    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), d);
-    NSDictionary *fields = [[NSDictionary alloc] initWithDictionary:[d objectForKey:@"data"]];
-    NSArray *exact = [fields objectForKey:@"exact"];
-    NSArray *friends = [fields objectForKey:@"friends"];
-    NSArray *others = [fields objectForKey:@"others"];
-    
-    [self.sections removeAllObjects];
-    [self.autocompleteData removeAllObjects];
-    
-    if ([exact count] > 0) {
-        [self.sections addObject:@"Uživatel"];
-        [self.autocompleteData addObject:exact];
-    }
-    if ([friends count] > 0) {
-        [self.sections addObject:@"Přátelé"];
-        [self.autocompleteData addObject:friends];
-    }
-    if ([others count] > 0) {
-        [self.sections addObject:@"Ostatní"];
-        [self.autocompleteData addObject:others];
-    }
-        
-    // Get nick by key nick.
-    for (NSDictionary *d in exact) {
-        [self.nickAvatarsToDownload addObject:[d objectForKey:@"nick"]];
-    }
-    for (NSDictionary *d in friends) {
-        [self.nickAvatarsToDownload addObject:[d objectForKey:@"nick"]];
-    }
-    for (NSDictionary *d in others) {
-        [self.nickAvatarsToDownload addObject:[d objectForKey:@"nick"]];
-    }
-    
-    [self downloadAvatar];
-}
-
-- (void)downloadAvatar
-{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if ([self.nickAvatarsToDownload count] > 0) {
-            self.cache = [[CacheManager alloc] init];
-            self.cache.delegate = self;
-            NSString *avatar = [self.nickAvatarsToDownload firstObject];
-            [self.cache getAvatarForNick:avatar];
-        } else {
-            [_table reloadData];
-            _loadingInProgress = NO;
-        }
-    });
-}
 
 #pragma mark - CACHE
 
@@ -244,6 +189,7 @@
     });
     [self downloadAvatar];
 }
+
 
 #pragma mark - KEYBOARD
 
@@ -259,6 +205,7 @@
     _table.frame = newFrameTable;
 }
 
+
 #pragma mark - SEARCH DELEGATE
 
 - (void)textFieldDidChange:(UITextField *)sender
@@ -269,10 +216,7 @@
         if (!_loadingInProgress) {
             _loadingInProgress = YES;
             [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-            NSString *apiRequest = [ApiBuilder apiPeopleAutocompleteForNick:text];
-            ServerConnector *sc = [[ServerConnector alloc] init];
-            sc.delegate = self;
-            [sc downloadDataForApiRequest:apiRequest];
+            [self searchForNickFragment:text];
         }
     } else {
         [self.sections removeAllObjects];
@@ -282,50 +226,50 @@
     }
 }
 
-#pragma mark - DATA
 
-- (void)downloadFinishedWithData:(NSData *)data withIdentification:(NSString *)identification
+#pragma mark - USER SEARCH - PEOPLE MANAGER
+
+- (void)searchForNickFragment:(NSString *)nick
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-    });
-    if (!data)
-    {
-        [self presentErrorWithTitle:@"Žádná data" andMessage:@"Nelze se připojit na server."];
-    }
-    else
-    {
-        JSONParser *jp = [[JSONParser alloc] initWithData:data];
-        if (!jp.jsonDictionary)
-        {
-            NSLog(@"%@ - %@ : ERROR [%@]", self, NSStringFromSelector(_cmd), jp.jsonErrorString);
-            NSLog(@"%@ - %@ : ERROR [%@]", self, NSStringFromSelector(_cmd), jp.jsonErrorDataString);
-            [self presentErrorWithTitle:@"Chyba při parsování" andMessage:jp.jsonErrorString];
-        }
-        else
-        {
-            if ([[jp.jsonDictionary objectForKey:@"result"] isEqualToString:@"error"])
-            {
-                [self presentErrorWithTitle:@"Chyba ze serveru:" andMessage:[jp.jsonDictionary objectForKey:@"error"]];
-            }
-            else
-            {
-//                NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), jp.jsonDictionary);
-                [self createAutocompleteDataWithDict:jp.jsonDictionary];
-            }
-        }
-    }
+    self.pm = [[PeopleManager alloc] init];
+    self.pm.delegate = self;
+    [self.pm getDataForNickFragment:nick];
 }
 
-#pragma mark - RESULT
-
-- (void)presentErrorWithTitle:(NSString *)title andMessage:(NSString *)message
+- (void)peopleManagerFinished:(id)sender
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        PRESENT_ERROR(title, message)
-    });
+    PeopleManager *pm = (PeopleManager *)sender;
+    
+    // Delete old data
+    [self.sections removeAllObjects];
+    [self.autocompleteData removeAllObjects];
+    
+    // Add new
+    [self.sections addObjectsFromArray:pm.userSectionsHeaders];
+    [self.autocompleteData addObjectsFromArray:pm.userSectionsData];
+    
+    // Create download queue for nick images
+    [self.nickAvatarsToDownload addObjectsFromArray:pm.userAvatarNames];
+    [self downloadAvatar];
 }
 
+
+#pragma mark - DOWNLOAD AVATARS
+
+- (void)downloadAvatar
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if ([self.nickAvatarsToDownload count] > 0) {
+            self.cache = [[CacheManager alloc] init];
+            self.cache.delegate = self;
+            NSString *avatar = [self.nickAvatarsToDownload firstObject];
+            [self.cache getAvatarForNick:avatar];
+        } else {
+            [_table reloadData];
+            _loadingInProgress = NO;
+        }
+    });
+}
 
 
 @end
