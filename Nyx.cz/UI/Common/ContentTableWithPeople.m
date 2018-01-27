@@ -848,8 +848,10 @@
 
 - (void)getDataForMailbox
 {
-    NSString *apiRequest = [ApiBuilder apiMailbox];
-    [self serverApiCall:apiRequest andIdentification:kApiIdentificationDataForMailbox];
+    if ([self.peopleTableMode isEqualToString:kPeopleTableModeMailbox]) {
+        NSString *apiRequest = [ApiBuilder apiMailbox];
+        [self serverApiCall:apiRequest andIdentification:kApiIdentificationDataForMailbox];
+    }
 }
 
 - (void)getDataForMailboxFromId:(NSString *)fromId
@@ -1529,7 +1531,7 @@
     if (!self.view.window)
         return;
     
-    //    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), notification);
+//        NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), notification);
     NSDictionary *userData = [[notification userInfo] objectForKey:@"nKey"];
     NSString *nick = [userData objectForKey:@"nick"];
     NSString *lastActiveTimestamp = [[userData objectForKey:@"active"] objectForKey:@"time"];
@@ -1559,17 +1561,22 @@
 
 - (void)avatarTapped:(id)sender
 {
-//    NSString *nick = [[sender userInfo] objectForKey:@"nick"];
-//    [self composeNewMessageFor:<#(NSNotification *)#>]
+    NSString *nick = [[sender userInfo] objectForKey:@"nick"];
+    self.peopleManager = [[PeopleManager alloc] init];
+    self.peopleManager.delegate = self;
+    [self.peopleManager getDataForExactNick:nick];
+}
+
+- (void)peopleManagerFinished:(id)sender
+{
+//    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), peopleManager.userDataForExactNick);
     
-    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), [sender userInfo]);
-    NSString *tmp = self.peopleTableMode;
-    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), [NSString stringWithFormat:@"Storing MODE %@", tmp]);
-    self.peopleTableMode = kPeopleTableModeMailbox;
-    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), [NSString stringWithFormat:@"Using MODE %@", self.peopleTableMode]);
-    [self tableView:_table didSelectRowAtIndexPath:[[sender userInfo] objectForKey:@"idxPath"]];
-    self.peopleTableMode = tmp;
-    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), [NSString stringWithFormat:@"Recovered MODE %@", self.peopleTableMode]);
+    PeopleManager *peopleManager = (PeopleManager *)sender;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSDictionary *d = [NSDictionary dictionaryWithObjectsAndKeys:peopleManager.userDataForExactNick, @"nKey", nil];
+        NSNotification *n = [NSNotification notificationWithName:@"" object:nil userInfo:d];
+        [self composeNewMessageFor:n];
+    });
 }
 
 

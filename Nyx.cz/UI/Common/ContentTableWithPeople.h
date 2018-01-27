@@ -9,9 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "Timestamp.h"
 #import "ContentTableWithPeopleCell.h"
+#import "PeopleManager.h"
 
 
-@interface ContentTableWithPeople : UITableViewController <UIGestureRecognizerDelegate, ServerConnectorDelegate>
+@interface ContentTableWithPeople : UITableViewController <UIGestureRecognizerDelegate, ServerConnectorDelegate, PeopleManager>
 {
     UITableView *_table;
     CGFloat _rh;
@@ -53,6 +54,8 @@
 
 // Load Discussion (people table) from Notices (into this people table)
 @property (nonatomic, strong) ContentTableWithPeople *nestedPeopleTable;
+
+@property (nonatomic, strong) PeopleManager *peopleManager;
 
 
 - (id)initWithRowHeight:(CGFloat)rowHeight;

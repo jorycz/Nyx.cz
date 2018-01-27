@@ -29,7 +29,7 @@
 @property (nonatomic, strong) NSMutableDictionary *avatarImagesByNick;
 @property (nonatomic, strong) NSMutableArray *sections;
 
-@property (nonatomic, strong) PeopleManager *pm;
+@property (nonatomic, strong) PeopleManager *peopleManager;
 @property (nonatomic, strong) CacheManager *cache;
 
 

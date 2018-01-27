@@ -18,6 +18,7 @@
         self.userSectionsHeaders = [[NSMutableArray alloc] init];
         self.userSectionsData = [[NSMutableArray alloc] init];
         self.userAvatarNames = [[NSMutableArray alloc] init];
+        _dataForExactNickMatch = NO;
     }
     return self;
 }
@@ -30,6 +31,12 @@
     ServerConnector *sc = [[ServerConnector alloc] init];
     sc.delegate = self;
     [sc downloadDataForApiRequest:apiRequest];
+}
+
+- (void)getDataForExactNick:(NSString *)nick
+{
+    _dataForExactNickMatch = YES;
+    [self getDataForNickFragment:nick];
 }
 
 #pragma mark - SERVER CONNECTOR DELEGATE DATA RESULT
@@ -61,7 +68,11 @@
             else
             {
                 //                NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), jp.jsonDictionary);
-                [self createAutocompleteDataWithDict:jp.jsonDictionary];
+                if (_dataForExactNickMatch) {
+                    [self createExactDataWithDict:jp.jsonDictionary];
+                } else {
+                    [self createAutocompleteDataWithDict:jp.jsonDictionary];
+                }
             }
         }
     }
@@ -105,14 +116,23 @@
     [self managerDone];
 }
 
+- (void)createExactDataWithDict:(NSDictionary *)d
+{
+    NSDictionary *fields = [[NSDictionary alloc] initWithDictionary:[d objectForKey:@"data"]];
+    NSArray *exact = [fields objectForKey:@"exact"];
+    self.userDataForExactNick = [exact firstObject];
+    
+    [self managerDone];
+}
+
 
 #pragma mark - SEND RESULT
 
 - (void)managerDone
 {
-    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), self.userSectionsHeaders);
-    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), self.userSectionsData);
-    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), self.userAvatarNames);
+//    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), self.userSectionsHeaders);
+//    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), self.userSectionsData);
+//    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), self.userAvatarNames);
     
     if (self.delegate && [self.delegate respondsToSelector:@selector(peopleManagerFinished:)]) {
         [self.delegate performSelector:@selector(peopleManagerFinished:) withObject:self];

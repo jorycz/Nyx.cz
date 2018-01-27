@@ -20,17 +20,25 @@
 
 
 @interface PeopleManager : NSObject
+{
+    BOOL _dataForExactNickMatch;
+}
 
 
 @property (nonatomic, weak) id delegate;
 @property (nonatomic, strong) NSDictionary *rawData;
 
+// Search for fragment of nick - could be more results
 @property (nonatomic, strong) NSMutableArray *userSectionsHeaders;
 @property (nonatomic, strong) NSMutableArray *userSectionsData;
 @property (nonatomic, strong) NSMutableArray *userAvatarNames;
+// Search Exact nick - will be only there
+@property (nonatomic, strong) NSDictionary *userDataForExactNick;
 
-
+// Fragment
 - (void)getDataForNickFragment:(NSString *)nick;
+// Exact
+- (void)getDataForExactNick:(NSString *)nick;
 
 
 

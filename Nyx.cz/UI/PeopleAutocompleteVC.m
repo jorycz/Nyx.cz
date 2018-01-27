@@ -231,25 +231,25 @@
 
 - (void)searchForNickFragment:(NSString *)nick
 {
-    self.pm = [[PeopleManager alloc] init];
-    self.pm.delegate = self;
-    [self.pm getDataForNickFragment:nick];
+    self.peopleManager = [[PeopleManager alloc] init];
+    self.peopleManager.delegate = self;
+    [self.peopleManager getDataForNickFragment:nick];
 }
 
 - (void)peopleManagerFinished:(id)sender
 {
-    PeopleManager *pm = (PeopleManager *)sender;
+    PeopleManager *peopleManager = (PeopleManager *)sender;
     
     // Delete old data
     [self.sections removeAllObjects];
     [self.autocompleteData removeAllObjects];
     
     // Add new
-    [self.sections addObjectsFromArray:pm.userSectionsHeaders];
-    [self.autocompleteData addObjectsFromArray:pm.userSectionsData];
+    [self.sections addObjectsFromArray:peopleManager.userSectionsHeaders];
+    [self.autocompleteData addObjectsFromArray:peopleManager.userSectionsData];
     
     // Create download queue for nick images
-    [self.nickAvatarsToDownload addObjectsFromArray:pm.userAvatarNames];
+    [self.nickAvatarsToDownload addObjectsFromArray:peopleManager.userAvatarNames];
     [self downloadAvatar];
 }
 
