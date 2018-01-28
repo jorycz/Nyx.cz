@@ -604,7 +604,13 @@
 
 - (void)createNewPostToDiscussion
 {
-    NSString *firstPostId = [[[self.nyxRowsForSections objectAtIndex:0] objectAtIndex:0] objectForKey:@"id_wu"];
+    NSString *firstPostId;
+    if ([self.nyxRowsForSections count] > 0)
+    {
+        firstPostId = [[[self.nyxRowsForSections objectAtIndex:0] objectAtIndex:0] objectForKey:@"id_wu"];
+    } else {
+        firstPostId = @"0";
+    }
     NSString *clubDescription = [NSString stringWithFormat:@"%@\n%@",
                                  [self.disscussionClubData objectForKey:@"name_main"],
                                  [self.disscussionClubData objectForKey:@"name_sub"]];
@@ -1080,6 +1086,7 @@
                 if ([identification isEqualToString:kApiIdentificationDataForDiscussion])
                 {
                     // THIS CODE IS CALLED SO MANY TIMES UNTIL OLDER THAN LAST_VISIT POST IS FOUND or FORCE LIMIT IS REACHED.
+                    // OR there is NO posts at all.
                     
                     if ([_temporaryDataStorageBeforeLastReadIsFound objectForKey:@"discussion"]) {
                         // add posts only
@@ -1096,32 +1103,39 @@
                         [_temporaryDataStorageBeforeLastReadIsFound addEntriesFromDictionary:jp.jsonDictionary];
                     }
                     
-                    // Load posts until last unread in current data is found.
-                    [_lastVisitWuId setString:[[_temporaryDataStorageBeforeLastReadIsFound objectForKey:@"discussion"] objectForKey:@"last_visit"]];
-                    if (_lastVisitWuId && [_lastVisitWuId length] > 0)
-                    {
-                        BOOL lastUnreadPostReached = NO;
-                        NSArray *posts = [_temporaryDataStorageBeforeLastReadIsFound objectForKey:@"data"];
-                        for (NSDictionary *d in posts)
+                    BOOL postsExistsInDiscussion = YES;
+                    if ([[_temporaryDataStorageBeforeLastReadIsFound objectForKey:@"data"] count] < 1) {
+                        // If there are no POSTS in discussion - JUMP TO END.
+                        PRESENT_INFO(@"Žádný příspěvek.", @"V této diskuzi zatím není žádný příspěvěk.")
+                        postsExistsInDiscussion = NO;
+                    } else {
+                        // Load posts until last unread in current data is found.
+                        [_lastVisitWuId setString:[[_temporaryDataStorageBeforeLastReadIsFound objectForKey:@"discussion"] objectForKey:@"last_visit"]];
+                        if (_lastVisitWuId && [_lastVisitWuId length] > 0)
                         {
-                            NSInteger id_wu = [[d objectForKey:@"id_wu"] integerValue];
-                            if (id_wu < [_lastVisitWuId integerValue]) {
-                                lastUnreadPostReached = YES;
+                            BOOL lastUnreadPostReached = NO;
+                            NSArray *posts = [_temporaryDataStorageBeforeLastReadIsFound objectForKey:@"data"];
+                            for (NSDictionary *d in posts)
+                            {
+                                NSInteger id_wu = [[d objectForKey:@"id_wu"] integerValue];
+                                if (id_wu <= [_lastVisitWuId integerValue]) {
+                                    lastUnreadPostReached = YES;
+                                }
                             }
-                        }
-                        
-                        // is last unread or limit is reached
-                        NSInteger loadLimit = [[Preferences maximumUnreadPostsLoad:nil] integerValue];
-                        if (!lastUnreadPostReached && [[_temporaryDataStorageBeforeLastReadIsFound objectForKey:@"data"] count] < (loadLimit + 1))
-                        {
-                            // load more from id
-                            NSString *lastId = [[posts lastObject] objectForKey:@"id_wu"];
-                            NSString *discussionId = [[jp.jsonDictionary objectForKey:@"discussion"] objectForKey:@"id_klub"];
-                            dispatch_async(dispatch_get_main_queue(), ^{
-                                [self removeLoadingView];
-                            });
-                            [self getDataForDiscussion:discussionId loadMoreToShowAllUnreadFromId:lastId];
-                            return;
+                            
+                            // is last unread or limit is reached
+                            NSInteger loadLimit = [[Preferences maximumUnreadPostsLoad:nil] integerValue];
+                            if (!lastUnreadPostReached && [[_temporaryDataStorageBeforeLastReadIsFound objectForKey:@"data"] count] < (loadLimit + 1))
+                            {
+                                // load more from id
+                                NSString *lastId = [[posts lastObject] objectForKey:@"id_wu"];
+                                NSString *discussionId = [[jp.jsonDictionary objectForKey:@"discussion"] objectForKey:@"id_klub"];
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    [self removeLoadingView];
+                                });
+                                [self getDataForDiscussion:discussionId loadMoreToShowAllUnreadFromId:lastId];
+                                return;
+                            }
                         }
                     }
                     
@@ -1139,11 +1153,29 @@
                             }
                         }
                         // Scroll to last unread post
-                        [self reloadTableDataWithScrollToRow:lastUnreadIndex > 0 ? lastUnreadIndex - 1 : 0];
+                        if (postsExistsInDiscussion)
+                            [self reloadTableDataWithScrollToRow:lastUnreadIndex > 0 ? lastUnreadIndex - 1 : 0];
                     });
                 }
                 if ([identification isEqualToString:kApiIdentificationDataForDiscussionFromID])
                 {
+                    NSString *firstArrivedIdWu = [[[jp.jsonDictionary objectForKey:@"data"] firstObject] objectForKey:@"id_wu"];
+                    
+                    // firstObject = section 0
+                    for (NSDictionary *existingPost in [self.nyxRowsForSections firstObject])
+                    {
+                        NSString *existingIdWu = [existingPost objectForKey:@"id_wu"];
+                        if ([firstArrivedIdWu isEqualToString:existingIdWu])
+                        {
+                            // SAME ID WU ARRIVED - got same data as we already have. Very small discussion - do not load more.
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [self enableNavigationButtons:YES];
+                                [self removeLoadingView];
+                            });
+                            return;
+                        }
+                    }
+                    
                     self.title = [[jp.jsonDictionary objectForKey:@"discussion"] objectForKey:@"name_main"];
                     TableConfigurator *tc = [[TableConfigurator alloc] init];
                     tc.widthForTableCellBodyTextView = self.widthForTableCellBodyTextView;

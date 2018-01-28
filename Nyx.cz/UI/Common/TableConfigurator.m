@@ -420,17 +420,23 @@
         }
         if ([identification isEqualToString:kApiIdentificationDataForDiscussionRefreshAfterPost])
         {
-            // Add new posts data at the BEGINNING of previous posts data.
-            [tempArrayForRowSections addObjectsFromArray:[table.nyxRowsForSections objectAtIndex:0]];
-            [table.nyxRowsForSections removeAllObjects];
+            // Add new posts data at the BEGINNING of previous posts data - IF EXISTS (this could be first post in new discussion).
+            if ([table.nyxRowsForSections count] > 0) {
+                [tempArrayForRowSections addObjectsFromArray:[table.nyxRowsForSections objectAtIndex:0]];
+                [table.nyxRowsForSections removeAllObjects];
+            }
             [table.nyxRowsForSections addObjectsFromArray:@[tempArrayForRowSections]];
             
-            [tempArrayForRowHeights addObjectsFromArray:[table.nyxPostsRowHeights objectAtIndex:0]];
-            [table.nyxPostsRowHeights removeAllObjects];
+            if ([table.nyxPostsRowHeights count] > 0) {
+                [tempArrayForRowHeights addObjectsFromArray:[table.nyxPostsRowHeights objectAtIndex:0]];
+                [table.nyxPostsRowHeights removeAllObjects];
+            }
             [table.nyxPostsRowHeights addObjectsFromArray:@[tempArrayForRowHeights]];
             
-            [tempArrayForRowBodyText addObjectsFromArray:[table.nyxPostsRowBodyTexts objectAtIndex:0]];
-            [table.nyxPostsRowBodyTexts removeAllObjects];
+            if ([table.nyxPostsRowBodyTexts count] > 0) {
+                [tempArrayForRowBodyText addObjectsFromArray:[table.nyxPostsRowBodyTexts objectAtIndex:0]];
+                [table.nyxPostsRowBodyTexts removeAllObjects];
+            }
             [table.nyxPostsRowBodyTexts addObjectsFromArray:@[tempArrayForRowBodyText]];
         }
     }
