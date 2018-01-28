@@ -32,11 +32,12 @@
 
 @property (nonatomic, weak) UINavigationController *nController;
 
+// Table DS.
 @property (nonatomic, strong) NSMutableArray *nyxSections;
 @property (nonatomic, strong) NSMutableArray *nyxRowsForSections;
-
 @property (nonatomic, strong) NSMutableArray *nyxPostsRowHeights;
 @property (nonatomic, strong) NSMutableArray *nyxPostsRowBodyTexts;
+
 
 @property (nonatomic, assign) BOOL allowsSelection;
 @property (nonatomic, assign) BOOL canEditFirstRow;

@@ -58,7 +58,7 @@
     _info.textColor = [UIColor themeColorTimestampText];
     _info.textAlignment = NSTextAlignmentCenter;
     _info.font = [UIFont systemFontOfSize:16];
-    _info.text = @"Zde je možné nahlásit chybu, nebo navrhnout vylepšení. Pokud posíláte zprávu o chybě, napište co nejvíce detailů.";
+    _info.text = @"Zde je možné nahlásit chybu, nebo navrhnout vylepšení. Pokud posíláš zprávu o chybě, napiš co nejvíce detailů.";
     [self.view addSubview:_info];
 }
 
