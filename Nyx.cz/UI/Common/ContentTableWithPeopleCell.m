@@ -11,6 +11,7 @@
 #import "Constants.h"
 #import "NewNoticesForPost.h"
 #import "Colors.h"
+#import "Preferences.h"
 
 
 @implementation ContentTableWithPeopleCell
@@ -74,8 +75,13 @@
         tapRecognizer.numberOfTapsRequired = 1;
         tapRecognizer.numberOfTouchesRequired = 1;
         [_avatarView addGestureRecognizer:tapRecognizer];
-        
-        _disclosure = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"disclosure"]];
+
+        if ([[Preferences theme:nil] isEqualToString:kThemeDark])
+        {
+            _disclosure = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"disclosure_dark"]];
+        } else {
+            _disclosure = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"disclosure"]];
+        }
         _disclosure.contentMode = UIViewContentModeCenter;
         _disclosure.backgroundColor = [UIColor themeColorClear];
         [self addSubview:_disclosure];
