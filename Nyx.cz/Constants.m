@@ -80,8 +80,8 @@ NSString* const kApnsClientNameDev = @"alias-dev";
 NSString* const kApnsClientNameProd = @"alias";
 
 // THEMES
-NSString* const kThemeLight = @"Světlé";
-NSString* const kThemeDark = @"Tmavé";
+NSString* const kThemeLight = @"Světlý";
+NSString* const kThemeDark = @"Tmavý";
 
 // API
 NSString* const kApiLoguser = @"loguser";

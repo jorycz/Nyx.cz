@@ -35,7 +35,7 @@
                              @"Uložená zpráva",
                              @"Reset nastavení",
                              @"Kopírovat HTML kód",
-                             @"Grafické téma"
+                             @"Vzhled aplikace"
                              ];
         self.menuSubtitles = @[@"Spočítá a případně umožní vymazat obsah mezipaměti.",
                                @"",
@@ -247,8 +247,8 @@
             break;
         case 10:
         {
-            UIAlertController *a = [UIAlertController alertControllerWithTitle:@"Vyber téma aplikace"
-                                                                       message:@"Po zvolení tématu se aplikace ukončí a bude nutné ji znovu spustit."
+            UIAlertController *a = [UIAlertController alertControllerWithTitle:@"Vyber vzhled aplikace"
+                                                                       message:@"Po zvolení se aplikace ukončí a bude nutné ji znovu spustit."
                                                                 preferredStyle:(UIAlertControllerStyleAlert)];
             UIAlertAction *light = [UIAlertAction actionWithTitle:kThemeLight style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
                 [Preferences theme:kThemeLight];

@@ -516,7 +516,7 @@
     for (NSString *nick in [dict objectForKey:@"positive_list"]) {
         [positive addObject:@{@"nick": nick}];
         [positiveRows addObject:[NSNumber numberWithFloat:35]];
-        [positiveTexts addObject:[[NSAttributedString alloc] initWithString:@"Pozitivní hodnocení"]];
+        [positiveTexts addObject:[[NSAttributedString alloc] initWithString:@"Pozitivní hodnocení" attributes:@{NSForegroundColorAttributeName : [UIColor themeColorStandardText]}]];
     }
     
     NSMutableArray *negative = [[NSMutableArray alloc] init];
@@ -525,7 +525,7 @@
     for (NSString *nick in [dict objectForKey:@"negative_list"]) {
         [negative addObject:@{@"nick": nick}];
         [negativeRows addObject:[NSNumber numberWithFloat:35]];
-        [negativeTexts addObject:[[NSAttributedString alloc] initWithString:@"Negativní hodnocení"]];
+        [negativeTexts addObject:[[NSAttributedString alloc] initWithString:@"Negativní hodnocení" attributes:@{NSForegroundColorAttributeName : [UIColor themeColorStandardText]}]];
     }
     
     [table.nyxRowsForSections addObject:positive];

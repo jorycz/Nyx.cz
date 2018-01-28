@@ -114,8 +114,8 @@
         // Store initial Status and Navigation Bar Heights.
         CGFloat navigationBarHeight = self.navigationController.navigationBar.frame.size.height;
         CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
-        NSLog(@"%@ - %@ : Navigation Bar >> [%li]", self, NSStringFromSelector(_cmd), (long)navigationBarHeight);
-        NSLog(@"%@ - %@ : Status Bar >> [%li]", self, NSStringFromSelector(_cmd), (long)statusBarHeight);
+//        NSLog(@"%@ - %@ : Navigation Bar >> [%li]", self, NSStringFromSelector(_cmd), (long)navigationBarHeight);
+//        NSLog(@"%@ - %@ : Status Bar >> [%li]", self, NSStringFromSelector(_cmd), (long)statusBarHeight);
         [Preferences statusNavigationBarsHeights:(navigationBarHeight + statusBarHeight)];
         
         NSString *preferredMenyKey = [Preferences preferredStartingLocation:nil];
