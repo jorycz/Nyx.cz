@@ -139,7 +139,7 @@
 + (UIColor *)themeColorURL
 {
     if ([self dark])
-        return UIColorFromRGB(0x5252FF);
+        return UIColorFromRGB(0x7373FF);
     return UIColorFromRGB(0x0000FF);
 }
 
