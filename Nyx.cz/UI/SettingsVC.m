@@ -479,13 +479,14 @@
 - (NSString *)appVersion
 {
     NSString * version = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleShortVersionString"];
-    NSString * appBuild = [[NSBundle mainBundle] objectForInfoDictionaryKey: (NSString *)kCFBundleVersionKey];
+//    NSString * appBuild = [[NSBundle mainBundle] objectForInfoDictionaryKey: (NSString *)kCFBundleVersionKey];
     
     NSString * versionBuild = [NSString stringWithFormat: @"verze %@", version];
     
-    if (![version isEqualToString: appBuild]) {
-        versionBuild = [NSString stringWithFormat: @"%@.%@", versionBuild, appBuild];
-    }
+    // Add build to version.
+//    if (![version isEqualToString: appBuild]) {
+//        versionBuild = [NSString stringWithFormat: @"%@.%@", versionBuild, appBuild];
+//    }
     
     return versionBuild;
 }
