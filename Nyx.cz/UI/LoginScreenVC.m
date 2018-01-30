@@ -185,11 +185,31 @@
                             // Tell user that they need to cancel authorization on web.
                             [self authorizationExistCancelExistingFirst];
                         } else {
-                            [Preferences auth_token:[jp.jsonDictionary objectForKey:@"auth_token"]];
-                            [_auth_code setString:[jp.jsonDictionary objectForKey:@"auth_code"]];
-                            dispatch_async(dispatch_get_main_queue(), ^{
-                                [self showActivationOrChangeNickAlert];
-                            });
+                            NSString *token = [jp.jsonDictionary objectForKey:@"auth_token"];
+                            NSString *code = [jp.jsonDictionary objectForKey:@"auth_code"];
+                            if (token && [token length] > 0 && code && [code length] > 0)
+                            {
+                                [Preferences auth_token:token];
+                                [_auth_code setString:code];
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    [self showActivationOrChangeNickAlert];
+                                });
+                            } else {
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    PRESENT_ERROR(@"Data error", @"Server API Token doesn't exist!")
+                                    
+                                    NSString *title = @"API Token data is empty!";
+                                    NSString *message = @"Check your network settings, firewall, proxy settings and any network device that could modify or intercept network data in any way and try again.\n\nIf error persists, try different mode of connection (WiFi / Cellular Data / Cable).";
+                                    UIAlertController *a = [UIAlertController alertControllerWithTitle:title
+                                                                                               message:message
+                                                                                        preferredStyle:(UIAlertControllerStyleAlert)];
+                                    UIAlertAction *ok = [UIAlertAction actionWithTitle:@"Try again" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+                                        [self tryToLogIn];
+                                    }];
+                                    [a addAction:ok];
+                                    [self presentViewController:a animated:YES completion:^{}];
+                                });
+                            }
                         }
                     } else {
                         [self presentErrorWithTitle:@"Chyba ze serveru:" andMessage:[jp.jsonDictionary objectForKey:@"error"]];
