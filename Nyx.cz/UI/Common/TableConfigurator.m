@@ -221,8 +221,7 @@
                 Timestamp *ts = [[Timestamp alloc] initWithTimestamp:[active objectForKey:@"time"]];
                 NSString *location = [active objectForKey:@"location"];
                 NSMutableString *body = [[NSMutableString alloc] initWithString:@""];
-                [body appendString:[NSString stringWithFormat:@"Poslední aktivita: %@", [ts getTime]]];
-                [body appendString:[NSString stringWithFormat:@"\nPoslední lokace: %@", location]];
+                [body appendString:[NSString stringWithFormat:@"Aktivita: %@ - %@", [ts getTime], location]];
                 NSAttributedString *atStr = [[NSAttributedString alloc] initWithString:body attributes:@{NSForegroundColorAttributeName : [UIColor themeColorStandardText]}];
                 [tempArrayForRowBodyText addObject:atStr];
             } else {

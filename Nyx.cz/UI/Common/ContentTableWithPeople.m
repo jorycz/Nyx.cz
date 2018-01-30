@@ -242,7 +242,6 @@
 //    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), cellData);
     
     // Remove all custom params.
-    cell.activeFriendStatus = nil;
     cell.commentsCount = nil;
     cell.mailboxDirection = nil;
     cell.mailboxMailStatus = nil;
@@ -265,7 +264,6 @@
         if ([self.peopleTableMode isEqualToString:kPeopleTableModeFriends] || [self.peopleTableMode isEqualToString:kPeopleTableModeFriendsDetail])
         {
             nick = [cellData objectForKey:@"nick"];
-            [cellData objectForKey:@"active"] ? cell.activeFriendStatus = @"yes" : NULL ;
         }
         if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeed] || [self.peopleTableMode isEqualToString:kPeopleTableModeFeedDetail])
         {
@@ -381,8 +379,9 @@
     }
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeFriends]) {
         nick = [userPostData objectForKey:@"nick"];
-        postId = @"666";
-        f = 70;
+        POST_NOTIFICATION_MAILBOX_NEW_MESSAGE_FOR(userPostData)
+//        postId = @"666";
+//        f = 70;
     }
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion] || [self.peopleTableMode isEqualToString:kPeopleTableModeDiscussionDetail]) {
         nick = [userPostData objectForKey:@"nick"];
@@ -401,7 +400,7 @@
     // -------- RESPOND VIEW --------
     if ([self.peopleTableMode isEqualToString:kPeopleTableModeFeed] ||
         [self.peopleTableMode isEqualToString:kPeopleTableModeMailbox] ||
-        [self.peopleTableMode isEqualToString:kPeopleTableModeFriends] ||
+//        [self.peopleTableMode isEqualToString:kPeopleTableModeFriends] ||
         [self.peopleTableMode isEqualToString:kPeopleTableModeDiscussion] ||
         [self.peopleTableMode isEqualToString:kPeopleTableModeDiscussionDetail] ||
         [self.peopleTableMode isEqualToString:kPeopleTableModeNotices])
@@ -1567,25 +1566,23 @@
     if (!self.view.window)
         return;
     
-//        NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), notification);
+//    NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), notification);
     NSDictionary *userData = [[notification userInfo] objectForKey:@"nKey"];
     NSString *nick = [userData objectForKey:@"nick"];
     NSString *lastActiveTimestamp = [[userData objectForKey:@"active"] objectForKey:@"time"];
     NSString *location = [[userData objectForKey:@"active"] objectForKey:@"location"];
     
-    NSMutableString *body = [[NSMutableString alloc] initWithString:@"\nNová zpráva pro uživatele."];
-    if (lastActiveTimestamp) {
+    NSMutableString *body = [[NSMutableString alloc] initWithString:@"Zpráva bude odeslána do e-mailu."];
+    if (lastActiveTimestamp && location) {
         Timestamp *ts = [[Timestamp alloc] initWithTimestamp:lastActiveTimestamp];
-        [body appendString:[NSString stringWithFormat:@"\nPoslední aktivita: %@", [ts getTime]]];
+        [body appendString:[NSString stringWithFormat:@"\nAktivita: %@ - %@", [ts getTime], location]];
     }
-    if (location) {
-        [body appendString:[NSString stringWithFormat:@"\nPoslední lokace: %@", location]];
-    }
+    NSAttributedString *b = [[NSAttributedString alloc] initWithString:body attributes:@{NSForegroundColorAttributeName : [UIColor themeColorStandardText]}];
     
     PeopleRespondVC *response = [[PeopleRespondVC alloc] init];
     response.nick = nick;
-    response.bodyText = [[NSAttributedString alloc] initWithString:body attributes:@{NSForegroundColorAttributeName : [UIColor themeColorStandardText]}];
-    response.bodyHeight = 80;
+    response.bodyText = b;
+    response.bodyHeight = kMinimumPeopleTableCellHeight;
     response.postId = @"";
     response.postData = @{@"other_nick": nick};
     response.nController = self.nController;

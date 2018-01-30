@@ -163,9 +163,6 @@
     if (self.commentsCount && [self.commentsCount intValue] > 0) {
         self.backgroundColor = [UIColor themeColorMainBackgroundUnreadHilight];
     }
-    if (self.activeFriendStatus) {
-        self.backgroundColor = [UIColor themeColorMainBackgroundUnreadHilight];
-    }
     if (self.discussionNewPost && [self.discussionNewPost isEqualToString:@"yes"]) {
         self.backgroundColor = [UIColor themeColorMainBackgroundUnreadHilight];
     }

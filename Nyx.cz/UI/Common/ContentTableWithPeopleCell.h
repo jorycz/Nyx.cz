@@ -35,7 +35,6 @@
 @property (nonatomic, strong) NSString *commentsCount;
 @property (nonatomic, strong) NSString *mailboxDirection;
 @property (nonatomic, strong) NSString *mailboxMailStatus;
-@property (nonatomic, strong) NSString *activeFriendStatus;
 @property (nonatomic, strong) NSString *discussionNewPost;
 @property (nonatomic, strong) NSString *time;
 @property (nonatomic, strong) NSMutableString *rating;
