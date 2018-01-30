@@ -1596,6 +1596,7 @@
     NSString *nick = [[sender userInfo] objectForKey:@"nick"];
     self.peopleManager = [[PeopleManager alloc] init];
     self.peopleManager.delegate = self;
+    self.title = @"";
     [self.peopleManager getDataForExactNick:nick];
 }
 
