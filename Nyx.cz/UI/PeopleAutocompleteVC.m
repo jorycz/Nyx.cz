@@ -143,11 +143,12 @@
     }
     NSString *nick = [[[self.autocompleteData objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"nick"];
     NSString *timeActive = [[[[self.autocompleteData objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"active"] objectForKey:@"time"];
+    NSString *locationActive = [[[[self.autocompleteData objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"active"] objectForKey:@"location"];
     cell.textLabel.text = nick;
     cell.detailTextLabel.text = nil;
-    if (timeActive) {
+    if (timeActive && locationActive) {
         Timestamp *ts = [[Timestamp alloc] initWithTimestamp:timeActive];
-        cell.detailTextLabel.text = [NSString stringWithFormat:@"Poslední aktivita: %@", [ts getTime]];
+        cell.detailTextLabel.text = [NSString stringWithFormat:@"Aktivní: %@ - %@", [ts getTime], locationActive];
     }
     cell.imageView.image = [self.avatarImagesByNick objectForKey:nick];
     cell.textLabel.textColor = [UIColor themeColorStandardText];
