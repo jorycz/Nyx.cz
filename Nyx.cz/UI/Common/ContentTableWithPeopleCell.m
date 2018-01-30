@@ -71,6 +71,11 @@
         _separator.backgroundColor = [UIColor colorWithWhite:.5 alpha:.5];
         [self addSubview:_separator];
         
+        _onlineStatus = [[UIView alloc] init];
+        _onlineStatus.layer.cornerRadius = 4;
+        _onlineStatus.clipsToBounds = YES;
+        [self addSubview:_onlineStatus];
+        
         UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapped:)];
         tapRecognizer.numberOfTapsRequired = 1;
         tapRecognizer.numberOfTouchesRequired = 1;
@@ -114,13 +119,15 @@
     CGFloat avatarWidth = 40;
     CGFloat avatarHeight = 50;
     
-    CGFloat timeWidth = 115;
+    CGFloat timeWidth = 113;
+    CGFloat activeWidth = 8;
     
     _avatarView.frame = CGRectMake(insect, insect, avatarWidth, avatarHeight);
     _ratingLabel.frame = CGRectMake(insect, _avatarView.frame.origin.y + avatarHeight + 3, avatarWidth, 14);
     
-    _nickLabel.frame = CGRectMake(avatarWidth + 2 * insect, insect, f.size.width - (avatarWidth + 3 * insect) - timeWidth - (3 * insect), 15);
+    _nickLabel.frame = CGRectMake(avatarWidth + 2 * insect, insect, f.size.width - (avatarWidth + 6 * insect) - timeWidth - activeWidth, 15);
     _timeLabel.frame = CGRectMake(_nickLabel.frame.origin.x + _nickLabel.frame.size.width + insect, insect, timeWidth, 13);
+    _onlineStatus.frame = CGRectMake(_timeLabel.frame.origin.x + _timeLabel.frame.size.width + insect, insect + 3, activeWidth, activeWidth);
     
     _bodyView.frame = CGRectMake(avatarWidth + 2 * insect, 20, f.size.width - kWidthForTableCellBodyTextViewSubstract, f.size.height - 25);
     
@@ -187,6 +194,12 @@
         }
     } else {
         _ratingLabel.text = @"";
+    }
+    
+    if (self.activeNow) {
+        _onlineStatus.backgroundColor = [UIColor themeColorRatingPositive];
+    } else {
+        _onlineStatus.backgroundColor = [UIColor themeColorClear];
     }
     
     // NOTICES

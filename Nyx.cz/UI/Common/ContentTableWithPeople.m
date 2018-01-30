@@ -247,11 +247,15 @@
     cell.mailboxDirection = nil;
     cell.mailboxMailStatus = nil;
     [cell.rating setString:@""];
+    cell.activeNow = NO;
     
     NSString *rating = [cellData objectForKey:@"wu_rating"];
     if (rating && [rating length] > 0) {
         [cell.rating setString:rating];
     }
+    NSDictionary *active = [cellData objectForKey:@"active"];
+    if (active && [active allKeys] > 0)
+        cell.activeNow = YES;
     
     if (cellData)
     {

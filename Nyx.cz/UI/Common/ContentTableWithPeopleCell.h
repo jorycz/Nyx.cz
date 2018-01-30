@@ -15,7 +15,7 @@
     UIImageView *_avatarView, *_disclosure;
     UILabel *_nickLabel, *_timeLabel, *_ratingLabel;
     UITextView *_bodyView;
-    UIView *_separator;
+    UIView *_separator, *_onlineStatus;
     NSIndexPath *_currentIndexPath;
 }
 
@@ -39,6 +39,7 @@
 @property (nonatomic, strong) NSString *discussionNewPost;
 @property (nonatomic, strong) NSString *time;
 @property (nonatomic, strong) NSMutableString *rating;
+@property (nonatomic, assign) BOOL activeNow;
 
 @property (nonatomic, strong) NSMutableString *ratingGiven;
 
