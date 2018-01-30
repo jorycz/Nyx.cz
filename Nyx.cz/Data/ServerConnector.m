@@ -161,14 +161,19 @@
                                                  if (error)
                                                  {
                                                      NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), [error localizedDescription]);
+                                                     NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), [error localizedRecoverySuggestion]);
+                                                     NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), [error localizedFailureReason]);
+                                                     NSLog(@"%@ - %@ : [%@]", self, NSStringFromSelector(_cmd), [error localizedRecoveryOptions]);
                                                      [self downloadDidEndWithData:nil forIdentification:self.identifitaion];
                                                  }
                                                  else
                                                  {
                                                      // **** DEBUG ****
-                                                     //            NSLog(@"= DEBUG: %@: Response length %lu", [self class], (unsigned long)[data length]);
-                                                     //            NSString *dataString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-                                                     //            NSLog(@"= DEBUG: DATA [%@]", dataString);
+//                                                     NSLog(@"=========================== DEBUG: %@: Response length %lu", [self class], (unsigned long)[data length]);
+//                                                     NSLog(@"= %@ ", [(NSHTTPURLResponse *)response allHeaderFields]);
+//                                                     NSString *dataString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+//                                                     NSLog(@"= DEBUG: DATA [%@]", dataString);
+//                                                     NSLog(@"===========================");
                                                      // **** DEBUG ****
                                                      [self downloadDidEndWithData:data forIdentification:self.identifitaion];
                                                  }
