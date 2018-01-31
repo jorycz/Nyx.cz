@@ -196,14 +196,12 @@
                                 });
                             } else {
                                 dispatch_async(dispatch_get_main_queue(), ^{
-                                    PRESENT_ERROR(@"Data error", @"Server API Token doesn't exist!")
-                                    
-                                    NSString *title = @"API Token data is empty!";
-                                    NSString *message = @"Check your network settings, firewall, proxy settings and any network device that could modify or intercept network data in any way and try again.\n\nIf error persists, try different mode of connection (WiFi / Cellular Data / Cable).";
+                                    NSString *title = @"Chyba dat";
+                                    NSString *message = @"Nelze získat API token. Tato chyba je způsobena chybou v datech. Odpověď serveru neodpovídá struktuře očekávaných dat nebo se nevrátila žádná data.\n\nChyba může být způsobena ochranou sítě firewall, proxy serverem, nebo jste připojeni na síť podporující pouze IP verzi 6 a s tou není server kompatibilní. Prosím čtěte sekci \"Kompatibilita s IPv6\" v systémovém nastavení pro aplikaci Nyx.cz (Settings - Nyx.cz).\n\nZměňte způsob připojení k internetu a zkuste to znova.";
                                     UIAlertController *a = [UIAlertController alertControllerWithTitle:title
                                                                                                message:message
                                                                                         preferredStyle:(UIAlertControllerStyleAlert)];
-                                    UIAlertAction *ok = [UIAlertAction actionWithTitle:@"Try again" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+                                    UIAlertAction *ok = [UIAlertAction actionWithTitle:@"Zkusit znovu" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
                                         [self tryToLogIn];
                                     }];
                                     [a addAction:ok];

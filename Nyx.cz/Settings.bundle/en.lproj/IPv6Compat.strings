@@ -1,0 +1,3 @@
+"_head" = "Internet Protocol version 6 compatibility note:";
+"_body" = "If you are connected with your device to network based on technology of IP version 6 only, application will be unable to connect to community discussion server.\n\nServer and datacenter where server is installed and configured doesn't support IP version 6. Please use different connection (WiFi, Cellular or Cable) using IPv4 protocol until datacenter and server is prepared for IPv6.";
+

@@ -14,7 +14,15 @@
 			<key>Key</key>
 			<string>_TIMEOFBACKGROUNDREFRESH</string>
 			<key>DefaultValue</key>
-			<string>Zatím neproběhla.</string>
+			<string>---</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSChildPaneSpecifier</string>
+			<key>Title</key>
+			<string>Kompatibilita s IPv6</string>
+			<key>File</key>
+			<string>IPv6Compat</string>
 		</dict>
 	</array>
 </dict>

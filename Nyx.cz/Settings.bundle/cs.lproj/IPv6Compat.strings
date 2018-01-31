@@ -1,0 +1,3 @@
+"_head" = "Informace o kompatibilitě s IPv6:";
+"_body" = "Pokud jste připojeni k síti, která podporuje pouze Internet Prototcol verze 6, nebude se aplikace schopna připojit k diskuznímu serveru nyx.cz.\n\nServer a datacentrum kde je server nainstalován nepodporuje IP verzi 6. Použijte jiné připojení (WiFi, Mobilní nebo kabelové) které používá IPv4 dokud nebude podpora IPv6 připravena na straně serveru.";
+
